@@ -40,7 +40,7 @@ fun HomeScreen(navController: NavController) {
             color = Color.Transparent
         ) {
             Text(
-                text = "Seja bem-vindo, Guilherme Berson",
+                text = "Olá, Guilherme Berson",
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 32.dp),
