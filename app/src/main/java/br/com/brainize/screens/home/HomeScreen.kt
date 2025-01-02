@@ -54,17 +54,14 @@ fun HomeScreen(navController: NavController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(8.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                Spacer(modifier = Modifier.width(18.dp))
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     BrainizerSelectButton(
@@ -72,7 +69,7 @@ fun HomeScreen(navController: NavController) {
                         icon = R.drawable.car,
                     )
 
-                    Spacer(modifier = Modifier.width(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
 
                     BrainizerSelectButton(
                         onClick = { navController.navigate(DestinationScreen.HouseScreen.name) },

@@ -74,14 +74,14 @@ fun HouseScreen(navController: NavController, viewModel: HouseViewModel) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp),
+                        .padding(8.dp),
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(8.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         BrainizerAlternateSelectButton(
@@ -94,7 +94,7 @@ fun HouseScreen(navController: NavController, viewModel: HouseViewModel) {
                             }
                         )
 
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         BrainizerAlternateSelectButton(
                             defaultIcon = R.drawable.opened,

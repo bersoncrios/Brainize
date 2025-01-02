@@ -74,14 +74,14 @@ fun CarScreen(navController: NavController, viewModel: CarViewModel) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp),
+                        .padding(8.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(8.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         BrainizerAlternateSelectButton(
@@ -94,7 +94,7 @@ fun CarScreen(navController: NavController, viewModel: CarViewModel) {
                             }
                         )
 
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         BrainizerAlternateSelectButton(
                             defaultIcon = R.drawable.opened,
