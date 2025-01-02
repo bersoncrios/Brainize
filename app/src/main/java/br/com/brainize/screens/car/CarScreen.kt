@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizerAlternateSelectButton
+import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.viewmodel.CarViewModel
 
 @Composable
@@ -33,51 +35,61 @@ fun CarScreen(navController: NavController, viewModel: CarViewModel) {
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Color(0xFF372080)
+    Scaffold(
+        topBar = {
+            BrainizerTopAppBar(
+                title = "Meu Carro",
+                onBackClick = { navController.popBackStack() }
             )
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.Transparent
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Color(0xFF372080)
+                )
+                .padding(paddingValues)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Transparent
             ) {
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
                 ) {
-                    BrainizerAlternateSelectButton(
-                        defaultIcon = R.drawable.windowglassopened,
-                        alternateIcon = R.drawable.windowglassclosed,
-                        isSelected = viewModel.windowClosed,
-                        onToggle = { selected ->
-                            viewModel.windowClosed = selected
-                            viewModel.saveStatus()
-                        }
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        BrainizerAlternateSelectButton(
+                            defaultIcon = R.drawable.windowglassopened,
+                            alternateIcon = R.drawable.windowglassclosed,
+                            isSelected = viewModel.windowClosed,
+                            onToggle = { selected ->
+                                viewModel.windowClosed = selected
+                                viewModel.saveStatus()
+                            }
+                        )
 
-                    Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(16.dp))
 
-                    BrainizerAlternateSelectButton(
-                        defaultIcon = R.drawable.opened,
-                        alternateIcon = R.drawable.closed,
-                        isSelected = viewModel.doorClosed,
-                        onToggle = { selected ->
-                            viewModel.doorClosed = selected
-                            viewModel.saveStatus()
-                        }
-                    )
+                        BrainizerAlternateSelectButton(
+                            defaultIcon = R.drawable.opened,
+                            alternateIcon = R.drawable.closed,
+                            isSelected = viewModel.doorClosed,
+                            onToggle = { selected ->
+                                viewModel.doorClosed = selected
+                                viewModel.saveStatus()
+                            }
+                        )
+                    }
                 }
             }
         }
