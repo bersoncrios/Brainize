@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -40,7 +39,7 @@ import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
+fun RegisterScreen(navController: NavController, viewModel: LoginViewModel) {
 
     val loginState by viewModel.loginState
 
@@ -66,7 +65,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
                 color = Color.Transparent
             ) {
                 Text(
-                    text = "Entre na sua conta",
+                    text = "Crie uma nova conta",
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(top = 32.dp),fontSize = 18.sp,
@@ -103,18 +102,18 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedButton(
-                        onClick = { navController.navigate(DestinationScreen.RegisterScreen.route) },
+                        onClick = { navController.navigate(DestinationScreen.LoginScreen.route) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp)
                     ) {
-                    Text("Criar Conta")
+                    Text("Tenho uma conta")
                 }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Button(
-                        onClick = { viewModel.loginWithEmailAndPassword(email, password) },
+                        onClick = { viewModel.createUserWithEmailAndPassword(email, password) },
                         modifier = Modifier
                             .fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(

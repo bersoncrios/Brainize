@@ -4,24 +4,33 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
 sealed class DestinationScreen(val route: String) {
-    object SplashScreen : DestinationScreen("splash_screen")object HomeScreen : DestinationScreen("home_screen/{token}") {
+    object SplashScreen : DestinationScreen("splash_screen")
+
+    object LoginScreen : DestinationScreen("login_screen")
+
+    object RegisterScreen : DestinationScreen("register_screen")
+
+    object HomeScreen : DestinationScreen("home_screen/{token}") {
         fun createRoute(token: String?): String = "home_screen/$token"
         val arguments = listOf(
             navArgument("token") { type = NavType.StringType }
         )
     }
+
     object CarScreen : DestinationScreen("car_screen/{token}") {
         fun createRoute(token: String?): String = "car_screen/$token"
         val arguments = listOf(
             navArgument("token") { type = NavType.StringType }
         )
-    }object HouseScreen : DestinationScreen("house_screen/{token}") {
+    }
+
+    object HouseScreen : DestinationScreen("house_screen/{token}") {
         fun createRoute(token: String?): String = "house_screen/$token"
         val arguments = listOf(
             navArgument("token") { type = NavType.StringType }
         )
     }
-    object LoginScreen : DestinationScreen("login_screen")
+
 
     companion object {fun fromRoute(route: String?): DestinationScreen = when (route?.substringBefore("/")) {
         SplashScreen.route -> SplashScreen
@@ -29,6 +38,7 @@ sealed class DestinationScreen(val route: String) {
         CarScreen.route.replace("{token}", "").substringBefore("/") -> CarScreen
         HouseScreen.route.replace("{token}", "").substringBefore("/") -> HouseScreen
         LoginScreen.route -> LoginScreen
+        RegisterScreen.route -> RegisterScreen
         null -> HomeScreen
         else -> throw IllegalArgumentException("Route $route is not recognized")
     }

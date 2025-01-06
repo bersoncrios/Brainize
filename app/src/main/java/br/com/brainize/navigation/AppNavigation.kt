@@ -9,6 +9,7 @@ import br.com.brainize.screens.car.CarScreen
 import br.com.brainize.screens.home.HomeScreen
 import br.com.brainize.screens.house.HouseScreen
 import br.com.brainize.screens.login.LoginScreen
+import br.com.brainize.screens.login.RegisterScreen
 import br.com.brainize.screens.splash.SplashScreen
 import br.com.brainize.viewmodel.CarViewModel
 import br.com.brainize.viewmodel.HouseViewModel
@@ -62,6 +63,10 @@ fun AppNavigation(
 
         composable(DestinationScreen.LoginScreen.route) {
             LoginScreen(navController = navController, viewModel = loginViewmodel)
+        }
+
+        composable(DestinationScreen.RegisterScreen.route) {
+            RegisterScreen(navController = navController, viewModel = loginViewmodel)
         }
     }
 }
