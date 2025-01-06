@@ -27,10 +27,15 @@ import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizerAlternateSelectButton
 import br.com.brainize.components.BrainizerTopAppBar
+import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.CarViewModel
 
 @Composable
-fun CarScreen(navController: NavController, viewModel: CarViewModel) {
+fun CarScreen(navController: NavController, viewModel: CarViewModel, token: String?) {
+
+    if (token == null) {
+        navController.navigate(DestinationScreen.LoginScreen.route)
+    }
 
     LaunchedEffect(Unit) {
         try {

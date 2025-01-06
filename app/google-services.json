@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "455161266571",
+    "project_id": "brainizeapp",
+    "storage_bucket": "brainizeapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:455161266571:android:4e96977a1cfaaa6af06f8e",
+        "android_client_info": {
+          "package_name": "br.com.brainize"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiJ-nM4uaOvmuRIheNTWSaMeDXKaPriW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

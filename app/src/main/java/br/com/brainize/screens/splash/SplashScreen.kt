@@ -23,7 +23,7 @@ fun SplashScreen(navController: NavController) {
 
     LaunchedEffect(key1 = true) {
         delay(2000L)
-        navController.navigate(DestinationScreen.HomeScreen.name)
+        navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
     Box(

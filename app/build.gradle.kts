@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("org.jetbrains.kotlin.kapt")}
+    id("org.jetbrains.kotlin.kapt")
+    id("com.google.gms.google-services")
+}
 
 android {
     namespace = "br.com.brainize"
@@ -68,8 +70,14 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     implementation ("androidx.room:room-runtime:2.6.1")
+    implementation(libs.androidx.core.splashscreen)
     kapt ("androidx.room:room-compiler:2.6.1")
     implementation ("androidx.room:room-ktx:2.6.1")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("androidx.compose.ui:ui:1.5.1")
 
     testImplementation(libs.junit)
 

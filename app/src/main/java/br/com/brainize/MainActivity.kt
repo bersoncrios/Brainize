@@ -17,8 +17,10 @@ import br.com.brainize.navigation.AppNavigation
 import br.com.brainize.ui.theme.BrainizeTheme
 import br.com.brainize.viewmodel.CarViewModel
 import br.com.brainize.viewmodel.HouseViewModel
+import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.factories.CarViewModelFactory
 import br.com.brainize.viewmodel.factories.HouseViewModelFactory
+import br.com.brainize.viewmodel.factories.LoginViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -35,6 +37,9 @@ class MainActivity : ComponentActivity() {
         val houseViewModel: HouseViewModel by viewModels {
             HouseViewModelFactory(houseStatusDao)
         }
+        val loginViewModel: LoginViewModel by viewModels {
+            LoginViewModelFactory()
+        }
 
         setContent {
 
@@ -45,7 +50,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     BrainizeApp(
                         carViewModel = carViewModel,
-                        houseViewModel = houseViewModel
+                        houseViewModel = houseViewModel,
+                        loginViewModel = loginViewModel
                     )
                 }
             }
@@ -56,7 +62,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BrainizeApp(
     carViewModel: CarViewModel,
-    houseViewModel: HouseViewModel
+    houseViewModel: HouseViewModel,
+    loginViewModel: LoginViewModel
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -68,7 +75,8 @@ fun BrainizeApp(
         ) {
             AppNavigation(
                 carViewModel = carViewModel,
-                houseViewModel = houseViewModel
+                houseViewModel = houseViewModel,
+                loginViewmodel = loginViewModel
             )
         }
     }

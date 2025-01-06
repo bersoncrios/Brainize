@@ -26,7 +26,11 @@ import br.com.brainize.components.BrainizerSelectButton
 import br.com.brainize.navigation.DestinationScreen
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, token: String?) {
+
+    if (token == null) {
+        navController.navigate(DestinationScreen.LoginScreen.route)
+    }
 
     Box(
         modifier = Modifier
@@ -65,14 +69,14 @@ fun HomeScreen(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     BrainizerSelectButton(
-                        onClick = { navController.navigate(DestinationScreen.CarScreen.name) },
+                        onClick = { navController.navigate(DestinationScreen.CarScreen.route) },
                         icon = R.drawable.car,
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
 
                     BrainizerSelectButton(
-                        onClick = { navController.navigate(DestinationScreen.HouseScreen.name) },
+                        onClick = { navController.navigate(DestinationScreen.HouseScreen.route) },
                         icon = R.drawable.house,
                     )
                 }
