@@ -9,6 +9,8 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import androidx.compose.runtime.State
+import androidx.navigation.NavController
+import br.com.brainize.navigation.DestinationScreen
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -30,8 +32,9 @@ class LoginViewModel : ViewModel() {
         get() = _completeName.value
 
 
-    fun logout() {
+    fun logout(navController: NavController) {
         auth.signOut()
+        navController.navigate(DestinationScreen.LoginScreen.route)
         _loginState.value = LoginState.Idle
     }
 

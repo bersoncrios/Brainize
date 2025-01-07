@@ -2,6 +2,7 @@ package br.com.brainize.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -70,18 +71,31 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
             modifier = Modifier.fillMaxSize(),
             color = Color.Transparent
         ) {
-            Text(
-                text = "Olá, $completeName",
+
+            Row(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 32.dp),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                textAlign = TextAlign.Center
-            )
-
-
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    text = "Olá, ",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = completeName,
+                    modifier = Modifier.clickable {
+                        loginViewModel.logout(navController)
+                    },  fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+            }
             Column(
                 modifier = Modifier
                     .fillMaxSize()
