@@ -34,10 +34,13 @@ import br.com.brainize.R
 import br.com.brainize.components.BrainizerSelectButton
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.ConfigurationsViewModel
-import br.com.brainize.viewmodel.LoginViewModel@Composable
+import br.com.brainize.viewmodel.LoginViewModel
+
+@Composable
 fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, configurationsViewModel: ConfigurationsViewModel, token: String?) {
 
     var completeName by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(true) }
 
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
@@ -47,6 +50,9 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, con
         val userId = loginViewModel.getCurrentUser()?.uid
         if (userId != null) {
             completeName = loginViewModel.getUserByUID(userId)
+        }
+        configurationsViewModel.loadConfigurations {
+            isLoading = false
         }
     }
 
@@ -85,9 +91,6 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, con
                 )
                 Text(
                     text = completeName,
-                    modifier = Modifier.clickable {
-                        loginViewModel.logout(navController)
-                    },
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,

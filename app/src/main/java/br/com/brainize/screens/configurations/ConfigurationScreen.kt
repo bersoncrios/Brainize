@@ -9,8 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -18,10 +19,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,10 +43,20 @@ fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewM
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
-    var carEnabled by rememberSaveable { mutableStateOf(configurationsViewModel.carEnabled) }
-    var houseEnabled by rememberSaveable { mutableStateOf(configurationsViewModel.houseEnabled) }
-    var notesEnabled by rememberSaveable { mutableStateOf(configurationsViewModel.notesEnabled) }
-    var agendaEnabled by rememberSaveable { mutableStateOf(configurationsViewModel.agendaEnabled) }
+
+    var carEnabled by remember { mutableStateOf(false) }
+    var houseEnabled by remember { mutableStateOf(false) }
+    var notesEnabled by remember { mutableStateOf(false) }
+    var agendaEnabled by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        configurationsViewModel.loadConfigurations { config ->
+            carEnabled = config.carEnabled
+            houseEnabled = config.houseEnabled
+            notesEnabled = config.notesEnabled
+            agendaEnabled = config.agendaEnabled
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -68,7 +79,7 @@ fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewM
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillHeight,
-                alpha = 1f
+                alpha =1f
             )
             Surface(
                 modifier = Modifier.fillMaxSize(),
@@ -86,7 +97,7 @@ fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewM
                         isChecked = carEnabled,
                         onCheckedChange = {
                             carEnabled = it
-                            configurationsViewModel.carEnabled = it
+                            configurationsViewModel.setCarEnabled(it)
                             configurationsViewModel.saveConfigurations()
                         }
                     )
@@ -95,7 +106,7 @@ fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewM
                         isChecked = houseEnabled,
                         onCheckedChange = {
                             houseEnabled = it
-                            configurationsViewModel.houseEnabled = it
+                            configurationsViewModel.setHouseEnabled(it)
                             configurationsViewModel.saveConfigurations()
                         }
                     )
@@ -104,18 +115,27 @@ fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewM
                         isChecked = notesEnabled,
                         onCheckedChange = {
                             notesEnabled = it
-                            configurationsViewModel.notesEnabled = it
+                            configurationsViewModel.setNotesEnabled(it)
                             configurationsViewModel.saveConfigurations()
-                        }
-                    )
+                        })
                     ConfigSwitchRow(
                         text = "Agenda",
                         isChecked = agendaEnabled,
-                        onCheckedChange = {agendaEnabled = it
-                            configurationsViewModel.agendaEnabled = it
+                        onCheckedChange = {
+                            agendaEnabled = it
+                            configurationsViewModel.setAgendaEnabled(it)
                             configurationsViewModel.saveConfigurations()
                         }
                     )
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Button(
+                        onClick = {
+                            loginViewModel.logout(navController)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Logout")
+                    }
                 }
             }
         }
