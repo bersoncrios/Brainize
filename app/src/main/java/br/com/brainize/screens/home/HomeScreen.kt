@@ -33,10 +33,9 @@ import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizerSelectButton
 import br.com.brainize.navigation.DestinationScreen
-import br.com.brainize.viewmodel.LoginViewModel
-
-@Composable
-fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, token: String?) {
+import br.com.brainize.viewmodel.ConfigurationsViewModel
+import br.com.brainize.viewmodel.LoginViewModel@Composable
+fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, configurationsViewModel: ConfigurationsViewModel, token: String?) {
 
     var completeName by remember { mutableStateOf("") }
 
@@ -88,7 +87,8 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, tok
                     text = completeName,
                     modifier = Modifier.clickable {
                         loginViewModel.logout(navController)
-                    },  fontSize = 18.sp,
+                    },
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     textAlign = TextAlign.Center
@@ -101,51 +101,57 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, tok
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // First Row
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly) {
+                    if (configurationsViewModel.carEnabled) {
+                        BrainizerSelectButton(
+                            onClick = { navController.navigate(DestinationScreen.CarScreen.route) },
+                            icon = R.drawable.car,
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    if (configurationsViewModel.houseEnabled) {
+                        BrainizerSelectButton(
+                            onClick = { navController.navigate(DestinationScreen.HouseScreen.route) },
+                            icon = R.drawable.house,
+                        )
+                    }
+                }
+
+                // Second Row
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    BrainizerSelectButton(
-                        onClick = { navController.navigate(DestinationScreen.CarScreen.route) },
-                        icon = R.drawable.car,
-                    )
-
+                    if (configurationsViewModel.notesEnabled) {
+                        BrainizerSelectButton(
+                            onClick = { navController.navigate(DestinationScreen.NotesScreen.route) },
+                            icon = R.drawable.lembretes,
+                        )
+                    }
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    BrainizerSelectButton(
-                        onClick = { navController.navigate(DestinationScreen.HouseScreen.route) },
-                        icon = R.drawable.house,
-                    )
+                    if (configurationsViewModel.agendaEnabled) {
+                        BrainizerSelectButton(
+                            onClick = { navController.navigate(DestinationScreen.ScheduleScreen.route) },
+                            icon = R.drawable.agenda,
+                        )
+                    }
                 }
 
-
+                // Third Row
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    BrainizerSelectButton(
-                        onClick = { navController.navigate(DestinationScreen.NotesScreen.route) },
-                        icon = R.drawable.lembretes,
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    BrainizerSelectButton(
-                        onClick = { navController.navigate(DestinationScreen.ScheduleScreen.route) },
-                        icon = R.drawable.agenda,
-                    )
-                }
-
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     BrainizerSelectButton(
                         onClick = { navController.navigate(DestinationScreen.ConfigurationScreen.route) },
@@ -156,4 +162,3 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, tok
         }
     }
 }
-

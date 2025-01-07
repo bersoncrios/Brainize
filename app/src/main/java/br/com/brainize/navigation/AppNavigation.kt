@@ -65,7 +65,7 @@ fun AppNavigation(
             arguments = DestinationScreen.HomeScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            HomeScreen(navController = navController, loginViewModel = loginViewmodel, token = token)
+            HomeScreen(navController = navController, loginViewModel = loginViewmodel, configurationsViewModel = configurationsViewModel, token = token)
         }
 
         composable(
