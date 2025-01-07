@@ -15,6 +15,7 @@ import br.com.brainize.screens.notes.NotesScreen
 import br.com.brainize.screens.schedules.ScheduleScreen
 import br.com.brainize.screens.splash.SplashScreen
 import br.com.brainize.viewmodel.CarViewModel
+import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
@@ -26,7 +27,8 @@ fun AppNavigation(
     houseViewModel: HouseViewModel,
     loginViewmodel: LoginViewModel,
     notesViewModel: NotesViewModel,
-    scheduleViewModel: ScheduleViewModel
+    scheduleViewModel: ScheduleViewModel,
+    configurationViewModel: ConfigurationsViewModel
 ) {
     val navController = rememberNavController()
     AppNavigation(
@@ -35,7 +37,8 @@ fun AppNavigation(
         houseViewModel,
         loginViewmodel,
         notesViewModel,
-        scheduleViewModel
+        scheduleViewModel,
+        configurationViewModel
     )
 }
 
@@ -46,7 +49,8 @@ fun AppNavigation(
     houseViewModel: HouseViewModel,
     loginViewmodel: LoginViewModel,
     notesViewModel: NotesViewModel,
-    scheduleViewModel: ScheduleViewModel
+    scheduleViewModel: ScheduleViewModel,
+    configurationsViewModel: ConfigurationsViewModel
 ) {
     NavHost(navController = navController, startDestination = DestinationScreen.SplashScreen.route) {
         composable(DestinationScreen.SplashScreen.route) {
@@ -101,7 +105,7 @@ fun AppNavigation(
             arguments = DestinationScreen.ConfigurationScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            ConfigurationScreen(navController = navController, loginViewModel = loginViewmodel, token = token)
+            ConfigurationScreen(navController = navController, loginViewModel = loginViewmodel, configurationsViewModel = configurationsViewModel, token = token)
         }
 
         composable(DestinationScreen.LoginScreen.route) {

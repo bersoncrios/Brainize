@@ -1,17 +1,28 @@
 package br.com.brainize.screens.configurations
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,23 +33,19 @@ import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
-import br.com.brainize.viewmodel.CarViewModel
+import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewModel, token: String?) {
+fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewModel, configurationsViewModel: ConfigurationsViewModel, token: String?) {
 
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
-
-//    LaunchedEffect(Unit) {
-//        try {
-//            viewModel.loadStatus()
-//        } catch (e: Exception) {
-//            Log.e("ConfigurationSceen", "Error loading status", e)
-//        }
-//    }
+    var carEnabled by rememberSaveable { mutableStateOf(configurationsViewModel.carEnabled) }
+    var houseEnabled by rememberSaveable { mutableStateOf(configurationsViewModel.houseEnabled) }
+    var notesEnabled by rememberSaveable { mutableStateOf(configurationsViewModel.notesEnabled) }
+    var agendaEnabled by rememberSaveable { mutableStateOf(configurationsViewModel.agendaEnabled) }
 
     Scaffold(
         topBar = {
@@ -70,13 +77,74 @@ fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewM
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(8.dp),
+                        .padding(16.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
+                    ConfigSwitchRow(
+                        text = "Carro",
+                        isChecked = carEnabled,
+                        onCheckedChange = {
+                            carEnabled = it
+                            configurationsViewModel.carEnabled = it
+                            configurationsViewModel.saveConfigurations()
+                        }
+                    )
+                    ConfigSwitchRow(
+                        text = "Casa",
+                        isChecked = houseEnabled,
+                        onCheckedChange = {
+                            houseEnabled = it
+                            configurationsViewModel.houseEnabled = it
+                            configurationsViewModel.saveConfigurations()
+                        }
+                    )
+                    ConfigSwitchRow(
+                        text = "Notas",
+                        isChecked = notesEnabled,
+                        onCheckedChange = {
+                            notesEnabled = it
+                            configurationsViewModel.notesEnabled = it
+                            configurationsViewModel.saveConfigurations()
+                        }
+                    )
+                    ConfigSwitchRow(
+                        text = "Agenda",
+                        isChecked = agendaEnabled,
+                        onCheckedChange = {agendaEnabled = it
+                            configurationsViewModel.agendaEnabled = it
+                            configurationsViewModel.saveConfigurations()
+                        }
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ConfigSwitchRow(text: String, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.White
+        )
+        Switch(
+            checked = isChecked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color(0xFF673AB7),
+                checkedTrackColor = Color(0xFFD1C4E9),
+                uncheckedThumbColor = Color.Gray,
+                uncheckedTrackColor = Color.LightGray
+            )
+        )
     }
 }

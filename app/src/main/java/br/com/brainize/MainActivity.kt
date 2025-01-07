@@ -16,11 +16,13 @@ import br.com.brainize.database.AppDatabase
 import br.com.brainize.navigation.AppNavigation
 import br.com.brainize.ui.theme.BrainizeTheme
 import br.com.brainize.viewmodel.CarViewModel
+import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
 import br.com.brainize.viewmodel.factories.CarViewModelFactory
+import br.com.brainize.viewmodel.factories.ConfigurationViewModelFactory
 import br.com.brainize.viewmodel.factories.HouseViewModelFactory
 import br.com.brainize.viewmodel.factories.LoginViewModelFactory
 import br.com.brainize.viewmodel.factories.NotesViewModelFactory
@@ -46,6 +48,9 @@ class MainActivity : ComponentActivity() {
         val scheduleViewModel: ScheduleViewModel by viewModels {
             ScheduleViewModelFactory()
         }
+        val configurationViewModel: ConfigurationsViewModel by viewModels {
+            ConfigurationViewModelFactory()
+        }
 
         setContent {
 
@@ -59,7 +64,8 @@ class MainActivity : ComponentActivity() {
                         houseViewModel = houseViewModel,
                         loginViewModel = loginViewModel,
                         notesViewModel = notesViewModel,
-                        scheduleViewModel = scheduleViewModel
+                        scheduleViewModel = scheduleViewModel,
+                        configurationViewModel = configurationViewModel
                     )
                 }
             }
@@ -73,7 +79,8 @@ fun BrainizeApp(
     houseViewModel: HouseViewModel,
     loginViewModel: LoginViewModel,
     notesViewModel: NotesViewModel,
-    scheduleViewModel: ScheduleViewModel
+    scheduleViewModel: ScheduleViewModel,
+    configurationViewModel: ConfigurationsViewModel
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -88,7 +95,8 @@ fun BrainizeApp(
                 houseViewModel = houseViewModel,
                 loginViewmodel = loginViewModel,
                 notesViewModel = notesViewModel,
-                scheduleViewModel = scheduleViewModel
+                scheduleViewModel = scheduleViewModel,
+                configurationViewModel = configurationViewModel
             )
         }
     }
