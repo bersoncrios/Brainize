@@ -48,6 +48,8 @@ fun RegisterScreen(navController: NavController, viewModel: LoginViewModel) {
     val loginState by viewModel.loginState
 
     var email by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     LaunchedEffect(loginState) {
@@ -93,6 +95,26 @@ fun RegisterScreen(navController: NavController, viewModel: LoginViewModel) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     TextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = { Text("Informe seu nome") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TextField(
+                        value = username,
+                        onValueChange = { username = it },
+                        label = { Text("Que tal um nome de usuário") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TextField(
                         value = email,
                         onValueChange = { email = it },
                         label = { Text("Email") },
@@ -124,7 +146,7 @@ fun RegisterScreen(navController: NavController, viewModel: LoginViewModel) {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Button(
-                        onClick = { viewModel.createUserWithEmailAndPassword(email, password) },
+                        onClick = { viewModel.createUserWithEmailAndPassword(email, password, name, username) },
                         modifier = Modifier
                             .fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(

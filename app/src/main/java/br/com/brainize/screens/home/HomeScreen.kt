@@ -14,6 +14,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,12 +33,23 @@ import br.com.brainize.R
 import br.com.brainize.components.BrainizerSelectButton
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
+    var completeName by remember { mutableStateOf("") }
+
     if (!loginViewModel.hasLoggedUser()) {
         navController.navigate(DestinationScreen.LoginScreen.route)
+    }
+
+    LaunchedEffect(Unit) {
+        val userId = loginViewModel.getCurrentUser()?.uid
+        if (userId != null) {
+            completeName = loginViewModel.getUserByUID(userId)
+        }
     }
 
     Box(
@@ -55,7 +71,7 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
             color = Color.Transparent
         ) {
             Text(
-                text = "Olá, Guilherme Berson",
+                text = "Olá, $completeName",
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 32.dp),

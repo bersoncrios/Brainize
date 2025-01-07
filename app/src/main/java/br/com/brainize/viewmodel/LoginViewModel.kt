@@ -12,6 +12,8 @@ import androidx.compose.runtime.State
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 class LoginViewModel : ViewModel() {
     private val auth: FirebaseAuth = Firebase.auth
@@ -23,8 +25,36 @@ class LoginViewModel : ViewModel() {
     val loginState: State<LoginState>
         get() = _loginState
 
+    private var _completeName = mutableStateOf("")
+    val completeName: String
+        get() = _completeName.value
+
+
+    fun logout() {
+        auth.signOut()
+        _loginState.value = LoginState.Idle
+    }
+
+    fun getCurrentUser() = auth.currentUser
 
     fun hasLoggedUser(): Boolean = com.google.firebase.ktx.Firebase.auth.currentUser != null
+
+    suspend fun getUserByUID(uid: String): String {
+        return suspendCancellableCoroutine { continuation ->
+            firestore.collection("users").document(uid).get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val name = document.getString("completeName") ?: ""
+                        _completeName.value = name
+                        continuation.resume(name)} else {
+                        continuation.resume("")
+                    }
+                }
+                .addOnFailureListener {
+                    continuation.resume("")
+                }
+        }
+    }
 
     fun loginWithEmailAndPassword(email: String, password: String) {
         viewModelScope.launch {
@@ -40,7 +70,7 @@ class LoginViewModel : ViewModel() {
     }
 
 
-    fun createUserWithEmailAndPassword(email: String, password: String) {
+    fun createUserWithEmailAndPassword(email: String, password: String, name: String, username: String) {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             try {
@@ -51,6 +81,9 @@ class LoginViewModel : ViewModel() {
                 user?.let {
                     val userMap = hashMapOf(
                         "email" to email,
+                        "completeName" to name,
+                        "username" to username,
+                        "uid" to (auth.currentUser?.uid ?: "não foi possivel resgatar o uid"),
                         "createdAt" to System.currentTimeMillis()
                     )
                     firestore.collection("users").document(it.uid).set(userMap).await()
