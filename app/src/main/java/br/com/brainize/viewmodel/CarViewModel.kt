@@ -6,33 +6,81 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.brainize.dao.CarStatusDao
-import br.com.brainize.model.CarStatus
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
-class CarViewModel(private val dao: CarStatusDao) : ViewModel() {
+class CarViewModel : ViewModel() {
+
+    private val firestore = FirebaseFirestore.getInstance()
+    private val auth= FirebaseAuth.getInstance()
+    private val carStatusCollection = firestore.collection("car")
 
     var windowClosed by mutableStateOf(true)
     var doorClosed by mutableStateOf(true)
 
-    fun loadStatus() {
-        viewModelScope.launch {
-            val status = dao.getStatus() ?: CarStatus(0, windowClosed = false, doorClosed = false)
-            windowClosed = status.windowClosed
-            doorClosed = status.doorClosed
-            Log.d("CarViewModel", "Status loaded: windowClosed = $windowClosed, doorClosed = $doorClosed")
-        }
+    init {
+        loadStatus()
     }
 
-    fun saveStatus() {
+    private fun loadStatus() {
         viewModelScope.launch {
-            val status = CarStatus(id = 1, windowClosed = windowClosed, doorClosed = doorClosed)
             try {
-                dao.insertOrUpdate(status)
-                Log.d("CarViewModel", "Status saved: windowClosed = $windowClosed, doorClosed = $doorClosed")
+                val status = getCarStatusFromFirestore()
+                windowClosed = status.windowClosed
+                doorClosed = status.doorClosed
             } catch (e: Exception) {
-                Log.e("CarViewModel", "Error saving status", e)
+                Log.e("CarViewModel", "Error loading status from Firestore", e)
             }
         }
     }
+
+    private suspend fun getCarStatusFromFirestore(): CarStatus {
+        return suspendCancellableCoroutine { continuation ->
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                val carStatusDocument = carStatusCollection.document(userId)
+                carStatusDocument.get()
+                    .addOnSuccessListener { document ->
+                        if (document.exists()) {val status = document.toObject(CarStatus::class.java) ?: CarStatus(windowClosed = true, doorClosed = true)
+                            continuation.resume(status)
+                        } else {
+                            continuation.resume(CarStatus(windowClosed = true, doorClosed = true))
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resumeWithException(exception)
+                    }
+            } else {
+                continuation.resume(CarStatus(windowClosed = true, doorClosed = true))
+            }
+        }
+    }
+
+
+    fun saveStatus() {
+        viewModelScope.launch {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                val carStatusDocument = carStatusCollection.document(userId)
+                val status = CarStatus(windowClosed = windowClosed, doorClosed = doorClosed)
+                try {
+                    carStatusDocument.set(status).await()
+                } catch (e: Exception) {
+                    Log.e("CarViewModel", "Error saving status to Firestore for user $userId", e)
+                }
+            } else {
+                Log.e("CarViewModel", "User not logged in, cannot save status")
+            }
+        }
+    }
+
+    data class CarStatus(
+        var windowClosed: Boolean = true,
+        var doorClosed: Boolean = true
+    )
 }

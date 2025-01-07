@@ -31,15 +31,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val database = AppDatabase.getDatabase(this)
-        val carStatusDao = database.carStatusDao()
-        val houseStatusDao = database.houseStatusDao()
-
         val carViewModel: CarViewModel by viewModels {
-            CarViewModelFactory(carStatusDao)
+            CarViewModelFactory()
         }
         val houseViewModel: HouseViewModel by viewModels {
-            HouseViewModelFactory(houseStatusDao)
+            HouseViewModelFactory()
         }
         val loginViewModel: LoginViewModel by viewModels {
             LoginViewModelFactory()
@@ -61,7 +57,9 @@ class MainActivity : ComponentActivity() {
                     BrainizeApp(
                         carViewModel = carViewModel,
                         houseViewModel = houseViewModel,
-                        loginViewModel = loginViewModel
+                        loginViewModel = loginViewModel,
+                        notesViewModel = notesViewModel,
+                        scheduleViewModel = scheduleViewModel
                     )
                 }
             }
@@ -73,7 +71,9 @@ class MainActivity : ComponentActivity() {
 fun BrainizeApp(
     carViewModel: CarViewModel,
     houseViewModel: HouseViewModel,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    notesViewModel: NotesViewModel,
+    scheduleViewModel: ScheduleViewModel
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -87,8 +87,8 @@ fun BrainizeApp(
                 carViewModel = carViewModel,
                 houseViewModel = houseViewModel,
                 loginViewmodel = loginViewModel,
-                notesViewModel = NotesViewModel(),
-                scheduleViewModel = ScheduleViewModel()
+                notesViewModel = notesViewModel,
+                scheduleViewModel = scheduleViewModel
             )
         }
     }

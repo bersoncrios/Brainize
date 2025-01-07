@@ -1,6 +1,5 @@
 package br.com.brainize.screens.car
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +15,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,13 +43,8 @@ fun CarScreen(navController: NavController, viewModel: CarViewModel, loginViewMo
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
-    LaunchedEffect(Unit) {
-        try {
-            viewModel.loadStatus()
-        } catch (e: Exception) {
-            Log.e("CarScreen", "Error loading status", e)
-        }
-    }
+    var windowClosed by rememberSaveable { mutableStateOf(viewModel.windowClosed) }
+    var doorClosed by rememberSaveable { mutableStateOf(viewModel.doorClosed) }
 
     Scaffold(
         topBar = {
@@ -103,8 +100,9 @@ fun CarScreen(navController: NavController, viewModel: CarViewModel, loginViewMo
                         BrainizerAlternateSelectButton(
                             defaultIcon = R.drawable.windowglassopened,
                             alternateIcon = R.drawable.windowglassclosed,
-                            isSelected = viewModel.windowClosed,
+                            isSelected = windowClosed,
                             onToggle = { selected ->
+                                windowClosed = selected
                                 viewModel.windowClosed = selected
                                 viewModel.saveStatus()
                             }
@@ -115,8 +113,9 @@ fun CarScreen(navController: NavController, viewModel: CarViewModel, loginViewMo
                         BrainizerAlternateSelectButton(
                             defaultIcon = R.drawable.opened,
                             alternateIcon = R.drawable.closed,
-                            isSelected = viewModel.doorClosed,
+                            isSelected = doorClosed,
                             onToggle = { selected ->
+                                doorClosed = selected
                                 viewModel.doorClosed = selected
                                 viewModel.saveStatus()
                             }
