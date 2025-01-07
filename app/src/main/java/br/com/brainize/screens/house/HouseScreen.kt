@@ -32,11 +32,12 @@ import br.com.brainize.components.BrainizerAlternateSelectButton
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.HouseViewModel
+import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun HouseScreen(navController: NavController, viewModel: HouseViewModel, token: String?) {
+fun HouseScreen(navController: NavController, viewModel: HouseViewModel, loginViewModel: LoginViewModel) {
 
-    if (token == null) {
+    if (!loginViewModel.hasLoggedUser()) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 

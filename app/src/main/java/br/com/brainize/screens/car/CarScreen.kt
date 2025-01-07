@@ -32,11 +32,12 @@ import br.com.brainize.components.BrainizerAlternateSelectButton
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.CarViewModel
+import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun CarScreen(navController: NavController, viewModel: CarViewModel, token: String?) {
+fun CarScreen(navController: NavController, viewModel: CarViewModel, loginViewModel: LoginViewModel) {
 
-    if (token == null) {
+    if (!loginViewModel.hasLoggedUser()) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 

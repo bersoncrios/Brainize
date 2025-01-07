@@ -34,7 +34,10 @@ fun AppNavigation(
 ) {
     NavHost(navController = navController, startDestination = DestinationScreen.SplashScreen.route) {
         composable(DestinationScreen.SplashScreen.route) {
-            SplashScreen(navController = navController)
+            SplashScreen(
+                navController = navController,
+                loginViewModel = loginViewmodel
+            )
         }
 
         composable(
@@ -42,7 +45,7 @@ fun AppNavigation(
             arguments = DestinationScreen.HomeScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            HomeScreen(navController = navController, token = token)
+            HomeScreen(navController = navController, loginViewModel = loginViewmodel)
         }
 
         composable(
@@ -50,7 +53,7 @@ fun AppNavigation(
             arguments = DestinationScreen.CarScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            CarScreen(navController = navController, viewModel = carViewModel, token = token)
+            CarScreen(navController = navController, viewModel = carViewModel, loginViewModel = loginViewmodel)
         }
 
         composable(
@@ -58,7 +61,7 @@ fun AppNavigation(
             arguments = DestinationScreen.HouseScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            HouseScreen(navController = navController, viewModel = houseViewModel, token = token)
+            HouseScreen(navController = navController, viewModel = houseViewModel, loginViewModel = loginViewmodel)
         }
 
         composable(DestinationScreen.LoginScreen.route) {

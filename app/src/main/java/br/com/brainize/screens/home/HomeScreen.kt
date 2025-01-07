@@ -27,11 +27,12 @@ import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizerSelectButton
 import br.com.brainize.navigation.DestinationScreen
+import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun HomeScreen(navController: NavController, token: String?) {
+fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
-    if (token == null) {
+    if (!loginViewModel.hasLoggedUser()) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 

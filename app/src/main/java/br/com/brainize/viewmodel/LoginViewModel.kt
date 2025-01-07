@@ -9,6 +9,7 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import androidx.compose.runtime.State
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 
@@ -21,6 +22,9 @@ class LoginViewModel : ViewModel() {
 
     val loginState: State<LoginState>
         get() = _loginState
+
+
+    fun hasLoggedUser(): Boolean = com.google.firebase.ktx.Firebase.auth.currentUser != null
 
     fun loginWithEmailAndPassword(email: String, password: String) {
         viewModelScope.launch {

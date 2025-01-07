@@ -17,14 +17,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.navigation.DestinationScreen
+import br.com.brainize.viewmodel.LoginViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
     LaunchedEffect(key1 = true) {
         delay(2000L)
-        navController.navigate(DestinationScreen.LoginScreen.route)
+        if (loginViewModel.hasLoggedUser()) {
+            navController.navigate(DestinationScreen.HomeScreen.route)
+        } else {
+            navController.navigate(DestinationScreen.LoginScreen.route)
+        }
     }
 
     Box(
