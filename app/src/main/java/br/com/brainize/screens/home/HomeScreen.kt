@@ -34,15 +34,13 @@ import br.com.brainize.R
 import br.com.brainize.components.BrainizerSelectButton
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
-fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
+fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, token: String?) {
 
     var completeName by remember { mutableStateOf("") }
-    val loginState by loginViewModel.loginState
-    if (!loginViewModel.hasLoggedUser()) {
+
+    if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
@@ -50,16 +48,6 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
         val userId = loginViewModel.getCurrentUser()?.uid
         if (userId != null) {
             completeName = loginViewModel.getUserByUID(userId)
-        }
-    }
-
-    LaunchedEffect(loginState) {
-        if (loginState == LoginViewModel.LoginState.Idle) {
-            navController.navigate(DestinationScreen.LoginScreen.route) {
-                popUpTo(navController.graph.id) {
-                    inclusive = true
-                }
-            }
         }
     }
 
@@ -99,8 +87,7 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
                 Text(
                     text = completeName,
                     modifier = Modifier.clickable {
-//                        loginViewModel.logout(navController)
-
+                        loginViewModel.logout(navController)
                     },  fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -130,6 +117,39 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
                     BrainizerSelectButton(
                         onClick = { navController.navigate(DestinationScreen.HouseScreen.route) },
                         icon = R.drawable.house,
+                    )
+                }
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    BrainizerSelectButton(
+                        onClick = { navController.navigate(DestinationScreen.NotesScreen.route) },
+                        icon = R.drawable.lembretes,
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    BrainizerSelectButton(
+                        onClick = { navController.navigate(DestinationScreen.ScheduleScreen.route) },
+                        icon = R.drawable.agenda,
+                    )
+                }
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    BrainizerSelectButton(
+                        onClick = { navController.navigate(DestinationScreen.ConfigurationScreen.route) },
+                        icon = R.drawable.config,
                     )
                 }
             }

@@ -1,4 +1,4 @@
-package br.com.brainize.screens.car
+package br.com.brainize.screens.notes
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -6,15 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -22,20 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.brainize.R
-import br.com.brainize.components.BrainizerAlternateSelectButton
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.CarViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun CarScreen(navController: NavController, viewModel: CarViewModel, loginViewModel: LoginViewModel, token: String?) {
+fun NotesScreen(navController: NavController, viewModel: CarViewModel, loginViewModel: LoginViewModel, token: String?) {
 
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
@@ -45,14 +36,14 @@ fun CarScreen(navController: NavController, viewModel: CarViewModel, loginViewMo
         try {
             viewModel.loadStatus()
         } catch (e: Exception) {
-            Log.e("CarScreen", "Error loading status", e)
+            Log.e("NotesScreen", "Error loading status", e)
         }
     }
 
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = "Meu Carro",
+                title = "Meus Lembretes",
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -76,17 +67,6 @@ fun CarScreen(navController: NavController, viewModel: CarViewModel, loginViewMo
                 modifier = Modifier.fillMaxSize(),
                 color = Color.Transparent
             ) {
-                Text(
-                    text = "Status do seu Nissan March",
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 32.dp),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -94,34 +74,7 @@ fun CarScreen(navController: NavController, viewModel: CarViewModel, loginViewMo
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        BrainizerAlternateSelectButton(
-                            defaultIcon = R.drawable.windowglassopened,
-                            alternateIcon = R.drawable.windowglassclosed,
-                            isSelected = viewModel.windowClosed,
-                            onToggle = { selected ->
-                                viewModel.windowClosed = selected
-                                viewModel.saveStatus()
-                            }
-                        )
 
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        BrainizerAlternateSelectButton(
-                            defaultIcon = R.drawable.opened,
-                            alternateIcon = R.drawable.closed,
-                            isSelected = viewModel.doorClosed,
-                            onToggle = { selected ->
-                                viewModel.doorClosed = selected
-                                viewModel.saveStatus()
-                            }
-                        )
-                    }
                 }
             }
         }

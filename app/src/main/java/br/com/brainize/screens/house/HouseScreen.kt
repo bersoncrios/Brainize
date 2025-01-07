@@ -35,9 +35,9 @@ import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun HouseScreen(navController: NavController, viewModel: HouseViewModel, loginViewModel: LoginViewModel) {
+fun HouseScreen(navController: NavController, viewModel: HouseViewModel, loginViewModel: LoginViewModel, token: String?) {
 
-    if (!loginViewModel.hasLoggedUser()) {
+    if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 

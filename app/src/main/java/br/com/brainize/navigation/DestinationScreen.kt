@@ -31,12 +31,36 @@ sealed class DestinationScreen(val route: String) {
         )
     }
 
+    object NotesScreen : DestinationScreen("note_screen/{token}") {
+        fun createRoute(token: String?): String = "note_screen/$token"
+        val arguments = listOf(
+            navArgument("token") { type = NavType.StringType }
+        )
+    }
+
+    object ScheduleScreen : DestinationScreen("schedule_screen/{token}") {
+        fun createRoute(token: String?): String = "schedule_screen/$token"
+        val arguments = listOf(
+            navArgument("token") { type = NavType.StringType }
+        )
+    }
+
+    object ConfigurationScreen : DestinationScreen("configuration_screen/{token}") {
+        fun createRoute(token: String?): String = "configuration_screen/$token"
+        val arguments = listOf(
+            navArgument("token") { type = NavType.StringType }
+        )
+    }
+
 
     companion object {fun fromRoute(route: String?): DestinationScreen = when (route?.substringBefore("/")) {
         SplashScreen.route -> SplashScreen
         HomeScreen.route.replace("{token}", "").substringBefore("/") -> HomeScreen
         CarScreen.route.replace("{token}", "").substringBefore("/") -> CarScreen
         HouseScreen.route.replace("{token}", "").substringBefore("/") -> HouseScreen
+        NotesScreen.route.replace("{token}", "").substringBefore("/") -> NotesScreen
+        ScheduleScreen.route.replace("{token}", "").substringBefore("/") -> ScheduleScreen
+        ConfigurationScreen.route.replace("{token}", "").substringBefore("/") -> ConfigurationScreen
         LoginScreen.route -> LoginScreen
         RegisterScreen.route -> RegisterScreen
         null -> HomeScreen
