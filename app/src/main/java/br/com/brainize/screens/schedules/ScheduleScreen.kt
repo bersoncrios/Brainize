@@ -24,21 +24,22 @@ import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.CarViewModel
 import br.com.brainize.viewmodel.LoginViewModel
+import br.com.brainize.viewmodel.ScheduleViewModel
 
 @Composable
-fun ScheduleScreen(navController: NavController, viewModel: CarViewModel, loginViewModel: LoginViewModel, token: String?) {
+fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, loginViewModel: LoginViewModel, token: String?) {
 
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
-    LaunchedEffect(Unit) {
-        try {
-            viewModel.loadStatus()
-        } catch (e: Exception) {
-            Log.e("ScheduleScreen", "Error loading status", e)
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        try {
+//            viewModel.loadStatus()
+//        } catch (e: Exception) {
+//            Log.e("ScheduleScreen", "Error loading status", e)
+//        }
+//    }
 
     Scaffold(
         topBar = {

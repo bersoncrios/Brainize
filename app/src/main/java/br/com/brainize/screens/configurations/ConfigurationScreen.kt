@@ -26,19 +26,19 @@ import br.com.brainize.viewmodel.CarViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun ConfigurationScreen(navController: NavController, viewModel: CarViewModel, loginViewModel: LoginViewModel, token: String?) {
+fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewModel, token: String?) {
 
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
-    LaunchedEffect(Unit) {
-        try {
-            viewModel.loadStatus()
-        } catch (e: Exception) {
-            Log.e("ConfigurationSceen", "Error loading status", e)
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        try {
+//            viewModel.loadStatus()
+//        } catch (e: Exception) {
+//            Log.e("ConfigurationSceen", "Error loading status", e)
+//        }
+//    }
 
     Scaffold(
         topBar = {

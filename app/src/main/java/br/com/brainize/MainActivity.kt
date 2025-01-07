@@ -18,9 +18,13 @@ import br.com.brainize.ui.theme.BrainizeTheme
 import br.com.brainize.viewmodel.CarViewModel
 import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
+import br.com.brainize.viewmodel.NotesViewModel
+import br.com.brainize.viewmodel.ScheduleViewModel
 import br.com.brainize.viewmodel.factories.CarViewModelFactory
 import br.com.brainize.viewmodel.factories.HouseViewModelFactory
 import br.com.brainize.viewmodel.factories.LoginViewModelFactory
+import br.com.brainize.viewmodel.factories.NotesViewModelFactory
+import br.com.brainize.viewmodel.factories.ScheduleViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -39,6 +43,12 @@ class MainActivity : ComponentActivity() {
         }
         val loginViewModel: LoginViewModel by viewModels {
             LoginViewModelFactory()
+        }
+        val notesViewModel: NotesViewModel by viewModels {
+            NotesViewModelFactory()
+        }
+        val scheduleViewModel: ScheduleViewModel by viewModels {
+            ScheduleViewModelFactory()
         }
 
         setContent {
@@ -76,7 +86,9 @@ fun BrainizeApp(
             AppNavigation(
                 carViewModel = carViewModel,
                 houseViewModel = houseViewModel,
-                loginViewmodel = loginViewModel
+                loginViewmodel = loginViewModel,
+                notesViewModel = NotesViewModel(),
+                scheduleViewModel = ScheduleViewModel()
             )
         }
     }

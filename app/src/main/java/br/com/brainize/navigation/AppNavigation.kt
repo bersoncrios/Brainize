@@ -17,15 +17,26 @@ import br.com.brainize.screens.splash.SplashScreen
 import br.com.brainize.viewmodel.CarViewModel
 import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
+import br.com.brainize.viewmodel.NotesViewModel
+import br.com.brainize.viewmodel.ScheduleViewModel
 
 @Composable
 fun AppNavigation(
     carViewModel: CarViewModel,
     houseViewModel: HouseViewModel,
-    loginViewmodel: LoginViewModel
+    loginViewmodel: LoginViewModel,
+    notesViewModel: NotesViewModel,
+    scheduleViewModel: ScheduleViewModel
 ) {
     val navController = rememberNavController()
-    AppNavigation(navController, carViewModel, houseViewModel, loginViewmodel)
+    AppNavigation(
+        navController,
+        carViewModel,
+        houseViewModel,
+        loginViewmodel,
+        notesViewModel,
+        scheduleViewModel
+    )
 }
 
 @Composable
@@ -33,7 +44,9 @@ fun AppNavigation(
     navController: NavHostController,
     carViewModel: CarViewModel,
     houseViewModel: HouseViewModel,
-    loginViewmodel: LoginViewModel
+    loginViewmodel: LoginViewModel,
+    notesViewModel: NotesViewModel,
+    scheduleViewModel: ScheduleViewModel
 ) {
     NavHost(navController = navController, startDestination = DestinationScreen.SplashScreen.route) {
         composable(DestinationScreen.SplashScreen.route) {
@@ -72,7 +85,7 @@ fun AppNavigation(
             arguments = DestinationScreen.NotesScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            NotesScreen(navController = navController, viewModel = carViewModel, loginViewModel = loginViewmodel, token = token)
+            NotesScreen(navController = navController, viewModel = notesViewModel, loginViewModel = loginViewmodel, token = token)
         }
 
         composable(
@@ -80,7 +93,7 @@ fun AppNavigation(
             arguments = DestinationScreen.ScheduleScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            ScheduleScreen(navController = navController, viewModel = carViewModel, loginViewModel = loginViewmodel, token = token)
+            ScheduleScreen(navController = navController, viewModel = scheduleViewModel, loginViewModel = loginViewmodel, token = token)
         }
 
         composable(
@@ -88,7 +101,7 @@ fun AppNavigation(
             arguments = DestinationScreen.ConfigurationScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            ConfigurationScreen(navController = navController, viewModel = carViewModel, loginViewModel = loginViewmodel, token = token)
+            ConfigurationScreen(navController = navController, loginViewModel = loginViewmodel, token = token)
         }
 
         composable(DestinationScreen.LoginScreen.route) {
