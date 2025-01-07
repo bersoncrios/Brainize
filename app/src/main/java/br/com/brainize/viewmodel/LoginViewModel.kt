@@ -34,7 +34,7 @@ class LoginViewModel : ViewModel() {
 
     fun logout(navController: NavController) {
         auth.signOut()
-        navController.navigate(DestinationScreen.LoginScreen.route)
+//        navController.navigate(DestinationScreen.LoginScreen.route)
         _loginState.value = LoginState.Idle
     }
 

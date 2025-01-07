@@ -41,7 +41,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
     var completeName by remember { mutableStateOf("") }
-
+    val loginState by loginViewModel.loginState
     if (!loginViewModel.hasLoggedUser()) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
@@ -50,6 +50,16 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
         val userId = loginViewModel.getCurrentUser()?.uid
         if (userId != null) {
             completeName = loginViewModel.getUserByUID(userId)
+        }
+    }
+
+    LaunchedEffect(loginState) {
+        if (loginState == LoginViewModel.LoginState.Idle) {
+            navController.navigate(DestinationScreen.LoginScreen.route) {
+                popUpTo(navController.graph.id) {
+                    inclusive = true
+                }
+            }
         }
     }
 
@@ -89,7 +99,8 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
                 Text(
                     text = completeName,
                     modifier = Modifier.clickable {
-                        loginViewModel.logout(navController)
+//                        loginViewModel.logout(navController)
+
                     },  fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
