@@ -1,4 +1,4 @@
-package br.com.brainize.screens.schedules
+package br.com.brainize.screens.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,11 +22,11 @@ import br.com.brainize.R
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
-import br.com.brainize.viewmodel.ScheduleViewModel
+import br.com.brainize.viewmodel.ProfileViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, loginViewModel: LoginViewModel, token: String?) {
+fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel, loginViewModel: LoginViewModel, token: String?) {
 
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
@@ -40,7 +40,7 @@ fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, l
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = "Meus Horários",
+                title = "Meu perfil",
                 onBackClick = { navController.popBackStack() }
             )
         }

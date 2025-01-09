@@ -12,6 +12,7 @@ import br.com.brainize.screens.house.HouseScreen
 import br.com.brainize.screens.login.LoginScreen
 import br.com.brainize.screens.login.RegisterScreen
 import br.com.brainize.screens.notes.NotesScreen
+import br.com.brainize.screens.profile.ProfileScreen
 import br.com.brainize.screens.schedules.ScheduleScreen
 import br.com.brainize.screens.splash.SplashScreen
 import br.com.brainize.viewmodel.CarViewModel
@@ -19,6 +20,7 @@ import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
+import br.com.brainize.viewmodel.ProfileViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
 
 @Composable
@@ -28,7 +30,8 @@ fun AppNavigation(
     loginViewmodel: LoginViewModel,
     notesViewModel: NotesViewModel,
     scheduleViewModel: ScheduleViewModel,
-    configurationViewModel: ConfigurationsViewModel
+    configurationViewModel: ConfigurationsViewModel,
+    profileViewModel: ProfileViewModel
 ) {
     val navController = rememberNavController()
     AppNavigation(
@@ -38,7 +41,8 @@ fun AppNavigation(
         loginViewmodel,
         notesViewModel,
         scheduleViewModel,
-        configurationViewModel
+        configurationViewModel,
+        profileViewModel
     )
 }
 
@@ -50,7 +54,8 @@ fun AppNavigation(
     loginViewmodel: LoginViewModel,
     notesViewModel: NotesViewModel,
     scheduleViewModel: ScheduleViewModel,
-    configurationsViewModel: ConfigurationsViewModel
+    configurationsViewModel: ConfigurationsViewModel,
+    profileViewModel: ProfileViewModel
 ) {
     NavHost(navController = navController, startDestination = DestinationScreen.SplashScreen.route) {
         composable(DestinationScreen.SplashScreen.route) {
@@ -106,6 +111,14 @@ fun AppNavigation(
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             ConfigurationScreen(navController = navController, loginViewModel = loginViewmodel, configurationsViewModel = configurationsViewModel, token = token)
+        }
+
+        composable(
+            route = DestinationScreen.ProfileScreen.route,
+            arguments = DestinationScreen.ProfileScreen.arguments
+        ) { backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token")
+            ProfileScreen(navController = navController, loginViewModel = loginViewmodel, viewModel = profileViewModel,  token = token)
         }
 
         composable(DestinationScreen.LoginScreen.route) {

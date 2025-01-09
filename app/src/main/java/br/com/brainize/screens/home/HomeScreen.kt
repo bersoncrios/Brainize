@@ -181,7 +181,7 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, con
 
                     if (configurationsViewModel.agendaEnabled) {
                         BrainizerSelectButton(
-                            onClick = { navController.navigate(DestinationScreen.ScheduleScreen.route) },
+                            onClick = { navController.navigate(DestinationScreen.ProfileScreen.route) },
                             icon = R.drawable.profile,
                         )
                     }

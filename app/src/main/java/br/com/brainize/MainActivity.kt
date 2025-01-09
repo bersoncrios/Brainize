@@ -20,12 +20,14 @@ import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
+import br.com.brainize.viewmodel.ProfileViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
 import br.com.brainize.viewmodel.factories.CarViewModelFactory
 import br.com.brainize.viewmodel.factories.ConfigurationViewModelFactory
 import br.com.brainize.viewmodel.factories.HouseViewModelFactory
 import br.com.brainize.viewmodel.factories.LoginViewModelFactory
 import br.com.brainize.viewmodel.factories.NotesViewModelFactory
+import br.com.brainize.viewmodel.factories.ProfileViewModelFactory
 import br.com.brainize.viewmodel.factories.ScheduleViewModelFactory
 
 class MainActivity : ComponentActivity() {
@@ -51,6 +53,9 @@ class MainActivity : ComponentActivity() {
         val configurationViewModel: ConfigurationsViewModel by viewModels {
             ConfigurationViewModelFactory()
         }
+        val profileViewModel: ProfileViewModel by viewModels {
+            ProfileViewModelFactory()
+        }
 
         setContent {
 
@@ -65,7 +70,8 @@ class MainActivity : ComponentActivity() {
                         loginViewModel = loginViewModel,
                         notesViewModel = notesViewModel,
                         scheduleViewModel = scheduleViewModel,
-                        configurationViewModel = configurationViewModel
+                        configurationViewModel = configurationViewModel,
+                        profileViewModel = profileViewModel
                     )
                 }
             }
@@ -80,7 +86,8 @@ fun BrainizeApp(
     loginViewModel: LoginViewModel,
     notesViewModel: NotesViewModel,
     scheduleViewModel: ScheduleViewModel,
-    configurationViewModel: ConfigurationsViewModel
+    configurationViewModel: ConfigurationsViewModel,
+    profileViewModel: ProfileViewModel
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -96,7 +103,8 @@ fun BrainizeApp(
                 loginViewmodel = loginViewModel,
                 notesViewModel = notesViewModel,
                 scheduleViewModel = scheduleViewModel,
-                configurationViewModel = configurationViewModel
+                configurationViewModel = configurationViewModel,
+                profileViewModel = profileViewModel
             )
         }
     }
