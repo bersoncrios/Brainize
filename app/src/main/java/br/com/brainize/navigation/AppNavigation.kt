@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.brainize.screens.car.CarScreen
+import br.com.brainize.screens.collection.CollectionScreen
 import br.com.brainize.screens.configurations.ConfigurationScreen
 import br.com.brainize.screens.home.HomeScreen
 import br.com.brainize.screens.house.HouseScreen
@@ -16,6 +17,7 @@ import br.com.brainize.screens.profile.ProfileScreen
 import br.com.brainize.screens.schedules.ScheduleScreen
 import br.com.brainize.screens.splash.SplashScreen
 import br.com.brainize.viewmodel.CarViewModel
+import br.com.brainize.viewmodel.CollectionViewModel
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
@@ -31,7 +33,8 @@ fun AppNavigation(
     notesViewModel: NotesViewModel,
     scheduleViewModel: ScheduleViewModel,
     configurationViewModel: ConfigurationsViewModel,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    collectionViewModel: CollectionViewModel
 ) {
     val navController = rememberNavController()
     AppNavigation(
@@ -42,7 +45,8 @@ fun AppNavigation(
         notesViewModel,
         scheduleViewModel,
         configurationViewModel,
-        profileViewModel
+        profileViewModel,
+        collectionViewModel
     )
 }
 
@@ -55,7 +59,8 @@ fun AppNavigation(
     notesViewModel: NotesViewModel,
     scheduleViewModel: ScheduleViewModel,
     configurationsViewModel: ConfigurationsViewModel,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    collectionViewModel: CollectionViewModel
 ) {
     NavHost(navController = navController, startDestination = DestinationScreen.SplashScreen.route) {
         composable(DestinationScreen.SplashScreen.route) {
@@ -119,6 +124,14 @@ fun AppNavigation(
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             ProfileScreen(navController = navController, loginViewModel = loginViewmodel, viewModel = profileViewModel,  token = token)
+        }
+
+        composable(
+            route = DestinationScreen.CollectionScreen.route,
+            arguments = DestinationScreen.CollectionScreen.arguments
+        ) { backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token")
+            CollectionScreen(navController = navController, loginViewModel = loginViewmodel, viewModel = collectionViewModel,  token = token)
         }
 
         composable(DestinationScreen.LoginScreen.route) {

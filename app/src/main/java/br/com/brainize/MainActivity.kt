@@ -16,6 +16,7 @@ import br.com.brainize.database.AppDatabase
 import br.com.brainize.navigation.AppNavigation
 import br.com.brainize.ui.theme.BrainizeTheme
 import br.com.brainize.viewmodel.CarViewModel
+import br.com.brainize.viewmodel.CollectionViewModel
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
@@ -23,6 +24,7 @@ import br.com.brainize.viewmodel.NotesViewModel
 import br.com.brainize.viewmodel.ProfileViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
 import br.com.brainize.viewmodel.factories.CarViewModelFactory
+import br.com.brainize.viewmodel.factories.CollectionViewModelFactory
 import br.com.brainize.viewmodel.factories.ConfigurationViewModelFactory
 import br.com.brainize.viewmodel.factories.HouseViewModelFactory
 import br.com.brainize.viewmodel.factories.LoginViewModelFactory
@@ -56,6 +58,9 @@ class MainActivity : ComponentActivity() {
         val profileViewModel: ProfileViewModel by viewModels {
             ProfileViewModelFactory()
         }
+        val collectionViewModel: CollectionViewModel by viewModels {
+            CollectionViewModelFactory()
+        }
 
         setContent {
 
@@ -71,7 +76,8 @@ class MainActivity : ComponentActivity() {
                         notesViewModel = notesViewModel,
                         scheduleViewModel = scheduleViewModel,
                         configurationViewModel = configurationViewModel,
-                        profileViewModel = profileViewModel
+                        profileViewModel = profileViewModel,
+                        collectionViewModel = collectionViewModel
                     )
                 }
             }
@@ -87,7 +93,8 @@ fun BrainizeApp(
     notesViewModel: NotesViewModel,
     scheduleViewModel: ScheduleViewModel,
     configurationViewModel: ConfigurationsViewModel,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    collectionViewModel: CollectionViewModel
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -104,7 +111,8 @@ fun BrainizeApp(
                 notesViewModel = notesViewModel,
                 scheduleViewModel = scheduleViewModel,
                 configurationViewModel = configurationViewModel,
-                profileViewModel = profileViewModel
+                profileViewModel = profileViewModel,
+                collectionViewModel = collectionViewModel
             )
         }
     }

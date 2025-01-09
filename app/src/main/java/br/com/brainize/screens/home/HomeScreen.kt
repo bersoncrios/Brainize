@@ -158,11 +158,11 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, con
                         .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    if (configurationsViewModel.collectionEnabled) {BrainizerSelectButton(
-                        onClick = { navController.navigate(DestinationScreen.NotesScreen.route) },
-                        icon = R.drawable.collection,
-                    )
-                    }
+                    if (configurationsViewModel.collectionEnabled) {
+                        BrainizerSelectButton(
+                            onClick = { navController.navigate(DestinationScreen.CollectionScreen.route) },
+                            icon = R.drawable.collection,
+                        ) }
                 }
 
                 // Fout Row
@@ -179,12 +179,10 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, con
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    if (configurationsViewModel.agendaEnabled) {
-                        BrainizerSelectButton(
-                            onClick = { navController.navigate(DestinationScreen.ProfileScreen.route) },
-                            icon = R.drawable.profile,
-                        )
-                    }
+                    BrainizerSelectButton(
+                        onClick = { navController.navigate(DestinationScreen.ProfileScreen.route) },
+                        icon = R.drawable.profile,
+                    )
                 }
             }
         }
