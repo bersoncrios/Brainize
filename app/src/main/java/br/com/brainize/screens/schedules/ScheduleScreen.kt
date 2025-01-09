@@ -141,7 +141,7 @@ fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, l
                 ) {
                     LazyColumn {
                         items(schedules, key ={ schedule -> schedule.id }) { schedule ->
-                            ScheduleItem(schedule = schedule, onDelete = { scheduleId -> /*TODO*/ })
+                            ScheduleItem(schedule = schedule, onDelete = { scheduleId -> viewModel.deleteSchedule(scheduleId)})
                         }
                     }
                 }

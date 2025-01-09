@@ -66,4 +66,13 @@ class ScheduleViewModel : ViewModel() {
             }
         }
     }
+    fun deleteSchedule(scheduleId: String) {
+        viewModelScope.launch {
+            val user = auth.currentUser
+            if (user != null) {
+                firestore.collection("users").document(user.uid).collection("schedules").document(scheduleId).delete().await()
+                loadSchedules()
+            }
+        }
+    }
 }
