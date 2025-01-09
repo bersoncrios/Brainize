@@ -2,7 +2,6 @@ package br.com.brainize.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -100,7 +101,8 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, con
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp),
+                    .padding(8.dp)
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -154,12 +156,35 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, con
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    if (configurationsViewModel.collectionEnabled) {BrainizerSelectButton(
+                        onClick = { navController.navigate(DestinationScreen.NotesScreen.route) },
+                        icon = R.drawable.collection,
+                    )
+                    }
+                }
+
+                // Fout Row
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     BrainizerSelectButton(
                         onClick = { navController.navigate(DestinationScreen.ConfigurationScreen.route) },
                         icon = R.drawable.config,
                     )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    if (configurationsViewModel.agendaEnabled) {
+                        BrainizerSelectButton(
+                            onClick = { navController.navigate(DestinationScreen.ScheduleScreen.route) },
+                            icon = R.drawable.profile,
+                        )
+                    }
                 }
             }
         }

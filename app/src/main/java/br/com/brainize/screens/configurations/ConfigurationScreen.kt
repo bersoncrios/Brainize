@@ -48,6 +48,7 @@ fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewM
     var houseEnabled by remember { mutableStateOf(false) }
     var notesEnabled by remember { mutableStateOf(false) }
     var agendaEnabled by remember { mutableStateOf(false) }
+    var collectionEnabled by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         configurationsViewModel.loadConfigurations { config ->
@@ -55,6 +56,7 @@ fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewM
             houseEnabled = config.houseEnabled
             notesEnabled = config.notesEnabled
             agendaEnabled = config.agendaEnabled
+            collectionEnabled = config.collectionEnabled
         }
     }
 
@@ -125,8 +127,18 @@ fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewM
                             agendaEnabled = it
                             configurationsViewModel.setAgendaEnabled(it)
                             configurationsViewModel.saveConfigurations()
+                        })
+
+                    ConfigSwitchRow(
+                        text = "Coleções",
+                        isChecked = collectionEnabled,
+                        onCheckedChange = {
+                            collectionEnabled = it
+                            configurationsViewModel.setCollectionEnabled(it)
+                            configurationsViewModel.saveConfigurations()
                         }
                     )
+
                     Spacer(modifier = Modifier.height(32.dp))
                     Button(
                         onClick = {

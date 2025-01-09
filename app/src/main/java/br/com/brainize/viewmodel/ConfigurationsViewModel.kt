@@ -31,6 +31,8 @@ class ConfigurationsViewModel : ViewModel() {
     private var _agendaEnabled by mutableStateOf(false)
     val agendaEnabled: Boolean get() = _agendaEnabled
 
+    private var _collectionEnabled by mutableStateOf(false)
+    val collectionEnabled: Boolean get() = _collectionEnabled
 
     fun loadConfigurations(onConfigLoaded: (UserConfigurations) -> Unit) {
         viewModelScope.launch {
@@ -40,6 +42,7 @@ class ConfigurationsViewModel : ViewModel() {
                 _houseEnabled = config.houseEnabled
                 _notesEnabled = config.notesEnabled
                 _agendaEnabled = config.agendaEnabled
+                _collectionEnabled = config.collectionEnabled
                 Log.d("ConfigurationsViewModel", "Configurations loaded from Firestore: carEnabled = $_carEnabled, houseEnabled = $_houseEnabled, notesEnabled = $_notesEnabled, agendaEnabled = $_agendaEnabled")
                 onConfigLoaded(config)
             } catch (e: Exception) {
@@ -79,7 +82,8 @@ class ConfigurationsViewModel : ViewModel() {
                     carEnabled = _carEnabled,
                     houseEnabled = _houseEnabled,
                     notesEnabled = _notesEnabled,
-                    agendaEnabled = _agendaEnabled
+                    agendaEnabled = _agendaEnabled,
+                    collectionEnabled = _collectionEnabled
                 )
                 try {configDocument.set(config).await()
                     Log.d("ConfigurationsViewModel", "Configurations saved to Firestore for user $userId: carEnabled = $_carEnabled, houseEnabled = $_houseEnabled, notesEnabled = $_notesEnabled, agendaEnabled = $_agendaEnabled")
@@ -108,9 +112,14 @@ class ConfigurationsViewModel : ViewModel() {
         _agendaEnabled = value
     }
 
+    fun setCollectionEnabled(value: Boolean) {
+        _collectionEnabled = value
+    }
+
     data class UserConfigurations(
         var carEnabled: Boolean = false,
         var houseEnabled: Boolean = false,
         var notesEnabled: Boolean = false,
-        var agendaEnabled: Boolean = false
+        var agendaEnabled: Boolean = false,
+        var collectionEnabled: Boolean = false
     )}
