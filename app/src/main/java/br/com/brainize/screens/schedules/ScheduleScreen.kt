@@ -25,6 +25,7 @@ import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.CarViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, loginViewModel: LoginViewModel, token: String?) {
@@ -33,13 +34,10 @@ fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, l
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
-//    LaunchedEffect(Unit) {
-//        try {
-//            viewModel.loadStatus()
-//        } catch (e: Exception) {
-//            Log.e("ScheduleScreen", "Error loading status", e)
-//        }
-//    }
+    val systemUiController = rememberSystemUiController()
+    LaunchedEffect(Unit) {
+
+    }
 
     Scaffold(
         topBar = {

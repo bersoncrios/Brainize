@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -35,6 +36,7 @@ import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.CarViewModel
 import br.com.brainize.viewmodel.LoginViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun CarScreen(navController: NavController, viewModel: CarViewModel, loginViewModel: LoginViewModel, token: String?) {
@@ -45,6 +47,11 @@ fun CarScreen(navController: NavController, viewModel: CarViewModel, loginViewMo
 
     var windowClosed by rememberSaveable { mutableStateOf(viewModel.windowClosed) }
     var doorClosed by rememberSaveable { mutableStateOf(viewModel.doorClosed) }
+
+    val systemUiController = rememberSystemUiController()
+    LaunchedEffect(Unit) {
+
+    }
 
     Scaffold(
         topBar = {

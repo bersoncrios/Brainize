@@ -74,7 +74,7 @@ dependencies {
     kapt ("androidx.room:room-compiler:2.6.1")
     implementation ("androidx.room:room-ktx:2.6.1")
     implementation("androidx.compose.material:material:1.7.6")
-
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")

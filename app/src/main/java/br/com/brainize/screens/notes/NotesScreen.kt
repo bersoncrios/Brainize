@@ -50,6 +50,7 @@ import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
 import br.com.brainize.viewmodel.Note
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -122,7 +123,9 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
     val newNoteTitle = remember { mutableStateOf("") }
     val newNoteContent = remember { mutableStateOf("") }
 
+    val systemUiController = rememberSystemUiController()
     LaunchedEffect(Unit) {
+
         viewModel.loadNotes()
     }
 
