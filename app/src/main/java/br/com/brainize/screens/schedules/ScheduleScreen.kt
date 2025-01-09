@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -141,7 +142,7 @@ fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, l
                 ) {
                     LazyColumn {
                         items(schedules, key ={ schedule -> schedule.id }) { schedule ->
-                            ScheduleItem(schedule = schedule, onDelete = { scheduleId -> viewModel.deleteSchedule(scheduleId)})
+                            ScheduleItem(schedule= schedule, onDelete = { scheduleId -> viewModel.deleteSchedule(scheduleId)})
                         }
                     }
                 }
@@ -212,7 +213,6 @@ fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, l
         )
     }
 }
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

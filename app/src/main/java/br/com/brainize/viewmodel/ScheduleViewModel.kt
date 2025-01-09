@@ -51,6 +51,7 @@ class ScheduleViewModel : ViewModel() {
         val userId = getCurrentUser()?.uid
         if (userId != null) {
             firestore.collection("users").document(userId).collection("schedules").add(schedule)
+            loadSchedules()
         }
     }
 
