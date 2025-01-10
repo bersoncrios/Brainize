@@ -37,7 +37,7 @@ fun BrainizerTopAppBar(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent // Mantém a cor transparente
+            containerColor = Color.Transparent
         )
     )
 }

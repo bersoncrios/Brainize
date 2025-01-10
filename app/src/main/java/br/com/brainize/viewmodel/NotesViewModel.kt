@@ -16,10 +16,13 @@ import kotlinx.coroutines.tasks.await
 data class Note(
     val id: String = "",
     val title: String = "",
-    val content: String = ""
+    val content: String = "",
+    val type: String = "Lembrete", // "Lembrete" ou "Tarefa"
+    val dueDate: String? = null, // Data de conclusão (para Tarefa)
+    val dueTime: String? = null  // Hora de conclusão (para Tarefa)
 )
 
-class NotesViewModel : ViewModel() {
+class NotesViewModel : ViewModel(){
     private val auth: FirebaseAuth = Firebase.auth
     private val firestore: FirebaseFirestore = Firebase.firestore
 
@@ -44,12 +47,12 @@ class NotesViewModel : ViewModel() {
         data class Error(val message: String) : LoginState()
     }
 
-    fun saveNote(title: String, content: String) {
+    fun saveNote(title: String, content: String, type: String, dueDate: String? = null, dueTime: String? = null) {
         viewModelScope.launch {
             val user = auth.currentUser
             if (user != null) {
                 val noteId = firestore.collection("users").document(user.uid).collection("notes").document().id
-                val note = Note(id = noteId, title = title, content = content)
+                val note = Note(id = noteId, title = title, content = content, type = type, dueDate = dueDate, dueTime = dueTime)
                 firestore.collection("users").document(user.uid).collection("notes").document(noteId).set(note).await()
                 loadNotes()
             }
@@ -68,6 +71,7 @@ class NotesViewModel : ViewModel() {
             }
         }
     }
+
     fun deleteNote(noteId: String) {
         viewModelScope.launch {
             val user = auth.currentUser

@@ -1,5 +1,7 @@
 package br.com.brainize.screens.notes
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
@@ -20,6 +22,10 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -29,7 +35,6 @@ import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material.rememberDismissState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -39,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -50,7 +56,8 @@ import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
 import br.com.brainize.viewmodel.Note
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import java.util.Calendar
+import java.util.Locale
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -62,7 +69,7 @@ fun NoteItem(note: Note, onDelete: (String) -> Unit) {
         exit = fadeOut(animationSpec = tween(durationMillis = 300)),
     ) {
         SwipeToDismiss(
-            state = dismissState,
+            state =dismissState,
             directions = setOf(DismissDirection.EndToStart),
             background = {
                 Box(
@@ -93,6 +100,19 @@ fun NoteItem(note: Note, onDelete: (String) -> Unit) {
                             fontSize = 16.sp,
                             color = Color.DarkGray
                         )
+                        Text(text = "Tipo: ${note.type}",
+                            fontSize = 14.sp,
+                            color =  Color(0xFF372080)
+                        )
+                        if (note.type == "Tarefa") {
+                            if (!note.dueDate.isNullOrEmpty() && !note.dueTime.isNullOrEmpty()) {
+                                Text(
+                                    text = "Conclusão: ${note.dueDate} ${note.dueTime}",
+                                    fontSize = 14.sp,
+                                    color =  Color(0xFF372080)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -120,12 +140,14 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
 
     val notes = viewModel.notes.collectAsState().value
     val openDialog = remember { mutableStateOf(false) }
+    val openTypeDialog = remember { mutableStateOf(false) }
     val newNoteTitle = remember { mutableStateOf("") }
     val newNoteContent = remember { mutableStateOf("") }
-
-    val systemUiController = rememberSystemUiController()
+    val newNoteType = remember { mutableStateOf("Lembrete") }
+    val newNoteDueDate = remember { mutableStateOf("") }
+    val newNoteDueTime = remember { mutableStateOf("") }
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
-
         viewModel.loadNotes()
     }
 
@@ -138,7 +160,7 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                openDialog.value = true
+                openTypeDialog.value =true
             }) {
                 Icon(Icons.Filled.Add, "Nova Nota")
             }
@@ -177,6 +199,51 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
             }
         }
     }
+    if (openTypeDialog.value) {
+        AlertDialog(
+            onDismissRequest = { openTypeDialog.value = false },
+            title = { Text("Tipo de Nota") },
+            text = {
+                Column {
+                    val options = listOf("Lembrete", "Tarefa")
+                    val expanded = remember { mutableStateOf(false) }
+                    ExposedDropdownMenuBox(
+                        expanded = expanded.value,
+                        onExpandedChange = { expanded.value = !expanded.value }
+                    ) {
+                        OutlinedTextField(
+                            value = newNoteType.value,
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value) },
+                            modifier = Modifier.menuAnchor()
+                        )
+                        ExposedDropdownMenu(expanded = expanded.value, onDismissRequest = { expanded.value = false }) {
+                            options.forEach { option ->
+                                DropdownMenuItem(text = { Text(text = option) }, onClick = {
+                                    newNoteType.value = option
+                                    expanded.value = false
+                                })
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    openTypeDialog.value = false
+                    openDialog.value = true
+                }) {
+                    Text("Continuar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { openTypeDialog.value = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 
     if (openDialog.value) {
         AlertDialog(
@@ -186,7 +253,7 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
                 Column {
                     OutlinedTextField(
                         value = newNoteTitle.value,
-                        onValueChange = { newNoteTitle.value = it },
+                        onValueChange = { newNoteTitle.value= it },
                         label = { Text("Título") }
                     )
                     OutlinedTextField(
@@ -194,20 +261,79 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
                         onValueChange = { newNoteContent.value = it },
                         label = { Text("Conteúdo") }
                     )
+                    if (newNoteType.value == "Tarefa") {
+                        TextButton(onClick = {
+                            val calendar = Calendar.getInstance()
+                            val datePickerDialog = DatePickerDialog(
+                                context,
+                                { _, year, month, dayOfMonth ->
+                                    newNoteDueDate.value = String.format(
+                                        Locale.getDefault(),
+                                        "%02d/%02d/%d",
+                                        dayOfMonth,
+                                        month + 1,
+                                        year
+                                    )
+                                },
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH)
+                            )
+                            datePickerDialog.show()
+                        }) {
+                            Text(
+                                text = if (newNoteDueDate.value.isEmpty()) "Selecionar Data" else "Data: ${newNoteDueDate.value}"
+                            )
+                        }
+                        TextButton(onClick = {
+                            val calendar = Calendar.getInstance()
+                            val timePickerDialog = TimePickerDialog(
+                                context,
+                                { _, hourOfDay, minute ->
+                                    newNoteDueTime.value = String.format(
+                                        Locale.getDefault(),
+                                        "%02d:%02d",
+                                        hourOfDay,
+                                        minute
+                                    )
+                                },
+                                calendar.get(Calendar.HOUR_OF_DAY),
+                                calendar.get(Calendar.MINUTE),
+                                true
+                            )
+                            timePickerDialog.show()
+                        }) {
+                            Text(
+                                text = if (newNoteDueTime.value.isEmpty()) "Selecionar Hora" else "Hora: ${newNoteDueTime.value}"
+                            )
+                        }
+                    }
                 }
             },
             confirmButton = {
                 TextButton(onClick = {
-                    viewModel.saveNote(newNoteTitle.value, newNoteContent.value)
+                    viewModel.saveNote(
+                        newNoteTitle.value,
+                        newNoteContent.value,
+                        newNoteType.value,
+                        if (newNoteType.value == "Tarefa") newNoteDueDate.value else null,
+                        if (newNoteType.value == "Tarefa") newNoteDueTime.value else null
+                    )
                     newNoteTitle.value = ""
                     newNoteContent.value = ""
+                    newNoteDueDate.value = ""
+                    newNoteDueTime.value = ""
                     openDialog.value = false
                 }) {
                     Text("Salvar")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { openDialog.value = false }) {
+                TextButton(onClick = {
+                    openDialog.value = false
+                    newNoteDueDate.value = ""
+                    newNoteDueTime.value = ""
+                }) {
                     Text("Cancelar")
                 }
             }
