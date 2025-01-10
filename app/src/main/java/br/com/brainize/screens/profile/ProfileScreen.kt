@@ -7,10 +7,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,8 +39,17 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel, log
     }
 
     val systemUiController = rememberSystemUiController()
-    LaunchedEffect(Unit) {
+    val userData = viewModel.userData.collectAsState().value
+    val completeName = remember { mutableStateOf(userData.completeName) }
+    val username = remember { mutableStateOf(userData.username) }
 
+    LaunchedEffect(Unit) {
+        viewModel.loadUserData()
+    }
+
+    LaunchedEffect(userData) {
+        completeName.value = userData.completeName
+        username.value = userData.username
     }
 
     Scaffold(
@@ -71,7 +86,23 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel, log
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    
+                    OutlinedTextField(
+                    value = completeName.value,
+                    onValueChange = { completeName.value = it },
+                    label = { Text("Nome") }
+                )
+                    OutlinedTextField(
+                        value = username.value,
+                        onValueChange = { username.value = it },
+                        label = { Text("Username") }
+                    )
+                    Button(onClick = {
+                        viewModel.updateUserName(completeName.value)
+                        viewModel.updateUserUsername(username.value)
+                    }) {
+                        Text("Salvar")
+                    }
+                    Text(text = "Email: ${userData.email}")
                 }
             }
         }
