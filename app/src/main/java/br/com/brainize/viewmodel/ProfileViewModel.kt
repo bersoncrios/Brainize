@@ -57,7 +57,7 @@ class ProfileViewModel : ViewModel() {
         val userId = getCurrentUser()?.uid
         if (userId != null) {
             viewModelScope.launch {
-                firestore.collection("users").document(userId).update("name", completeName).await()
+                firestore.collection("users").document(userId).update("completeName", completeName).await()
                 loadUserData()
             }
         }
