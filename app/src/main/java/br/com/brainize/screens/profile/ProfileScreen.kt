@@ -8,14 +8,21 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -31,7 +38,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizerTopAppBar
@@ -91,27 +100,54 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel, log
                 color = Color.Transparent
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
+                    modifier = Modifier.fillMaxSize()
+                        .padding(16.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = "Nome: ${userData.completeName}")
-                        Spacer(modifier = Modifier.width(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Nome: ${userData.completeName}",
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        )
                         IconButton(onClick = { openNameDialog.value = true }) {
-                            Icon(Icons.Filled.Edit, "Editar Nome")
+                            Icon(Icons.Filled.Edit, "Editar Nome", tint = MaterialTheme.colorScheme.onSurface)
                         }
                     }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = "Username: ${userData.username}")
-                        Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Username: ${userData.username}",
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        )
                         IconButton(onClick = { openUsernameDialog.value = true }) {
-                            Icon(Icons.Filled.Edit, "Editar Username")
+                            Icon(Icons.Filled.Edit, "Editar Username", tint = MaterialTheme.colorScheme.onSurface)
                         }
                     }
-                    Text(text = "Email: ${userData.email}")
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(
+                        text = "Email: ${userData.email}",
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    )
                 }
             }
         }
@@ -119,7 +155,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel, log
     if (openNameDialog.value) {
         AlertDialog(
             onDismissRequest = { openNameDialog.value = false },
-            title = { Text("Editar Nome") },
+            title = { Text("Editar Nome", style = MaterialTheme.typography.headlineSmall) },
             text = {
                 OutlinedTextField(
                     value = name.value,
@@ -128,16 +164,19 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel, log
                 )
             },
             confirmButton = {
-                TextButton(onClick = {
-                    viewModel.updateUserName(name.value)
-                    openNameDialog.value = false
-                }) {
-                    Text("Salvar")
+                Button(
+                    onClick = {
+                        viewModel.updateUserName(name.value)
+                        openNameDialog.value = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { openNameDialog.value = false }) {
-                    Text("Cancelar")
+                    Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
                 }
             }
         )
@@ -145,7 +184,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel, log
     if (openUsernameDialog.value) {
         AlertDialog(
             onDismissRequest = { openUsernameDialog.value = false },
-            title = {Text("Editar Username") },
+            title = {Text("Editar Username", style = MaterialTheme.typography.headlineSmall) },
             text = {
                 OutlinedTextField(
                     value = username.value,
@@ -154,16 +193,19 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel, log
                 )
             },
             confirmButton = {
-                TextButton(onClick = {
-                    viewModel.updateUserUsername(username.value)
-                    openUsernameDialog.value = false
-                }) {
-                    Text("Salvar")
+                Button(
+                    onClick = {
+                        viewModel.updateUserUsername(username.value)
+                        openUsernameDialog.value = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { openUsernameDialog.value = false }) {
-                    Text("Cancelar")
+                    Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
                 }
             }
         )
