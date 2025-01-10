@@ -19,7 +19,8 @@ data class Note(
     val content: String = "",
     val type: String = "Lembrete", // "Lembrete" ou "Tarefa"
     val dueDate: String? = null, // Data de conclusão (para Tarefa)
-    val dueTime: String? = null  // Hora de conclusão (para Tarefa)
+    val dueTime: String? = null,  // Hora de conclusão (para Tarefa)
+    val sequentialId: Int = 0 // ID sequencial da nota
 )
 
 class NotesViewModel : ViewModel(){
@@ -33,8 +34,7 @@ class NotesViewModel : ViewModel(){
     private val _notes = MutableStateFlow<List<Note>>(emptyList())
     val notes: StateFlow<List<Note>> = _notes
 
-    init {
-        loadNotes()
+    init {loadNotes()
     }
 
     private fun getCurrentUser() = auth.currentUser
@@ -47,12 +47,31 @@ class NotesViewModel : ViewModel(){
         data class Error(val message: String) : LoginState()
     }
 
+    private suspend fun getNextSequentialId(): Int {
+        val user = auth.currentUser
+        if (user != null) {
+            val querySnapshot = firestore.collection("users").document(user.uid).collection("notes")
+                .orderBy("sequentialId", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .await()
+
+            if (!querySnapshot.isEmpty) {
+                val lastNote = querySnapshot.documents[0].toObject(Note::class.java)
+                return (lastNote?.sequentialId ?: 0) + 1
+            }
+        }
+        return 1
+    }
+
+
     fun saveNote(title: String, content: String, type: String, dueDate: String? = null, dueTime: String? = null) {
         viewModelScope.launch {
             val user = auth.currentUser
             if (user != null) {
+                val nextId = getNextSequentialId()
                 val noteId = firestore.collection("users").document(user.uid).collection("notes").document().id
-                val note = Note(id = noteId, title = title, content = content, type = type, dueDate = dueDate, dueTime = dueTime)
+                val note = Note(id = noteId, title = title, content = content, type = type, dueDate = dueDate, dueTime = dueTime, sequentialId = nextId)
                 firestore.collection("users").document(user.uid).collection("notes").document(noteId).set(note).await()
                 loadNotes()
             }

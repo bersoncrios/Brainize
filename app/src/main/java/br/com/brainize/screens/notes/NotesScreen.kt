@@ -38,6 +38,8 @@ import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -69,7 +71,7 @@ fun NoteItem(note: Note, onDelete: (String) -> Unit) {
         exit = fadeOut(animationSpec = tween(durationMillis = 300)),
     ) {
         SwipeToDismiss(
-            state =dismissState,
+            state = dismissState,
             directions = setOf(DismissDirection.EndToStart),
             background = {
                 Box(
@@ -89,8 +91,7 @@ fun NoteItem(note: Note, onDelete: (String) -> Unit) {
                     colors = CardDefaults.cardColors(containerColor = Color(0xFFbc60c4))
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = note.title,
+                        Text(text = "#${note.sequentialId} - ${note.title}",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black
@@ -138,7 +139,7 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
-    val notes = viewModel.notes.collectAsState().value
+    val notes by viewModel.notes.collectAsState()
     val openDialog = remember { mutableStateOf(false) }
     val openTypeDialog = remember { mutableStateOf(false) }
     val newNoteTitle = remember { mutableStateOf("") }
@@ -147,7 +148,7 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
     val newNoteDueDate = remember { mutableStateOf("") }
     val newNoteDueTime = remember { mutableStateOf("") }
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Unit){
         viewModel.loadNotes()
     }
 
@@ -160,7 +161,7 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                openTypeDialog.value =true
+                openTypeDialog.value = true
             }) {
                 Icon(Icons.Filled.Add, "Nova Nota")
             }
@@ -190,8 +191,13 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    val sortedNotes by remember {
+                        derivedStateOf {
+                            notes.sortedBy { it.sequentialId }
+                        }
+                    }
                     LazyColumn {
-                        items(notes, key = { note -> note.id }) { note ->
+                        items(sortedNotes, key = { note -> note.id }) { note ->
                             NoteItem(note = note, onDelete = { noteId -> viewModel.deleteNote(noteId) })
                         }
                     }
@@ -223,8 +229,7 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
                                 DropdownMenuItem(text = { Text(text = option) }, onClick = {
                                     newNoteType.value = option
                                     expanded.value = false
-                                })
-                            }
+                                })}
                         }
                     }
                 }
@@ -247,13 +252,13 @@ fun NotesScreen(navController: NavController, viewModel: NotesViewModel, loginVi
 
     if (openDialog.value) {
         AlertDialog(
-            onDismissRequest = { openDialog.value = false },
+            onDismissRequest = { openDialog.value =false },
             title = { Text("Adicionar Nota") },
             text = {
                 Column {
                     OutlinedTextField(
                         value = newNoteTitle.value,
-                        onValueChange = { newNoteTitle.value= it },
+                        onValueChange = { newNoteTitle.value = it },
                         label = { Text("Título") }
                     )
                     OutlinedTextField(
