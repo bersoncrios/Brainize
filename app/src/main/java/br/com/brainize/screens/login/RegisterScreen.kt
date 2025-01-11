@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -41,7 +40,6 @@ import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.navigation.DestinationScreen
-import br.com.brainize.states.LoginState
 import br.com.brainize.utils.LoginErrorDisplay
 import br.com.brainize.viewmodel.LoginViewModel
 
@@ -72,14 +70,17 @@ fun RegisterScreen(
                     verticalArrangement = Arrangement.Top
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.brainizelogo),contentDescription = stringResource(R.string.brainize),
+                        painter = painterResource(
+                            id = R.drawable.brainizelogo),
+                        contentDescription = stringResource(R.string.brainize
+                        ),
                         modifier = Modifier
                             .size(140.dp)
                             .padding(top = 64.dp)
                     )
 
                     Text(
-                        text = "Criar uma nova conta",
+                        text = stringResource(R.string.create_new_account),
                         modifier = Modifier
                             .padding(top = 12.dp),
                         fontSize = 18.sp,
@@ -105,9 +106,9 @@ fun RegisterScreen(
                 ) {
                     BrainizerOutlinedTextField(
                         value = name,
-                        label = "Informe seu nome",
-                        iconDescription = "has not icon",
-                        placeholder = "Informe seu nome"
+                        label = stringResource(R.string.your_name_label),
+                        iconDescription = stringResource(R.string.has_not_icon),
+                        placeholder = stringResource(R.string.name_placeholder)
                     ) {
                         name = it
                     }
@@ -116,9 +117,9 @@ fun RegisterScreen(
 
                     BrainizerOutlinedTextField(
                         value = username,
-                        label = "Que tal um nome de usuário",
-                        iconDescription = "has not icon",
-                        placeholder = "Informe seu username"
+                        label = stringResource(R.string.username_label),
+                        iconDescription = stringResource(R.string.has_not_icon),
+                        placeholder = stringResource(R.string.username_placeholder)
                     ) {
                         username = it
                     }
@@ -127,9 +128,9 @@ fun RegisterScreen(
 
                     BrainizerOutlinedTextField(
                         value = email,
-                        label = "Informe seu email",
-                        iconDescription = "has not icon",
-                        placeholder = "Informe seu email"
+                        label = stringResource(R.string.email_register_label),
+                        iconDescription = stringResource(R.string.has_not_icon),
+                        placeholder = stringResource(R.string.email_placeholder)
                     ){
                         email = it
                     }
@@ -138,12 +139,16 @@ fun RegisterScreen(
 
                     BrainizerOutlinedTextField(
                         value = password,
-                        label = "escolha uma senha forte",
-                        iconDescription = "has not icon",
-                        placeholder = "Informe sua senha"
+                        label = stringResource(R.string.password_register_label),
+                        iconDescription = stringResource(R.string.has_not_icon),
+                        placeholder = stringResource(R.string.password_placeholder)
                     ) {
                         password = it
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    LoginErrorDisplay(loginState = loginState, context = context)
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -161,12 +166,8 @@ fun RegisterScreen(
                         ),
                         border = BorderStroke(1.dp, Color.White)
                     ) {
-                        Text("Tenho uma conta")
+                        Text(stringResource(R.string.have_account))
                     }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    LoginErrorDisplay(loginState = loginState, context = context)
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -180,7 +181,7 @@ fun RegisterScreen(
                         )
                     ) {
                         Text(
-                            text = "Login",
+                            text = stringResource(R.string.enter_label),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(Color(0xFFbc60c4))
