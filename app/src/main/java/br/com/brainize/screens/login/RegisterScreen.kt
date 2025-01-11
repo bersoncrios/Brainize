@@ -42,6 +42,7 @@ import br.com.brainize.R
 import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.states.LoginState
+import br.com.brainize.utils.LoginErrorDisplay
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
@@ -165,6 +166,10 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
+                    LoginErrorDisplay(loginState = loginState, context = context)
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Button(
                         onClick = { viewModel.createUserWithEmailAndPassword(email, password, name, username, context) },
                         modifier = Modifier
@@ -183,18 +188,6 @@ fun RegisterScreen(
                                 .padding(8.dp)
                                 .wrapContentSize(Alignment.Center)
                         )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    when (loginState) {
-                        is LoginState
-                        .Loading -> CircularProgressIndicator()
-                        is LoginState
-                        .Error -> Text(
-                            (loginState as LoginState.Error).message
-                        )
-                        else -> {}
                     }
                 }
             }

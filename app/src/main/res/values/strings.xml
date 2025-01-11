@@ -46,4 +46,9 @@
     <string name="password_should_be_at_least_6_characters">Password should be at least 6 characters</string>
     <string name="a_senha_deve_ter_pelo_menos_6_caracteres">A senha deve ter pelo menos 6 caracteres.</string>
     <string name="ocorreu_um_erro_inesperado_tente_novamente">Ocorreu um erro inesperado. Tente novamente.</string>
+    <string name="enter_your_account_label">Entre na sua conta</string>
+    <string name="email_placeholder">Digite seu email</string>
+    <string name="person_icon_description">person icon</string>
+    <string name="password_icon_description">password icon</string>
+    <string name="password_placeholder">Digite sua senha</string>
 </resources>
