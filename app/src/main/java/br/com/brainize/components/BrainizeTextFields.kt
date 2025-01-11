@@ -19,7 +19,7 @@ fun BrainizerOutlinedTextField(
     value: String,
     label: String,
     isPassword: Boolean = false,
-    icon: ImageVector,
+    icon: ImageVector? = null,
     iconDescription: String,
     placeholder: String,
     onLabelChange: (String) -> Unit
@@ -46,11 +46,13 @@ fun BrainizerOutlinedTextField(
             cursorColor = Color(0xFFbc60c4)
         ),
         leadingIcon = {
-            Icon(
-                imageVector = icon,
-                contentDescription = iconDescription,
-                tint = Color.White
-            )
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = iconDescription,
+                    tint = Color.White
+                )
+            }
         },
         placeholder = {
             Text(

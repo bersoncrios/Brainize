@@ -1,139 +1,148 @@
 package br.com.brainize.screens.login
 
+import BrainizerOutlinedTextField
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.brainize.R
+import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.states.LoginState
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun RegisterScreen(navController: NavController, viewModel: LoginViewModel) {
-
+fun RegisterScreen(
+    navController: NavController,
+    viewModel: LoginViewModel
+) {
     val loginState by viewModel.loginState
     val context = LocalContext.current
 
-    var email by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var name by remember { androidx.compose.runtime.mutableStateOf("") }
+    var username by remember { androidx.compose.runtime.mutableStateOf("") }
+    var email by remember { androidx.compose.runtime.mutableStateOf("") }
+    var password by remember { androidx.compose.runtime.mutableStateOf("") }
 
-    LaunchedEffect(loginState) {
-        if (loginState is LoginState.Success) {
-            val token = (loginState as LoginState.Success).token
-            navController.navigate(DestinationScreen.HomeScreen.createRoute(token))
-        }
-    }
+    val scrollState = rememberScrollState()
 
     Scaffold { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFF372080))
-                .padding(paddingValues)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.bg),
-                contentDescription = null,
+        BrainizeScreen(paddingValues = paddingValues) {
+            Column(
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillHeight,
-                alpha = 1f
-            )
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Transparent
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Crie uma nova conta",
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 32.dp),fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.brainizelogo),contentDescription = stringResource(R.string.brainize),
+                        modifier = Modifier
+                            .size(140.dp)
+                            .padding(top = 64.dp)
+                    )
+
+                    Text(
+                        text = "Criar uma nova conta",
+                        modifier = Modifier
+                            .padding(top = 12.dp),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.Center,
+                        .fillMaxWidth()
+                        .padding(
+                            end = 32.dp,
+                            start = 32.dp,
+                            bottom = 32.dp
+                        )
+                        .verticalScroll(scrollState),
+                    verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    TextField(
+                    BrainizerOutlinedTextField(
                         value = name,
-                        onValueChange = { name = it },
-                        label = { Text("Informe seu nome") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
+                        label = "Informe seu nome",
+                        iconDescription = "has not icon",
+                        placeholder = "Informe seu nome"
+                    ) {
+                        name = it
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    TextField(
+                    BrainizerOutlinedTextField(
                         value = username,
-                        onValueChange = { username = it },
-                        label = { Text("Que tal um nome de usuário") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
+                        label = "Que tal um nome de usuário",
+                        iconDescription = "has not icon",
+                        placeholder = "Informe seu username"
+                    ) {
+                        username = it
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    TextField(
+                    BrainizerOutlinedTextField(
                         value = email,
-                        onValueChange = { email = it },
-                        label = { Text("Email") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
+                        label = "Informe seu email",
+                        iconDescription = "has not icon",
+                        placeholder = "Informe seu email"
+                    ){
+                        email = it
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    TextField(
+                    BrainizerOutlinedTextField(
                         value = password,
-                        onValueChange = { password = it },
-                        label = { Text("Senha") },
-                        visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                        label = "escolha uma senha forte",
+                        iconDescription = "has not icon",
+                        placeholder = "Informe sua senha"
+                    ) {
+                        password = it
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -141,17 +150,26 @@ fun RegisterScreen(navController: NavController, viewModel: LoginViewModel) {
                         onClick = { navController.navigate(DestinationScreen.LoginScreen.route) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 8.dp)
+                            .height(55.dp)
+                            .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color.White,
+                            containerColor = Color.Transparent,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.Transparent,
+                        ),
+                        border = BorderStroke(1.dp, Color.White)
                     ) {
-                    Text("Tenho uma conta")
-                }
+                        Text("Tenho uma conta")
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Button(
                         onClick = { viewModel.createUserWithEmailAndPassword(email, password, name, username, context) },
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFbc60c4)
                         )
@@ -171,11 +189,11 @@ fun RegisterScreen(navController: NavController, viewModel: LoginViewModel) {
 
                     when (loginState) {
                         is LoginState
-                            .Loading -> CircularProgressIndicator()
+                        .Loading -> CircularProgressIndicator()
                         is LoginState
-                            .Error -> Text(
-                                (loginState as LoginState.Error).message
-                            )
+                        .Error -> Text(
+                            (loginState as LoginState.Error).message
+                        )
                         else -> {}
                     }
                 }
