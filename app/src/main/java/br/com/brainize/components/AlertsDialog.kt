@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -18,6 +19,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import br.com.brainize.R
@@ -37,10 +40,15 @@ fun DialogNoteType(
 ){
     AlertDialog(
         onDismissRequest = { openTypeDialog.value = false },
-        title = { Text("Tipo de Nota") },
+        title = { Text(stringResource(R.string.note_type_title_alert)) },
+        containerColor = Color(0xFF372080),
+        tonalElevation = 18.dp,
         text = {
             Column {
-                val options = listOf("Lembrete", "Tarefa")
+                val options = listOf(
+                    "Lembrete",
+                    "Tarefa"
+                )
                 val expanded = remember { mutableStateOf(false) }
                 ExposedDropdownMenuBox(
                     expanded = expanded.value,
@@ -55,10 +63,11 @@ fun DialogNoteType(
                     )
                     ExposedDropdownMenu(expanded = expanded.value, onDismissRequest = { expanded.value = false }) {
                         options.forEach { option ->
-                            DropdownMenuItem(text = { Text(text = option) }, onClick = {
-                                newNoteType.value = option
-                                expanded.value = false
-                            })
+                            DropdownMenuItem(text = { Text(text = option) },
+                                onClick = {
+                                    newNoteType.value = option
+                                    expanded.value = false
+                                })
                         }
                     }
                 }
@@ -69,12 +78,12 @@ fun DialogNoteType(
                 openTypeDialog.value = false
                 openDialog.value = true
             }) {
-                Text("Continuar")
+                Text(stringResource(id = R.string.continue_label))
             }
         },
         dismissButton = {
             TextButton(onClick = { openTypeDialog.value = false }) {
-                Text("Cancelar")
+                Text(stringResource(id = R.string.cancel_label))
             }
         }
     )
@@ -94,6 +103,8 @@ fun DialogNewNote(
     AlertDialog(
         onDismissRequest = { openDialog.value = false },
         title = { Text(stringResource(R.string.dialog_new_anotation_title)) },
+        containerColor = Color(0xFF372080),
+        tonalElevation = 18.dp,
         text = {
             Column {
                 OutlinedTextField(

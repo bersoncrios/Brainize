@@ -23,19 +23,24 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.brainize.R
 import br.com.brainize.model.Note
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun NoteItem(note: Note, onDelete: (String) -> Unit) {
+fun NoteItem (
+    note: Note,
+    onDelete: (String) -> Unit
+) {
     val dismissState = rememberDismissState()
     val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
     AnimatedVisibility(
         visible = !isDismissed,
-        exit = fadeOut(animationSpec = tween(durationMillis = 300)),
+        exit = fadeOut(animationSpec = tween(durationMillis = 600)),
     ) {
         SwipeToDismiss(
             state = dismissState,
@@ -48,17 +53,31 @@ fun NoteItem(note: Note, onDelete: (String) -> Unit) {
                         .padding(8.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
-                    Icon(Icons.Filled.Delete, "Excluir Nota", tint = Color.White)
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = stringResource(R.string.drop_note_label),
+                        tint = Color.White
+                    )
                 }
             },
             dismissContent = {
                 Card(
-                    modifier = Modifier.padding(8.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFbc60c4))
+                    modifier = Modifier.padding(12.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (note.type == "Tarefa") {
+                            Color(0xFF90EE90)
+                        } else {
+                            Color(0xFFbc60c4)
+                        }
+                    )
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "#${note.sequentialId} - ${note.title}",
+                        Text(text = stringResource(
+                            R.string.note_title_text,
+                            note.sequentialId,
+                            note.title
+                        ),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black
@@ -68,15 +87,21 @@ fun NoteItem(note: Note, onDelete: (String) -> Unit) {
                             fontSize = 16.sp,
                             color = Color.DarkGray
                         )
-                        Text(text = "Tipo: ${note.type}",
+                        Text(text = stringResource(R.string.note_type_label, note.type),
                             fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
                             color =  Color(0xFF372080)
                         )
                         if (note.type == "Tarefa") {
                             if (!note.dueDate.isNullOrEmpty() && !note.dueTime.isNullOrEmpty()) {
                                 Text(
-                                    text = "Conclusão: ${note.dueDate} ${note.dueTime}",
+                                    text = stringResource(
+                                        R.string.label_note_card_task_duedate_duetime,
+                                        note.dueDate,
+                                        note.dueTime
+                                    ),
                                     fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
                                     color =  Color(0xFF372080)
                                 )
                             }

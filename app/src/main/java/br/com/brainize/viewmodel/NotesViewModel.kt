@@ -25,13 +25,12 @@ class NotesViewModel : ViewModel() {
     private fun getCurrentUser() = auth.currentUser
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
 
-    private val user = getCurrentUser()
-
     init {
         loadNotes()
     }
 
     private suspend fun getNextSequentialId(): Int {
+        val user = auth.currentUser
         if (user != null) {
             val querySnapshot = firestore
                 .collection(USERS_COLLECTION)
@@ -59,6 +58,7 @@ class NotesViewModel : ViewModel() {
         dueTime: String? = null
     ) {
         viewModelScope.launch {
+            val user = auth.currentUser
             if (user != null) {
                 val nextId = getNextSequentialId()
                 val noteId = firestore
@@ -92,10 +92,11 @@ class NotesViewModel : ViewModel() {
 
     fun loadNotes() {
         viewModelScope.launch {
-            if (getCurrentUser() != null) {
+            val user = auth.currentUser
+            if (user != null) {
                 val snapshot = firestore
                         .collection(USERS_COLLECTION)
-                        .document(user!!.uid)
+                        .document(user.uid)
                         .collection(NOTES_COLLECTION)
                         .get()
                         .await()
@@ -109,6 +110,7 @@ class NotesViewModel : ViewModel() {
 
     fun deleteNote(noteId: String) {
         viewModelScope.launch {
+            val user = auth.currentUser
             if (user != null) {
                 firestore.collection(USERS_COLLECTION)
                     .document(user.uid)

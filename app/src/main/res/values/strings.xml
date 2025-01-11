@@ -18,4 +18,11 @@
     <string name="define_task_hour_label">Até às: %1$s</string>
     <string name="save_label">Salvar</string>
     <string name="cancel_label">Cancelar</string>
+    <string name="drop_note_label">Excluir Nota</string>
+    <string name="label_note_card_task_duedate_duetime">Até: %1$s ás %2$s</string>
+    <string name="note_type_label">Tag: %1$s</string>
+    <string name="note_title_text">#%1$s - %2$s</string>
+    <string name="continue_label">Continuar</string>
+    <string name="note_type_title_alert">Tipo de Nota</string>
+    <string name="back_label">Voltar</string>
 </resources>
