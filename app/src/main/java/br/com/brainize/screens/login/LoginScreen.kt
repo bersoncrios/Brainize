@@ -1,25 +1,29 @@
 package br.com.brainize.screens.login
 
+import BrainizerOutlinedTextField
+import android.content.Context
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,23 +34,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.brainize.R
+import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.states.LoginState
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel
+) {
 
     val loginState by viewModel.loginState
+    val context = LocalContext.current
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -59,103 +68,143 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
     }
 
     Scaffold{ paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFF372080))
-                .padding(paddingValues)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.bg),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillHeight,
-                alpha = 1f
-            )
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Transparent
+        BrainizeScreen(paddingValues = paddingValues) {
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.brainizelogo),
+                    contentDescription = stringResource(R.string.brainize),
+                    modifier = Modifier
+                        .size(140.dp)
+                        .padding(top = 64.dp)
+                )
+
                 Text(
                     text = "Entre na sua conta",
                     modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 32.dp),fontSize = 18.sp,
+                        .padding(top = 12.dp),
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     textAlign = TextAlign.Center
                 )
+            }
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        end = 32.dp,
+                        start = 32.dp,
+                        bottom = 32.dp
+                    ),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                BrainizerOutlinedTextField(
+                    value = email,
+                    label = stringResource(R.string.email_label),
+                    icon = Icons.Filled.Person,
+                    iconDescription = "person icon",
+                    placeholder = "Digite seu email"
                 ) {
-                    TextField(
-                        value = email,
-                        onValueChange = { email = it },
-                        label = { Text("Email") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    TextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text("Senha") },
-                        visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    OutlinedButton(
-                        onClick = { navController.navigate(DestinationScreen.RegisterScreen.route) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp)
-                    ) {
-                    Text("Criar Conta")
+                    email = it
                 }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(2.dp))
 
-                    Button(
-                        onClick = { viewModel.loginWithEmailAndPassword(email, password) },
+                BrainizerOutlinedTextField(
+                    value = password,
+                    label = stringResource(R.string.password_label),
+                    icon = Icons.Filled.Lock,
+                    iconDescription = "password icon",
+                    placeholder = "Digite sua senha",
+                    isPassword = true
+                ) {
+                    password = it
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                LoginErrorDisplay(loginState = loginState, context = context)
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedButton(
+                    onClick = { navController.navigate(DestinationScreen.RegisterScreen.route) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color.White,
+                        containerColor = Color.Transparent,
+                        disabledContentColor = Color.Gray,
+                        disabledContainerColor = Color.Transparent,
+                    ),
+                    border = BorderStroke(1.dp, Color.White)
+                ) {
+                    Text(stringResource(R.string.create_account_label))
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = { viewModel.loginWithEmailAndPassword(email, password, context) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFbc60c4)
+                    )
+                ) {
+                    Text(
+                        text = stringResource(R.string.enter_label),
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFbc60c4)
-                        )
-                    ) {
-                        Text(
-                            text = "Login",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color(0xFFbc60c4))
-                                .clip(RoundedCornerShape(16.dp))
-                                .padding(8.dp)
-                                .wrapContentSize(Alignment.Center)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    when (loginState) {
-                        is LoginState
-                            .Loading -> CircularProgressIndicator()
-                        is LoginState
-                            .Error -> Text(
-                                (loginState as LoginState.Error).message
-                            )
-                        else -> {}
-                    }
+                            .fillMaxWidth()
+                            .background(Color(0xFFbc60c4))
+                            .clip(RoundedCornerShape(16.dp))
+                            .padding(8.dp)
+                            .wrapContentSize(Alignment.Center)
+                    )
                 }
             }
         }
     }
 }
+
+@Composable
+fun LoginErrorDisplay(loginState: LoginState, context: Context) {
+    when (loginState) {
+        is LoginState.Loading -> CircularProgressIndicator()
+        is LoginState.Error -> {
+            val errorMessage = translateFirebaseError(loginState.message, context)
+            Text(
+                text = errorMessage,
+                color = Color.Red
+            )
+        }
+        else -> {}
+    }
+}
+
+fun translateFirebaseError(firebaseMessage: String, context: Context): String {
+    return when (firebaseMessage) {
+        context.getString(R.string.given_string_is_empty_or_null) ->
+            context.getString(R.string.por_favor_preencha_todos_os_campos)
+        context.getString(R.string.the_supplied_auth_credential_is_incorrect_malformed_or_has_expired) ->
+            context.getString(R.string.email_ou_senha_incorretos_verifique_suas_credenciais)
+        context.getString(R.string.a_network_error_such_as_timeout_interrupted_connection_or_unreachable_host_has_occurred) ->
+            context.getString(R.string.erro_de_rede_verifique_sua_conex_o_com_a_internet)
+        context.getString(R.string.there_is_no_user_record_corresponding_to_this_identifier_the_user_may_have_been_deleted) ->
+            context.getString(R.string.usu_rio_n_o_encontrado_verifique_suas_credenciais)
+        context.getString(R.string.the_email_address_is_already_in_use_by_another_account) ->
+            context.getString(R.string.este_email_j_est_cadastrado)
+        context.getString(R.string.password_should_be_at_least_6_characters) ->
+            context.getString(R.string.a_senha_deve_ter_pelo_menos_6_caracteres)
+        else -> context.getString(R.string.ocorreu_um_erro_inesperado_tente_novamente)
+    }}

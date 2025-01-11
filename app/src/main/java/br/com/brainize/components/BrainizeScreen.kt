@@ -27,10 +27,10 @@ fun BrainizeScreen(
                 Color(0xFF372080)
             ).padding(paddingValues)
     ) {
-        Image(painter = painterResource(id = R.drawable.bg),
+        Image(painter = painterResource(id = R.drawable.bg4),
             contentDescription = null,
             modifier = modifier.fillMaxSize(),
-            contentScale = ContentScale.FillHeight,
+            contentScale = ContentScale.Crop,
             alpha = 1f
         )
         Surface(

@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -47,6 +48,7 @@ import br.com.brainize.viewmodel.LoginViewModel
 fun RegisterScreen(navController: NavController, viewModel: LoginViewModel) {
 
     val loginState by viewModel.loginState
+    val context = LocalContext.current
 
     var email by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
@@ -147,7 +149,7 @@ fun RegisterScreen(navController: NavController, viewModel: LoginViewModel) {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Button(
-                        onClick = { viewModel.createUserWithEmailAndPassword(email, password, name, username) },
+                        onClick = { viewModel.createUserWithEmailAndPassword(email, password, name, username, context) },
                         modifier = Modifier
                             .fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
