@@ -9,4 +9,13 @@
     <string name="my_profile_label">Meu perfil</string>
     <string name="my_schedule_label">Meus Horários</string>
     <string name="brainize">Brainize</string>
+    <string name="dialog_new_anotation_title">Criar nova anotação</string>
+    <string name="dialog_new_anotation_title_label">Dê um titulo a sua anotação</string>
+    <string name="dialog_new_anotation_what_remember">O que você quer lembrar?</string>
+    <string name="define_task_date_label">Definir Data de Conclusão</string>
+    <string name="done_task_date_label">Concluir em: %1$s</string>
+    <string name="task_hour_label">Horário Limite</string>
+    <string name="define_task_hour_label">Até às: %1$s</string>
+    <string name="save_label">Salvar</string>
+    <string name="cancel_label">Cancelar</string>
 </resources>
