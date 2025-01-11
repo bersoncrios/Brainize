@@ -34,13 +34,6 @@ class ScheduleViewModel : ViewModel() {
     private fun getCurrentUser() = auth.currentUser
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
 
-    sealed class LoginState {
-        object Idle : LoginState()
-        object Loading : LoginState()
-        data class Success(val token: String?) : LoginState()
-        data class Error(val message: String) : LoginState()
-    }
-
     fun addSchedule(time: String, date: String, name: String, priority: String) {
         val schedule = Schedule(
             time = time,

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -41,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.navigation.DestinationScreen
+import br.com.brainize.states.LoginState
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
@@ -52,8 +52,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
     var password by remember { mutableStateOf("") }
 
     LaunchedEffect(loginState) {
-        if (loginState is LoginViewModel.LoginState.Success) {
-            val token = (loginState as LoginViewModel.LoginState.Success).token
+        if (loginState is LoginState.Success) {
+            val token = (loginState as LoginState.Success).token
             navController.navigate(DestinationScreen.HomeScreen.createRoute(token))
         }
     }
@@ -146,9 +146,12 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     when (loginState) {
-                        is LoginViewModel.LoginState.Loading -> CircularProgressIndicator()
-                        is LoginViewModel.LoginState
-                        .Error -> Text((loginState as LoginViewModel.LoginState.Error).message)
+                        is LoginState
+                            .Loading -> CircularProgressIndicator()
+                        is LoginState
+                            .Error -> Text(
+                                (loginState as LoginState.Error).message
+                            )
                         else -> {}
                     }
                 }

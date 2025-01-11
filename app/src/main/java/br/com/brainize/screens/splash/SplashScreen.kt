@@ -1,27 +1,29 @@
 package br.com.brainize.screens.splash
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.brainize.R
+import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController, loginViewModel: LoginViewModel) {
+fun SplashScreen (
+    navController: NavController,
+    loginViewModel: LoginViewModel
+) {
 
     LaunchedEffect(key1 = true) {
         delay(2000L)
@@ -32,30 +34,19 @@ fun SplashScreen(navController: NavController, loginViewModel: LoginViewModel) {
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Color(0xFF372080)
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.bg),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillHeight,
-            alpha = 1f
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.brainizelogo),
-                contentDescription = "Logo Brainize",
-                modifier = Modifier
-                    .size(150.dp)
-            )
+    Scaffold { paddingValues ->
+        BrainizeScreen(paddingValues = paddingValues) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.brainizelogo),
+                    contentDescription = stringResource(R.string.brainize),
+                    modifier = Modifier
+                        .size(150.dp)
+                )
+            }
         }
     }
 }

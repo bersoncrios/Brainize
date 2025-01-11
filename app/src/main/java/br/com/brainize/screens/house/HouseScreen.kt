@@ -25,12 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.brainize.R
+import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerAlternateSelectButton
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
@@ -39,7 +41,12 @@ import br.com.brainize.viewmodel.LoginViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun HouseScreen(navController: NavController, viewModel: HouseViewModel, loginViewModel: LoginViewModel, token: String?) {
+fun HouseScreen (
+    navController: NavController,
+    viewModel: HouseViewModel,
+    loginViewModel: LoginViewModel,
+    token: String?
+) {
 
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
@@ -48,42 +55,18 @@ fun HouseScreen(navController: NavController, viewModel: HouseViewModel, loginVi
     var windowClosed by rememberSaveable { mutableStateOf(viewModel.windowClosed) }
     var doorClosed by rememberSaveable { mutableStateOf(viewModel.doorClosed) }
 
-    val systemUiController = rememberSystemUiController()
-    LaunchedEffect(Unit) {
-
-    }
-
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = "Minha Casa",
+                title = stringResource(R.string.my_house_label),
                 onBackClick = { navController.popBackStack() }
             )
         }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Color(0xFF372080)
-                )
-                .padding(paddingValues)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.bg),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillHeight,
-                alpha = 1f
-            )
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Transparent
-            ) {
+        BrainizeScreen(paddingValues = paddingValues) {
                 Text(
                     text = "Status de sua Casa",
                     modifier = Modifier
-                        .align(Alignment.TopCenter)
                         .padding(top = 32.dp),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -128,7 +111,6 @@ fun HouseScreen(navController: NavController, viewModel: HouseViewModel, loginVi
                             }
                         )
                     }
-                }
             }
         }
     }

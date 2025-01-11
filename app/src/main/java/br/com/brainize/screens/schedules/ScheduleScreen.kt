@@ -5,7 +5,6 @@ import android.app.TimePickerDialog
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,41 +24,43 @@ import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.brainize.R
+import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.Schedule
 import br.com.brainize.viewmodel.ScheduleViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import java.util.Calendar
 import java.util.Locale
 
 @Composable
-fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, loginViewModel: LoginViewModel, token: String?) {
+fun ScheduleScreen (
+    navController: NavController,
+    viewModel: ScheduleViewModel,
+    loginViewModel: LoginViewModel,
+    token: String?
+) {
 
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true){
         navController.navigate(DestinationScreen.LoginScreen.route)
@@ -72,7 +73,6 @@ fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, l
     val newScheduleName = remember { mutableStateOf("") }
     val newSchedulePriority = remember { mutableStateOf("") }
 
-    val systemUiController = rememberSystemUiController()
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
@@ -102,7 +102,7 @@ fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, l
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = "Meus Horários",
+                title = stringResource(R.string.my_schedule_label),
                 onBackClick = { navController.popBackStack() }
             )
         },
@@ -114,36 +114,17 @@ fun ScheduleScreen(navController: NavController, viewModel: ScheduleViewModel, l
             }
         }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Color(0xFF372080)
-                )
-                .padding(paddingValues)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.bg),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillHeight,
-                alpha = 1f
-            )
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Transparent
+        BrainizeScreen(paddingValues = paddingValues) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    LazyColumn {
-                        items(schedules, key ={ schedule -> schedule.id }) { schedule ->
-                            ScheduleItem(schedule= schedule, onDelete = { scheduleId -> viewModel.deleteSchedule(scheduleId)})
-                        }
+                LazyColumn {
+                    items(schedules, key ={ schedule -> schedule.id }) { schedule ->
+                        ScheduleItem(schedule= schedule, onDelete = { scheduleId -> viewModel.deleteSchedule(scheduleId)})
                     }
                 }
             }

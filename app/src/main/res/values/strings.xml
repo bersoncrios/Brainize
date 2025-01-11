@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Brainize</string>
+    <string name="my_car_label">Meu Carro</string>
+    <string name="my_notes_label">Minha Notas</string>
+    <string name="new_note_label">Nova Nota</string>
+    <string name="my_collections_label">Minhas Coleções</string>
+    <string name="configurations_label">Configurações</string>
+    <string name="my_house_label">Minha Casa</string>
+    <string name="my_profile_label">Meu perfil</string>
+    <string name="my_schedule_label">Meus Horários</string>
+    <string name="brainize">Brainize</string>
 </resources>

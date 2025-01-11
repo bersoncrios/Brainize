@@ -33,13 +33,6 @@ class ProfileViewModel : ViewModel() {
     fun getCurrentUser() = auth.currentUser
     fun hasLoggedUser(): Boolean = auth.currentUser != null
 
-    sealed class LoginState {
-        object Idle : LoginState()
-        object Loading : LoginState()
-        data class Success(val token: String?) : LoginState()
-        data class Error(val message: String) : LoginState()
-    }
-
     fun loadUserData() {
         val userId = getCurrentUser()?.uid
         if (userId != null) {

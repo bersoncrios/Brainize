@@ -11,6 +11,7 @@ import kotlinx.coroutines.tasks.await
 import androidx.compose.runtime.State
 import androidx.navigation.NavController
 import br.com.brainize.navigation.DestinationScreen
+import br.com.brainize.states.LoginState
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -39,7 +40,7 @@ class LoginViewModel : ViewModel() {
 
     fun getCurrentUser() = auth.currentUser
 
-    fun hasLoggedUser(): Boolean = com.google.firebase.ktx.Firebase.auth.currentUser != null
+    fun hasLoggedUser(): Boolean = getCurrentUser() != null
 
     suspend fun getUserByUID(uid: String): String {
         return suspendCancellableCoroutine { continuation ->
@@ -96,12 +97,5 @@ class LoginViewModel : ViewModel() {
                 _loginState.value = LoginState.Error(e.message ?: "Erro desconhecido")
             }
         }
-    }
-
-    sealed class LoginState {
-        object Idle : LoginState()
-        object Loading : LoginState()
-        data class Success(val token: String?) : LoginState()
-        data class Error(val message: String) : LoginState()
     }
 }

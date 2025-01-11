@@ -38,11 +38,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.brainize.R
+import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
@@ -50,13 +52,17 @@ import br.com.brainize.viewmodel.ProfileViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel, loginViewModel: LoginViewModel, token: String?) {
+fun ProfileScreen (
+    navController: NavController,
+    viewModel: ProfileViewModel,
+    loginViewModel: LoginViewModel,
+    token: String?
+) {
 
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
-    val systemUiController = rememberSystemUiController()
     val userData = viewModel.userData.collectAsState().value
     val openNameDialog = remember { mutableStateOf(false) }
     val openUsernameDialog = remember { mutableStateOf(false) }
@@ -75,32 +81,15 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel, log
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = "Meu perfil",
+                title = stringResource(R.string.my_profile_label),
                 onBackClick = { navController.popBackStack() }
             )
         }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Color(0xFF372080)
-                )
-                .padding(paddingValues)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.bg),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillHeight,
-                alpha = 1f
-            )
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Transparent
-            ) {
+        BrainizeScreen(paddingValues = paddingValues) {
                 Column(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .padding(16.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -148,7 +137,6 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel, log
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     )
-                }
             }
         }
     }

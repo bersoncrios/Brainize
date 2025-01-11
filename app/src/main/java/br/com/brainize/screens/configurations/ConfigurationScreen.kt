@@ -1,9 +1,6 @@
 package br.com.brainize.screens.configurations
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -27,18 +23,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.brainize.R
+import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewModel, configurationsViewModel: ConfigurationsViewModel, token: String?) {
+fun ConfigurationScreen (
+    navController: NavController,
+    loginViewModel: LoginViewModel,
+    configurationsViewModel: ConfigurationsViewModel,
+    token: String?
+) {
 
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
@@ -63,91 +64,73 @@ fun ConfigurationScreen(navController: NavController, loginViewModel: LoginViewM
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = "Configurações",
+                title = stringResource(R.string.configurations_label),
                 onBackClick = { navController.popBackStack() }
             )
         }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Color(0xFF372080)
-                )
-                .padding(paddingValues)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.bg),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillHeight,
-                alpha =1f
-            )
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Transparent
+
+        BrainizeScreen(paddingValues = paddingValues) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    ConfigSwitchRow(
-                        text = "Carro",
-                        isChecked = carEnabled,
-                        onCheckedChange = {
-                            carEnabled = it
-                            configurationsViewModel.setCarEnabled(it)
-                            configurationsViewModel.saveConfigurations()
-                        }
-                    )
-                    ConfigSwitchRow(
-                        text = "Casa",
-                        isChecked = houseEnabled,
-                        onCheckedChange = {
-                            houseEnabled = it
-                            configurationsViewModel.setHouseEnabled(it)
-                            configurationsViewModel.saveConfigurations()
-                        }
-                    )
-                    ConfigSwitchRow(
-                        text = "Notas",
-                        isChecked = notesEnabled,
-                        onCheckedChange = {
-                            notesEnabled = it
-                            configurationsViewModel.setNotesEnabled(it)
-                            configurationsViewModel.saveConfigurations()
-                        })
-                    ConfigSwitchRow(
-                        text = "Agenda",
-                        isChecked = agendaEnabled,
-                        onCheckedChange = {
-                            agendaEnabled = it
-                            configurationsViewModel.setAgendaEnabled(it)
-                            configurationsViewModel.saveConfigurations()
-                        })
-
-                    ConfigSwitchRow(
-                        text = "Coleções",
-                        isChecked = collectionEnabled,
-                        onCheckedChange = {
-                            collectionEnabled = it
-                            configurationsViewModel.setCollectionEnabled(it)
-                            configurationsViewModel.saveConfigurations()
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(32.dp))
-                    Button(
-                        onClick = {
-                            loginViewModel.logout(navController)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Logout")
+                ConfigSwitchRow(
+                    text = "Carro",
+                    isChecked = carEnabled,
+                    onCheckedChange = {
+                        carEnabled = it
+                        configurationsViewModel.setCarEnabled(it)
+                        configurationsViewModel.saveConfigurations()
                     }
+                )
+                ConfigSwitchRow(
+                    text = "Casa",
+                    isChecked = houseEnabled,
+                    onCheckedChange = {
+                        houseEnabled = it
+                        configurationsViewModel.setHouseEnabled(it)
+                        configurationsViewModel.saveConfigurations()
+                    }
+                )
+                ConfigSwitchRow(
+                    text = "Notas",
+                    isChecked = notesEnabled,
+                    onCheckedChange = {
+                        notesEnabled = it
+                        configurationsViewModel.setNotesEnabled(it)
+                        configurationsViewModel.saveConfigurations()
+                    })
+                ConfigSwitchRow(
+                    text = "Agenda",
+                    isChecked = agendaEnabled,
+                    onCheckedChange = {
+                        agendaEnabled = it
+                        configurationsViewModel.setAgendaEnabled(it)
+                        configurationsViewModel.saveConfigurations()
+                    })
+
+                ConfigSwitchRow(
+                    text = "Coleções",
+                    isChecked = collectionEnabled,
+                    onCheckedChange = {
+                        collectionEnabled = it
+                        configurationsViewModel.setCollectionEnabled(it)
+                        configurationsViewModel.saveConfigurations()
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+                Button(
+                    onClick = {
+                        loginViewModel.logout(navController)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Logout")
                 }
             }
         }
