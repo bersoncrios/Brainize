@@ -124,10 +124,7 @@ fun ScheduleScreen(
                     items(schedules, key = { schedule -> schedule.id }) { schedule ->
                         ScheduleItem(
                             schedule = schedule,
-                            onDelete = { scheduleId -> viewModel.deleteSchedule(scheduleId) },
-                            onPriorityChange = { newPriority ->
-                                schedulePriorities[schedule.id] = newPriority
-                            }
+                            onDelete = { scheduleId -> viewModel.deleteSchedule(scheduleId) }
                         )
                     }
                 }

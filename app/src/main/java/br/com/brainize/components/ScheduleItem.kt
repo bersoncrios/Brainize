@@ -2,19 +2,16 @@ package br.com.brainize.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,19 +20,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.brainize.R
 import br.com.brainize.viewmodel.Schedule
 
 @Composable
 fun ScheduleItem(
     schedule: Schedule,
     onDelete: (String) -> Unit,
-    onPriorityChange: (String) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
     var currentPriority by remember { mutableStateOf(schedule.priority) }
+
+    var showConfirmDialog by remember { mutableStateOf(false) }
+
 
     val priorityColor = when (currentPriority) {
         "Alta" -> Color(0XFF873D48)
@@ -59,7 +59,7 @@ fun ScheduleItem(
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(
-                    onClick = { expanded = true },
+                    onClick = { showConfirmDialog = true },
                     modifier = Modifier.align(Alignment.Top)
                 ) {
                     Icon(
@@ -68,23 +68,18 @@ fun ScheduleItem(
                         tint = Color.White
                     )
                 }
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(text = { Text("Alta") }, onClick = {
-                        currentPriority = "Alta"
-                        expanded = false
-                    })
-                    DropdownMenuItem(text = { Text("Média") }, onClick = {
-                        currentPriority = "Média"
-                        expanded = false
-                    })
-                    DropdownMenuItem(text = { Text("Baixa") }, onClick = {
-                        currentPriority = "Baixa"
-                        expanded = false
-                    })
+                if (showConfirmDialog) {
+                    ConfirmDeleteDialog(onConfirm = {
+                        onDelete(schedule.id)
+                        showConfirmDialog = false
+                    },
+                        onDismiss = {
+                            showConfirmDialog = false
+                        },
+                        schedule = schedule
+                    )
                 }
+
             }
             Text(
                 text = "Data: ${schedule.date}",
@@ -103,4 +98,27 @@ fun ScheduleItem(
             )
         }
     }
+}
+
+@Composable
+fun ConfirmDeleteDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+    schedule: Schedule
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Deseja excluir esta agenda?") },
+        text = { Text("Realmente deseja excluir esta agenda ?") },
+        confirmButton = {
+            TextButton(onClick = onConfirm){
+                Text(stringResource(R.string.confirm_label))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel_label))
+            }
+        }
+    )
 }
