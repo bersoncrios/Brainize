@@ -66,6 +66,13 @@ sealed class DestinationScreen(val route: String) {
         )
     }
 
+    object MainMenuConfigurationScreen : DestinationScreen("main_menu_configuration_screen/{token}") {
+        fun createRoute(token: String?): String = "main_menu_configuration_screen/$token"
+        val arguments = listOf(
+            navArgument("token") { type = NavType.StringType }
+        )
+    }
+
 
     companion object {fun fromRoute(route: String?): DestinationScreen = when (route?.substringBefore("/")) {
         SplashScreen.route -> SplashScreen
@@ -75,6 +82,7 @@ sealed class DestinationScreen(val route: String) {
         NotesScreen.route.replace("{token}", "").substringBefore("/") -> NotesScreen
         ScheduleScreen.route.replace("{token}", "").substringBefore("/") -> ScheduleScreen
         ConfigurationScreen.route.replace("{token}", "").substringBefore("/") -> ConfigurationScreen
+        MainMenuConfigurationScreen.route.replace("{token}", "").substringBefore("/") -> MainMenuConfigurationScreen
         ProfileScreen.route.replace("{token}", "").substringBefore("/") -> ProfileScreen
         CollectionScreen.route.replace("{token}", "").substringBefore("/") -> CollectionScreen
         LoginScreen.route -> LoginScreen

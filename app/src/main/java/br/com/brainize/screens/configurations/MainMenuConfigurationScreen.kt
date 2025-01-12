@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,15 +28,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizeScreen
-import br.com.brainize.components.BrainizerAlternateSelectButton
-import br.com.brainize.components.BrainizerSelectButton
 import br.com.brainize.components.BrainizerTopAppBar
+import br.com.brainize.components.ConfigSwitchRow
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun ConfigurationScreen (
+fun MainMenuConfigurationScreen (
     navController: NavController,
     loginViewModel: LoginViewModel,
     configurationsViewModel: ConfigurationsViewModel,
@@ -81,36 +79,52 @@ fun ConfigurationScreen (
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        BrainizerSelectButton(
-                            onClick = { navController.navigate(DestinationScreen.MainMenuConfigurationScreen.route) },
-                            icon = R.drawable.menu,
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        BrainizerSelectButton(
-                            onClick = {  },
-                            icon = R.drawable.painter,
-                        )
+                ConfigSwitchRow(
+                    text = "Carro",
+                    isChecked = carEnabled,
+                    onCheckedChange = {
+                        carEnabled = it
+                        configurationsViewModel.setCarEnabled(it)
+                        configurationsViewModel.saveConfigurations()
                     }
-                }
+                )
+                ConfigSwitchRow(
+                    text = "Casa",
+                    isChecked = houseEnabled,
+                    onCheckedChange = {
+                        houseEnabled = it
+                        configurationsViewModel.setHouseEnabled(it)
+                        configurationsViewModel.saveConfigurations()
+                    }
+                )
+                ConfigSwitchRow(
+                    text = "Notas",
+                    isChecked = notesEnabled,
+                    onCheckedChange = {
+                        notesEnabled = it
+                        configurationsViewModel.setNotesEnabled(it)
+                        configurationsViewModel.saveConfigurations()
+                    })
+                ConfigSwitchRow(
+                    text = "Agenda",
+                    isChecked = agendaEnabled,
+                    onCheckedChange = {
+                        agendaEnabled = it
+                        configurationsViewModel.setAgendaEnabled(it)
+                        configurationsViewModel.saveConfigurations()
+                    })
+
+                ConfigSwitchRow(
+                    text = "Coleções",
+                    isChecked = collectionEnabled,
+                    onCheckedChange = {
+                        collectionEnabled = it
+                        configurationsViewModel.setCollectionEnabled(it)
+                        configurationsViewModel.saveConfigurations()
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(32.dp))
-
                 Button(
                     onClick = {
                         loginViewModel.logout(navController)

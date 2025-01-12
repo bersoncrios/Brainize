@@ -17,7 +17,8 @@ import kotlin.coroutines.resumeWithException
 class ConfigurationsViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val configCollection = firestore.collection("userConfigurations")
+    private val configCollection = firestore
+        .collection("userConfigurations")
 
     private var _carEnabled by mutableStateOf(false)
     val carEnabled: Boolean get() = _carEnabled
@@ -43,7 +44,6 @@ class ConfigurationsViewModel : ViewModel() {
                 _notesEnabled = config.notesEnabled
                 _agendaEnabled = config.agendaEnabled
                 _collectionEnabled = config.collectionEnabled
-                Log.d("ConfigurationsViewModel", "Configurations loaded from Firestore: carEnabled = $_carEnabled, houseEnabled = $_houseEnabled, notesEnabled = $_notesEnabled, agendaEnabled = $_agendaEnabled")
                 onConfigLoaded(config)
             } catch (e: Exception) {
                 Log.e("ConfigurationsViewModel", "Error loading configurations from Firestore", e)
