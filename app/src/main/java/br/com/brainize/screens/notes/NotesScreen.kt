@@ -4,8 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
@@ -15,7 +16,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -52,8 +52,6 @@ fun NotesScreen(
 
     val openDialog = remember { mutableStateOf(false) }
     val openTypeDialog = remember { mutableStateOf(false) }
-    val selectedNote = remember { mutableStateOf<Note?>(null) }
-    val showEditDialog = remember { mutableStateOf(false) }
 
     val newNoteTitle = remember { mutableStateOf("") }
     val newNoteContent = remember { mutableStateOf("") }
@@ -101,10 +99,12 @@ fun NotesScreen(
                     derivedStateOf {
                         notes.sortedBy {
                             it.sequentialId
-                        }
-                    }
+                        }}
                 }
-                LazyColumn {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     items(
                         items = sortedNotes,
                         key = { note -> note.id }) { note ->
@@ -112,8 +112,7 @@ fun NotesScreen(
                             note = note,
                             onDelete = { noteId -> viewModel.deleteNote(noteId) },
                             onLongPress = {
-                                selectedNote.value = it
-                                showEditDialog.value = true
+                                navController.navigate(DestinationScreen.NotesDetailsScreen.createRoute(token, note.id))
                             }
                         )
                     }
@@ -142,38 +141,4 @@ fun NotesScreen(
             context = context
         )
     }
-    if (showEditDialog.value) {
-        selectedNote.value?.let { note ->
-            EditNoteDialog(
-                onConfirm = {
-                    navController.navigate(DestinationScreen.NotesDetailsScreen.createRoute(token, note.id))
-                    showEditDialog.value = false
-                },
-                onDismiss = { showEditDialog.value = false },
-                note = note
-            )
-        }
-    }
-}
-
-@Composable
-fun EditNoteDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-    note: Note
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Editar nota #${note.sequentialId}") },
-        text = { Text("Editar nota #${note.sequentialId}") },
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(stringResource(R.string.confirm_label))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel_label))
-            }
-        })
 }
