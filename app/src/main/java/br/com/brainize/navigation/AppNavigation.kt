@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.brainize.screens.car.CarScreen
 import br.com.brainize.screens.collection.CollectionScreen
+import br.com.brainize.screens.configurations.AppsColorsConfigurationScreen
 import br.com.brainize.screens.configurations.ConfigurationScreen
 import br.com.brainize.screens.configurations.MainMenuConfigurationScreen
 import br.com.brainize.screens.home.HomeScreen
@@ -125,6 +126,14 @@ fun AppNavigation(
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             MainMenuConfigurationScreen(navController = navController, loginViewModel = loginViewmodel, configurationsViewModel = configurationsViewModel, token = token)
+        }
+
+        composable(
+            route = DestinationScreen.AppsColorsConfigurationScreen.route,
+            arguments = DestinationScreen.AppsColorsConfigurationScreen.arguments
+        ) { backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token")
+            AppsColorsConfigurationScreen(navController = navController, loginViewModel = loginViewmodel, configurationsViewModel = configurationsViewModel, token = token)
         }
 
         composable(

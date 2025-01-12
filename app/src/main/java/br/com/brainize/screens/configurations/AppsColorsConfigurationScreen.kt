@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,15 +28,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizeScreen
-import br.com.brainize.components.BrainizerAlternateSelectButton
-import br.com.brainize.components.BrainizerSelectButton
 import br.com.brainize.components.BrainizerTopAppBar
+import br.com.brainize.components.ConfigSwitchRow
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun ConfigurationScreen (
+fun AppsColorsConfigurationScreen (
     navController: NavController,
     loginViewModel: LoginViewModel,
     configurationsViewModel: ConfigurationsViewModel,
@@ -82,43 +80,6 @@ fun ConfigurationScreen (
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        BrainizerSelectButton(
-                            onClick = { navController.navigate(DestinationScreen.MainMenuConfigurationScreen.route) },
-                            icon = R.drawable.menu,
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        BrainizerSelectButton(
-                            onClick = { navController.navigate(DestinationScreen.AppsColorsConfigurationScreen.route) },
-                            icon = R.drawable.painter,
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Button(
-                    onClick = {
-                        loginViewModel.logout(navController)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Logout")
-                }
             }
         }
     }
