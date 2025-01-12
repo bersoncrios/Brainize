@@ -1,6 +1,5 @@
 package br.com.brainize.screens.notes
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +15,8 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,7 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,7 +56,6 @@ fun NotesDetailsScreen(
     token: String?,
     noteId: String?
 ) {
-    val context = LocalContext.current
     val noteState by viewModel.noteState.collectAsState()
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
@@ -83,7 +83,7 @@ fun NotesDetailsScreen(
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = "Detalhes da nota",
+                title = stringResource(R.string.note_detail_title, noteState.sequentialId),
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -100,100 +100,131 @@ fun NotesDetailsScreen(
                 if (isLoading) {
                     CircularProgressIndicator(color = Color.White)
                 } else {
-                    Log.d("notestates", "NotesDetailsScreen: $noteState")
                     noteState.let { note ->
                         Text(
-                            text = "Detalhe da nota #${note.sequentialId}",
+                            text = stringResource(R.string.note_detail_title, noteState.sequentialId),
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Título: ${note.title}",style = MaterialTheme.typography.bodyLarge,
-                                color = Color.White
-                            )
-                            IconButton(onClick = {
-                                title = note.title
-                                openTitleDialog = true
-                            }) {
-                                Icon(
-                                    Icons.Filled.Edit,
-                                    "Editar Título",
-                                    tint = Color.White
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Conteúdo: ${note.content}",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = Color.White
-                            )
-                            IconButton(onClick = {
-                                content = note.content
-                                openContentDialog = true
-                            }) {
-                                Icon(Icons.Filled.Edit,
-                                    "Editar Conteúdo",
-                                    tint = Color.White
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        if (note.type == "Tarefa") {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Data final: ${note.dueDate ?: ""}",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = Color.White
-                                )
-                                IconButton(onClick = {
-                                    dueDate = note.dueDate ?: ""
-                                    openDueDateDialog = true
-                                }) {
-                                    Icon(
-                                        Icons.Filled.Edit,
-                                        "Editar Data Final",
-                                        tint = Color.White
-                                    )
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (note.type == "Tarefa") {
+                                    Color(0xFF90EE90)
+                                } else {
+                                    Color(0xFFbc60c4)
                                 }
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Hora final: ${note.dueTime ?: ""}",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = Color.White
-                                )
-                                IconButton(onClick = {
-                                    dueTime = note.dueTime ?: ""
-                                    openDueTimeDialog = true
-                                }) {
-                                    Icon(
-                                        Icons.Filled.Edit,
-                                        "Editar Hora Final",
-                                        tint = Color.White
-                                    )}
+                            )
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = note.title,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = Color.Black,
+                                        modifier = Modifier
+                                            .weight(2f),
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 21.sp
+                                    )
+                                    IconButton(onClick = {
+                                        title = note.title
+                                        openTitleDialog = true
+                                    }) {
+                                        Icon(
+                                            Icons.Filled.Edit,
+                                            "Editar Título",
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = note.content,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = Color.Black,
+                                        modifier = Modifier.weight(2f),
+                                        fontWeight = FontWeight.Normal,
+                                        fontSize = 16.sp
+                                    )
+                                    IconButton(onClick = {
+                                        content = note.content
+                                        openContentDialog = true
+                                    }) {
+                                        Icon(
+                                            Icons.Filled.Edit,
+                                            "Editar Conteúdo",
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                if (note.type == "Tarefa") {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = note.dueDate ?: "",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = Color.Black,
+                                            modifier = Modifier.weight(2f),
+                                            fontWeight = FontWeight.Normal,
+                                            fontSize = 16.sp
+                                        )
+                                        IconButton(onClick = {
+                                            dueDate = note.dueDate ?: ""
+                                            openDueDateDialog = true
+                                        }) {
+                                            Icon(
+                                                Icons.Filled.Edit,
+                                                "Editar data Final",
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                    }
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = note.dueTime ?: "",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = Color.Black,
+                                            modifier = Modifier.weight(2f),
+                                            fontWeight = FontWeight.Normal,
+                                            fontSize = 16.sp
+                                        )
+                                        IconButton(onClick = {
+                                            dueTime = note.dueTime ?: ""
+                                            openDueTimeDialog = true
+                                        }) {
+                                            Icon(
+                                                Icons.Filled.Edit,
+                                                "Editar Hora Final",
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -203,19 +234,19 @@ fun NotesDetailsScreen(
     }
     if (openTitleDialog) {
         AlertDialog(
-            onDismissRequest = { openTitleDialog = false },
-            title = { Text("Editar Título", style = MaterialTheme.typography.headlineSmall) },
+            onDismissRequest = { openTitleDialog = false},
+            title = { Text("Editar Título", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface) },
             text = {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Título") }
+                    label = { Text("Título", color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 )
             },
             confirmButton = {
                 Button(
                     onClick = {
-                        noteState?.let { note ->
+                        noteState.let { note ->
                             val updatedNote = note.copy(title = title)
                             viewModel.updateNote(updatedNote)
                         }
@@ -223,7 +254,8 @@ fun NotesDetailsScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)}
+                    Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
+                }
             },
             dismissButton = {
                 TextButton(onClick = { openTitleDialog = false }) {
@@ -235,18 +267,18 @@ fun NotesDetailsScreen(
     if (openContentDialog) {
         AlertDialog(
             onDismissRequest = { openContentDialog = false },
-            title = { Text("Editar Conteúdo", style = MaterialTheme.typography.headlineSmall) },
+            title = { Text("Editar Conteúdo", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface) },
             text = {
                 OutlinedTextField(
                     value = content,
                     onValueChange = { content = it },
-                    label = { Text("Conteúdo") }
+                    label = { Text("Conteúdo", color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 )
             },
             confirmButton = {
                 Button(
                     onClick = {
-                        noteState?.let { note ->
+                        noteState.let { note ->
                             val updatedNote = note.copy(content = content)
                             viewModel.updateNote(updatedNote)
                         }
@@ -255,7 +287,8 @@ fun NotesDetailsScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
-                }},
+                }
+            },
             dismissButton = {
                 TextButton(onClick = { openContentDialog = false }) {
                     Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
@@ -266,18 +299,18 @@ fun NotesDetailsScreen(
     if (openDueDateDialog) {
         AlertDialog(
             onDismissRequest = { openDueDateDialog = false },
-            title = { Text("Editar Data Final", style = MaterialTheme.typography.headlineSmall) },
+            title = { Text("Editar Data Final", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface) },
             text = {
                 OutlinedTextField(
                     value = dueDate,
                     onValueChange = { dueDate = it },
-                    label = { Text("Data Final") }
+                    label = { Text("Data Final", color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 )
             },
             confirmButton = {
                 Button(
                     onClick = {
-                        noteState?.let { note ->
+                        noteState.let { note ->
                             val updatedNote = note.copy(dueDate = if (dueDate.isNotBlank()) dueDate else null)
                             viewModel.updateNote(updatedNote)
                         }
@@ -288,35 +321,35 @@ fun NotesDetailsScreen(
                     Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
                 }
             },
-            dismissButton = {
-                TextButton(onClick = { openDueDateDialog = false }) {
-                    Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
-                }
+            dismissButton = {TextButton(onClick = { openDueDateDialog = false }) {
+                Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+            }
             }
         )
     }
     if (openDueTimeDialog) {
         AlertDialog(
             onDismissRequest = { openDueTimeDialog = false },
-            title = { Text("Editar Hora Final", style = MaterialTheme.typography.headlineSmall) },
+            title = { Text("Editar Hora Final", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface) },
             text = {
                 OutlinedTextField(
                     value = dueTime,
                     onValueChange = { dueTime = it },
-                    label = { Text("Hora Final") }
+                    label = { Text("Hora Final", color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 )
             },
             confirmButton = {
                 Button(
                     onClick = {
-                        noteState?.let { note ->
+                        noteState.let { note ->
                             val updatedNote = note.copy(dueTime = if (dueTime.isNotBlank()) dueTime else null)
                             viewModel.updateNote(updatedNote)
                         }
                         openDueTimeDialog = false
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                ) {Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
+                ) {
+                    Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
                 }
             },
             dismissButton = {
