@@ -62,4 +62,7 @@
     <string name="email_register_label">Informe seu email</string>
     <string name="password_register_label">escolha uma senha forte</string>
     <string name="have_account">Tenho uma conta</string>
+    <string name="confirm_delete_note_label">Excluir nota #%1$s</string>
+    <string name="confirm_delete_note_message">Realmente deseja excluir a nota #%1$s, esta é uma ação irreversível</string>
+    <string name="confirm_label">Confirmar</string>
 </resources>

@@ -35,7 +35,7 @@ import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
 
 @Composable
-fun NotesScreen (
+fun NotesScreen(
     navController: NavController,
     viewModel: NotesViewModel,
     loginViewModel: LoginViewModel,
@@ -47,6 +47,7 @@ fun NotesScreen (
 
     val openDialog = remember { mutableStateOf(false) }
     val openTypeDialog = remember { mutableStateOf(false) }
+    val showConfirmDialog = remember { mutableStateOf(false) }
 
     val newNoteTitle = remember { mutableStateOf("") }
     val newNoteContent = remember { mutableStateOf("") }
@@ -59,7 +60,7 @@ fun NotesScreen (
     }
 
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.loadNotes()
     }
 
@@ -105,7 +106,8 @@ fun NotesScreen (
                     ) { note ->
                         NoteItem(
                             note = note,
-                            onDelete = { noteId -> viewModel.deleteNote(noteId) }
+                            onDelete = { noteId -> viewModel.deleteNote(noteId) },
+                            showDialog = { show -> showConfirmDialog.value = show }
                         )
                     }
                 }
@@ -114,23 +116,23 @@ fun NotesScreen (
     }
 
     if (openTypeDialog.value) {
-       DialogNoteType(
-           openTypeDialog = openTypeDialog,
-           newNoteType = newNoteType,
-           openDialog = openDialog
-       )
+        DialogNoteType(
+            openTypeDialog = openTypeDialog,
+            newNoteType = newNoteType,
+            openDialog = openDialog
+        )
     }
 
     if (openDialog.value) {
-      DialogNewNote(
-          openDialog = openDialog,
-          newNoteTitle = newNoteTitle,
-          newNoteContent = newNoteContent,
-          newNoteType = newNoteType,
-          newNoteDueDate = newNoteDueDate,
-          newNoteDueTime = newNoteDueTime,
-          viewModel = viewModel,
-          context = context
-      )
+        DialogNewNote(
+            openDialog = openDialog,
+            newNoteTitle = newNoteTitle,
+            newNoteContent = newNoteContent,
+            newNoteType = newNoteType,
+            newNoteDueDate = newNoteDueDate,
+            newNoteDueTime = newNoteDueTime,
+            viewModel = viewModel,
+            context = context
+        )
     }
 }
