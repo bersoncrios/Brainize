@@ -1,5 +1,6 @@
 package br.com.brainize.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.brainize.model.Note
@@ -11,6 +12,7 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.Query.Direction.DESCENDING
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -21,6 +23,16 @@ class NotesViewModel : ViewModel() {
 
     private val _notes = MutableStateFlow<List<Note>>(emptyList())
     val notes: StateFlow<List<Note>> = _notes
+
+    private val _note = MutableStateFlow<Note?>(null)
+    val note: StateFlow<Note?> = _note
+
+    private val _noteState = MutableStateFlow<Note>(Note())
+    val noteState: StateFlow<Note> = _noteState.stateIn(
+        scope = viewModelScope,
+        started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
+        initialValue = Note()
+    )
 
     private fun getCurrentUser() = auth.currentUser
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
@@ -62,8 +74,7 @@ class NotesViewModel : ViewModel() {
             if (user != null) {
                 val nextId = getNextSequentialId()
                 val noteId = firestore
-                    .collection(USERS_COLLECTION)
-                    .document(user.uid)
+                    .collection(USERS_COLLECTION).document(user.uid)
                     .collection(NOTES_COLLECTION)
                     .document()
                     .id
@@ -95,11 +106,11 @@ class NotesViewModel : ViewModel() {
             val user = auth.currentUser
             if (user != null) {
                 val snapshot = firestore
-                        .collection(USERS_COLLECTION)
-                        .document(user.uid)
-                        .collection(NOTES_COLLECTION)
-                        .get()
-                        .await()
+                    .collection(USERS_COLLECTION)
+                    .document(user.uid)
+                    .collection(NOTES_COLLECTION)
+                    .get()
+                    .await()
                 val notesList = snapshot.documents.mapNotNull { document ->
                     document.toObject(Note::class.java)
                 }
@@ -122,7 +133,43 @@ class NotesViewModel : ViewModel() {
             }
         }
     }
+    fun getNoteById(noteId: String) {
+        viewModelScope.launch {
+            val user = auth.currentUser
+            if (user != null) {
+                val document = firestore
+                    .collection(USERS_COLLECTION)
+                    .document(user.uid)
+                    .collection(NOTES_COLLECTION)
+                    .document(noteId)
+                    .get()
+                    .await()
 
+                if (document.exists()) {
+                    _noteState.value = document.toObject(Note::class.java) ?: Note()
+                } else {
+                    // Log ou tratamento de erro caso o documento não exista
+                    Log.w("NotesViewModel", "Document with id $noteId not found")
+                    _noteState.value = Note() // Ou outro tratamento adequado
+                }
+            }
+        }
+    }
+    fun updateNote(note: Note) {
+        viewModelScope.launch {
+            val user = auth.currentUser
+            if (user != null) {
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(user.uid)
+                    .collection(NOTES_COLLECTION)
+                    .document(note.id)
+                    .set(note)
+                    .await()
+                loadNotes()
+            }
+        }
+    }
     companion object {
         private const val NOTES_COLLECTION = "notes"
         private const val USERS_COLLECTION = "users"

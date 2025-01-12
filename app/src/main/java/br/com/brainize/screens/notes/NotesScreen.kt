@@ -8,10 +8,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -33,6 +37,7 @@ import br.com.brainize.components.NoteItem
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
+import br.com.brainize.model.Note
 
 @Composable
 fun NotesScreen(
@@ -47,7 +52,8 @@ fun NotesScreen(
 
     val openDialog = remember { mutableStateOf(false) }
     val openTypeDialog = remember { mutableStateOf(false) }
-    val showConfirmDialog = remember { mutableStateOf(false) }
+    val selectedNote = remember { mutableStateOf<Note?>(null) }
+    val showEditDialog = remember { mutableStateOf(false) }
 
     val newNoteTitle = remember { mutableStateOf("") }
     val newNoteContent = remember { mutableStateOf("") }
@@ -58,7 +64,6 @@ fun NotesScreen(
     if (!loginViewModel.hasLoggedUser() && token.isNullOrEmpty()) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
-
 
     LaunchedEffect(Unit) {
         viewModel.loadNotes()
@@ -102,12 +107,14 @@ fun NotesScreen(
                 LazyColumn {
                     items(
                         items = sortedNotes,
-                        key = { note -> note.id }
-                    ) { note ->
+                        key = { note -> note.id }) { note ->
                         NoteItem(
                             note = note,
                             onDelete = { noteId -> viewModel.deleteNote(noteId) },
-                            showDialog = { show -> showConfirmDialog.value = show }
+                            onLongPress = {
+                                selectedNote.value = it
+                                showEditDialog.value = true
+                            }
                         )
                     }
                 }
@@ -135,4 +142,38 @@ fun NotesScreen(
             context = context
         )
     }
+    if (showEditDialog.value) {
+        selectedNote.value?.let { note ->
+            EditNoteDialog(
+                onConfirm = {
+                    navController.navigate(DestinationScreen.NotesDetailsScreen.createRoute(token, note.id))
+                    showEditDialog.value = false
+                },
+                onDismiss = { showEditDialog.value = false },
+                note = note
+            )
+        }
+    }
+}
+
+@Composable
+fun EditNoteDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+    note: Note
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Editar nota #${note.sequentialId}") },
+        text = { Text("Editar nota #${note.sequentialId}") },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(stringResource(R.string.confirm_label))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel_label))
+            }
+        })
 }
