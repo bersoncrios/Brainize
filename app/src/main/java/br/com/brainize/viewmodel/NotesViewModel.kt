@@ -74,7 +74,8 @@ class NotesViewModel : ViewModel() {
             if (user != null) {
                 val nextId = getNextSequentialId()
                 val noteId = firestore
-                    .collection(USERS_COLLECTION).document(user.uid)
+                    .collection(USERS_COLLECTION)
+                    .document(user.uid)
                     .collection(NOTES_COLLECTION)
                     .document()
                     .id
@@ -122,13 +123,12 @@ class NotesViewModel : ViewModel() {
     fun deleteNote(noteId: String) {
         viewModelScope.launch {
             val user = auth.currentUser
-            if (user != null) {
-                firestore.collection(USERS_COLLECTION)
-                    .document(user.uid)
-                    .collection(NOTES_COLLECTION)
-                    .document(noteId)
-                    .delete()
-                    .await()
+            if (user != null) {firestore.collection(USERS_COLLECTION)
+                .document(user.uid)
+                .collection(NOTES_COLLECTION)
+                .document(noteId)
+                .delete()
+                .await()
                 loadNotes()
             }
         }
@@ -137,20 +137,27 @@ class NotesViewModel : ViewModel() {
         viewModelScope.launch {
             val user = auth.currentUser
             if (user != null) {
-                val document = firestore
-                    .collection(USERS_COLLECTION)
-                    .document(user.uid)
-                    .collection(NOTES_COLLECTION)
-                    .document(noteId)
-                    .get()
-                    .await()
+                try {
+                    Log.d("NotesViewModel", "Fetching note with id: $noteId")
+                    val document = firestore
+                        .collection(USERS_COLLECTION)
+                        .document(user.uid)
+                        .collection(NOTES_COLLECTION)
+                        .document(noteId)
+                        .get()
+                        .await()
 
-                if (document.exists()) {
-                    _noteState.value = document.toObject(Note::class.java) ?: Note()
-                } else {
-                    // Log ou tratamento de erro caso o documento não exista
-                    Log.w("NotesViewModel", "Document with id $noteId not found")
-                    _noteState.value = Note() // Ou outro tratamento adequado
+                    if (document.exists()) {
+                        val note = document.toObject(Note::class.java)
+                        Log.d("NotesViewModel", "Note found: $note")
+                        _noteState.value = note ?: Note()
+                    } else {
+                        Log.w("NotesViewModel", "Document with id $noteId not found")
+                        _noteState.value = Note()
+                    }
+                } catch (e: Exception) {
+                    Log.e("NotesViewModel", "Error fetching note with id $noteId", e)
+                    _noteState.value = Note()
                 }
             }
         }
@@ -166,7 +173,7 @@ class NotesViewModel : ViewModel() {
                     .document(note.id)
                     .set(note)
                     .await()
-                loadNotes()
+                getNoteById(note.id)
             }
         }
     }
