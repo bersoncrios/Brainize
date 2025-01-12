@@ -22,7 +22,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -50,13 +53,19 @@ fun RegisterScreen(
 ) {
     val loginState by viewModel.loginState
     val context = LocalContext.current
+    val usernameExists by viewModel.usernameExists.collectAsState()
 
-    var name by remember { androidx.compose.runtime.mutableStateOf("") }
-    var username by remember { androidx.compose.runtime.mutableStateOf("") }
-    var email by remember { androidx.compose.runtime.mutableStateOf("") }
-    var password by remember { androidx.compose.runtime.mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var usernameError by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(usernameExists) {
+        usernameError = usernameExists
+    }
 
     Scaffold { paddingValues ->
         BrainizeScreen(paddingValues = paddingValues) {
@@ -71,9 +80,9 @@ fun RegisterScreen(
                 ) {
                     Image(
                         painter = painterResource(
-                            id = R.drawable.brainizelogo),
-                        contentDescription = stringResource(R.string.brainize
+                            id = R.drawable.brainizelogo
                         ),
+                        contentDescription = stringResource(R.string.brainize),
                         modifier = Modifier
                             .size(140.dp)
                             .padding(top = 64.dp)
@@ -122,6 +131,13 @@ fun RegisterScreen(
                         placeholder = stringResource(R.string.username_placeholder)
                     ) {
                         username = it
+                        usernameError = false
+                        if (it.isNotBlank()) {
+                            viewModel.checkUsernameExists(it)
+                        }
+                    }
+                    if (usernameError) {
+                        Text("Este username já está em uso", color = Color.Red)
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -131,7 +147,7 @@ fun RegisterScreen(
                         label = stringResource(R.string.email_register_label),
                         iconDescription = stringResource(R.string.has_not_icon),
                         placeholder = stringResource(R.string.email_placeholder)
-                    ){
+                    ) {
                         email = it
                     }
 
@@ -172,13 +188,24 @@ fun RegisterScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Button(
-                        onClick = { viewModel.createUserWithEmailAndPassword(email, password, name, username, context) },
+                        onClick = {
+                            if (!usernameError) {
+                                viewModel.createUserWithEmailAndPassword(
+                                    email,
+                                    password,
+                                    name,
+                                    username,
+                                    context
+                                )
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 16.dp, end = 16.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFbc60c4)
-                        )
+                        ),
+                        enabled = !usernameError
                     ) {
                         Text(
                             text = stringResource(R.string.enter_label),

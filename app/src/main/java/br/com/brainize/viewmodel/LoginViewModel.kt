@@ -16,6 +16,8 @@ import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.states.LoginState
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -23,6 +25,9 @@ class LoginViewModel : ViewModel() {
     private val auth: FirebaseAuth = Firebase.auth
     private val firestore: FirebaseFirestore = Firebase.firestore
     private var _completeName = mutableStateOf("")
+
+    private val _usernameExists = MutableStateFlow(false)
+    val usernameExists: StateFlow<Boolean> = _usernameExists
 
     private val _loginState =
         mutableStateOf<LoginState>(LoginState.Idle)
@@ -33,12 +38,12 @@ class LoginViewModel : ViewModel() {
     fun getCurrentUser() = auth.currentUser
 
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
-    
+
     fun logout(navController: NavController) {
         navController.navigate(DestinationScreen.LoginScreen.route)
         auth.signOut()
     }
-    
+
     suspend fun getUserByUID(uid: String): String {
         return suspendCancellableCoroutine { continuation ->
             firestore
@@ -61,20 +66,20 @@ class LoginViewModel : ViewModel() {
 
     fun loginWithEmailAndPassword(
         email: String,
-        password: String, 
+        password: String,
         context: Context
     ) {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             try {
-                val authResult = 
+                val authResult =
                     auth.signInWithEmailAndPassword(email, password).await()
-                val token = 
+                val token =
                     authResult.user?.getIdToken(false)?.await()?.token
-                _loginState.value = 
+                _loginState.value =
                     LoginState.Success(token)
             } catch (e: Exception) {
-                _loginState.value = 
+                _loginState.value =
                     LoginState.Error(e.message ?: context.getString(R.string.unknow_error))
             }
         }
@@ -82,15 +87,20 @@ class LoginViewModel : ViewModel() {
 
 
     fun createUserWithEmailAndPassword(
-        email: String, 
-        password: String, 
-        name: String, 
+        email: String,
+        password: String,
+        name: String,
         username: String,
         context: Context
     ) {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             try {
+                checkUsernameExists(username)
+                if (_usernameExists.value) {
+                    _loginState.value = LoginState.Error("Este username já está em uso")
+                    return@launch
+                }
                 val authResult = auth.createUserWithEmailAndPassword(email, password).await()
                 val user = authResult.user
                 val token = user?.getIdToken(false)?.await()?.token
@@ -116,6 +126,18 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
+
+    fun checkUsernameExists(username: String) {
+        viewModelScope.launch {
+            val query = firestore.collection("users")
+                .whereEqualTo("username", username)
+                .limit(1)
+                .get()
+                .await()
+            _usernameExists.value = !query.isEmpty
+        }
+    }
+
     companion object {
         private const val USERS_COLLECTION = "users"
         private const val EMAIL = "email"
