@@ -71,6 +71,8 @@ dependencies {
 
     implementation ("androidx.room:room-runtime:2.6.1")
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.compose.colorpicker)
+    implementation("com.github.skydoves:colorpickerview:2.3.0")
     kapt ("androidx.room:room-compiler:2.6.1")
     implementation ("androidx.room:room-ktx:2.6.1")
     implementation("androidx.compose.material:material:1.7.6")
