@@ -73,16 +73,13 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             try {
-                // 1. Tentar buscar o usuário pelo username
                 val user = getUserByUsername(emailOrUsername)
 
                 if (user != null) {
-                    // 2. Se encontrou o usuário pelo username, usar o email para login
                     val authResult = auth.signInWithEmailAndPassword(user.email, password).await()
                     val token = authResult.user?.getIdToken(false)?.await()?.token
                     _loginState.value = LoginState.Success(token)
                 } else {
-                    // 3. Se não encontrou, tentar login com email diretamente
                     val authResult = auth.signInWithEmailAndPassword(emailOrUsername, password).await()
                     val token = authResult.user?.getIdToken(false)?.await()?.token
                     _loginState.value = LoginState.Success(token)
