@@ -159,7 +159,7 @@ fun AppNavigation(
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             val noteId = backStackEntry.arguments?.getString("noteId")
-            NotesDetailsScreen(navController = navController, loginViewModel = loginViewmodel, viewModel = notesViewModel, token = token, noteId = noteId)
+            NotesDetailsScreen(navController = navController, loginViewModel = loginViewmodel, viewModel = notesViewModel, token = token, configurationsViewModel = configurationsViewModel, noteId = noteId)
         }
 
         composable(DestinationScreen.LoginScreen.route) {

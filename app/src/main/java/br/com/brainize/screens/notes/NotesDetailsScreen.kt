@@ -1,5 +1,6 @@
 package br.com.brainize.screens.notes
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,8 +44,10 @@ import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
+import br.com.brainize.components.getColorFromTaskColor
 import br.com.brainize.model.Note
 import br.com.brainize.navigation.DestinationScreen
+import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
 
@@ -53,6 +56,7 @@ fun NotesDetailsScreen(
     navController: NavController,
     viewModel: NotesViewModel,
     loginViewModel: LoginViewModel,
+    configurationsViewModel: ConfigurationsViewModel,
     token: String?,
     noteId: String?
 ) {
@@ -76,6 +80,9 @@ fun NotesDetailsScreen(
         isLoading = true
         if (!noteId.isNullOrEmpty()) {
             viewModel.getNoteById(noteId)
+        }
+        configurationsViewModel.loadConfigurations {
+            isLoading = false
         }
         isLoading = false
     }
@@ -108,6 +115,7 @@ fun NotesDetailsScreen(
                             color = Color.White,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
+                        Log.d("colors", "NotesDetailsScreen: ${getColorFromTaskColor(configurationsViewModel.taskColor).value} ")
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -115,9 +123,9 @@ fun NotesDetailsScreen(
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = if (note.type == "Tarefa") {
-                                    Color(0xFF90EE90)
+                                    Color(getColorFromTaskColor(configurationsViewModel.taskColor).value)
                                 } else {
-                                    Color(0xFFbc60c4)
+                                    Color(getColorFromTaskColor(configurationsViewModel.reminderColor).value)
                                 }
                             )
                         ) {
