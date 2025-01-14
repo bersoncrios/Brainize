@@ -83,53 +83,61 @@ class ConfigurationsViewModel: ViewModel() {
         }
     }
 
-    fun saveConfigurations() {
+    fun saveConfigurations(onSaveComplete: (Boolean) -> Unit) {
         viewModelScope.launch {
             val userId = auth.currentUser?.uid
             if (userId != null) {
                 val configDocument = configCollection.document(userId)
-                val config = UserConfigurations(
-                    carEnabled = _carEnabled,
-                    houseEnabled = _houseEnabled,
-                    notesEnabled = _notesEnabled,
-                    agendaEnabled = _agendaEnabled,
-                    collectionEnabled = _collectionEnabled
+                val updates = hashMapOf<String, Any>(
+                    "carEnabled" to _carEnabled,
+                    "houseEnabled" to _houseEnabled,
+                    "notesEnabled" to _notesEnabled,
+                    "agendaEnabled" to _agendaEnabled,
+                    "collectionEnabled" to _collectionEnabled,
+                    "taskColor" to _taskColor,
+                    "reminderColor" to _reminderColor
                 )
                 try {
-                    configDocument.set(config).await()
-                   } catch (e: Exception) {
-                    Log.e(
-                        "ConfigurationsViewModel",
-                        "Error saving configurations to Firestore for user $userId",
-                        e
-                    )
-                }
-            } else {
-                Log.e("ConfigurationsViewModel", "User not logged in, cannot save configurations")
-            }
-        }
-    }
-
-    fun saveColorConfigurations() {
-        viewModelScope.launch {
-            val userId = auth.currentUser?.uid
-            if (userId != null) {
-                val configDocument = configCollection.document(userId)
-                val config = UserConfigurations(
-                    taskColor = _taskColor,
-                    reminderColor = _reminderColor
-                )
-                try {
-                    configDocument.set(config).await()
+                    configDocument.update(updates).await()
+                    onSaveComplete(true)
                 } catch (e: Exception) {
                     Log.e(
                         "ConfigurationsViewModel",
                         "Error saving configurations to Firestore for user $userId",
                         e
                     )
+                    onSaveComplete(false)
                 }
             } else {
                 Log.e("ConfigurationsViewModel", "User not logged in, cannot save configurations")
+                onSaveComplete(false)
+            }
+        }
+    }
+
+    fun saveColorConfigurations(onSaveComplete: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                val configDocument = configCollection.document(userId)
+                val updates = hashMapOf<String, Any>(
+                    "taskColor" to _taskColor,
+                    "reminderColor" to _reminderColor
+                )
+                try {
+                    configDocument.update(updates).await()
+                    onSaveComplete(true)
+                } catch (e: Exception) {
+                    Log.e(
+                        "ConfigurationsViewModel",
+                        "Error saving configurations to Firestore for user $userId",
+                        e
+                    )
+                    onSaveComplete(false)
+                }
+            } else {
+                Log.e("ConfigurationsViewModel", "User not logged in, cannot save configurations")
+                onSaveComplete(false)
             }
         }
     }
