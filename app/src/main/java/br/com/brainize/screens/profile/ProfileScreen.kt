@@ -138,6 +138,23 @@ fun ProfileScreen(
                     )
                 )
             }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(
+                    onClick = {
+                        loginViewModel.logout(navController)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Sair")
+                }
+            }
         }
     }
 

@@ -98,7 +98,7 @@ class ConfigurationsViewModel: ViewModel() {
                     "reminderColor" to _reminderColor
                 )
                 try {
-                    configDocument.update(updates).await()
+                    configDocument.set(updates, com.google.firebase.firestore.SetOptions.merge()).await()
                     onSaveComplete(true)
                 } catch (e: Exception) {
                     Log.e(
@@ -125,7 +125,7 @@ class ConfigurationsViewModel: ViewModel() {
                     "reminderColor" to _reminderColor
                 )
                 try {
-                    configDocument.update(updates).await()
+                    configDocument.set(updates, com.google.firebase.firestore.SetOptions.merge()).await()
                     onSaveComplete(true)
                 } catch (e: Exception) {
                     Log.e(
@@ -141,7 +141,6 @@ class ConfigurationsViewModel: ViewModel() {
             }
         }
     }
-
     fun setCarEnabled(value: Boolean) {
         _carEnabled = value
     }

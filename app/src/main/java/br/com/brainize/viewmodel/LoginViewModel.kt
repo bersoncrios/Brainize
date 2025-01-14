@@ -1,6 +1,7 @@
 package br.com.brainize.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,7 @@ import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.states.LoginState
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,8 +42,9 @@ class LoginViewModel : ViewModel() {
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
 
     fun logout(navController: NavController) {
-        navController.navigate(DestinationScreen.LoginScreen.route)
         auth.signOut()
+        _loginState.value = LoginState.Idle
+        navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
     suspend fun getUserByUID(uid: String): String {
@@ -94,8 +97,7 @@ class LoginViewModel : ViewModel() {
     private suspend fun getUserByUsername(username: String): User? {
         return suspendCancellableCoroutine { continuation ->
             firestore.collection(USERS_COLLECTION)
-                .whereEqualTo(USERNAME, username)
-                .limit(1)
+                .whereEqualTo(USERNAME, username).limit(1)
                 .get().addOnSuccessListener { querySnapshot ->
                     if (!querySnapshot.isEmpty) {
                         val document = querySnapshot.documents[0]
@@ -157,8 +159,7 @@ class LoginViewModel : ViewModel() {
                         .collection(USERS_COLLECTION)
                         .document(it.uid)
                         .set(userMap)
-                        .await()
-                }
+                        .await()}
                 _loginState.value =LoginState.Success(token)
 
             } catch (e: Exception) {
