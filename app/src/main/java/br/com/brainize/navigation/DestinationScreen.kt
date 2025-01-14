@@ -8,6 +8,8 @@ sealed class DestinationScreen(val route: String) {
 
     object LoginScreen : DestinationScreen("login_screen")
 
+    object ForgotPasswordScreen : DestinationScreen("forgot_password_screen")
+
     object RegisterScreen : DestinationScreen("register_screen")
 
     object HomeScreen : DestinationScreen("home_screen/{token}") {
@@ -102,6 +104,7 @@ sealed class DestinationScreen(val route: String) {
         ProfileScreen.route.replace("{token}", "").substringBefore("/") -> ProfileScreen
         CollectionScreen.route.replace("{token}", "").substringBefore("/") -> CollectionScreen
         LoginScreen.route -> LoginScreen
+        ForgotPasswordScreen.route -> ForgotPasswordScreen
         RegisterScreen.route -> RegisterScreen
         null -> HomeScreen
         else -> throw IllegalArgumentException("Route $route is not recognized")

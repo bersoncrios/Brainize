@@ -85,6 +85,18 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    fun recoveryPassword(email: String, context: Context) {
+        viewModelScope.launch {
+            _loginState.value = LoginState.Loading
+            try {
+                auth.sendPasswordResetEmail(email).await()
+                _loginState.value = LoginState.Success(null)
+            } catch (e: Exception) {
+                _loginState.value =
+                    LoginState.Error(e.message ?: context.getString(R.string.unknow_error))
+            }
+        }
+    }
 
     fun createUserWithEmailAndPassword(
         email: String,

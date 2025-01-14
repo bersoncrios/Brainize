@@ -12,6 +12,7 @@ import br.com.brainize.screens.configurations.ConfigurationScreen
 import br.com.brainize.screens.configurations.MainMenuConfigurationScreen
 import br.com.brainize.screens.home.HomeScreen
 import br.com.brainize.screens.house.HouseScreen
+import br.com.brainize.screens.login.ForgotPasswordScreen
 import br.com.brainize.screens.login.LoginScreen
 import br.com.brainize.screens.login.RegisterScreen
 import br.com.brainize.screens.notes.NotesDetailsScreen
@@ -163,6 +164,10 @@ fun AppNavigation(
 
         composable(DestinationScreen.LoginScreen.route) {
             LoginScreen(navController = navController, viewModel = loginViewmodel)
+        }
+
+        composable(DestinationScreen.ForgotPasswordScreen.route) {
+            ForgotPasswordScreen(navController = navController, viewModel = loginViewmodel)
         }
 
         composable(DestinationScreen.RegisterScreen.route) {
