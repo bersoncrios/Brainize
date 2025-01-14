@@ -36,7 +36,12 @@ import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel, configurationsViewModel: ConfigurationsViewModel, token: String?) {
+fun HomeScreen(
+    navController: NavController,
+    loginViewModel: LoginViewModel,
+    configurationsViewModel: ConfigurationsViewModel,
+    token: String?
+) {
 
     var completeName by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(true) }

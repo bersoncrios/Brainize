@@ -1,5 +1,6 @@
 package br.com.brainize.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,11 +36,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 @Composable
 fun NoteItem(
     note: Note,
+    taskColor: Color = Color(0xFF90EE90),
+    reminderColor: Color = Color(0xFFbc60c4),
     onDelete: (String) -> Unit,
-    onLongPress: (Note) -> Unit
+    onLongPress: (Note) -> Unit,
 ) {
     var showConfirmDialog by remember { mutableStateOf(false) }
 
+    Log.d("colors", "NoteItem: $taskColor e $reminderColor")
     Card(
         modifier = Modifier
             .padding(12.dp)
@@ -51,9 +55,9 @@ fun NoteItem(
         elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (note.type == "Tarefa") {
-                Color(0xFF90EE90)
+                taskColor
             } else {
-                Color(0xFFbc60c4)
+                reminderColor
             }
         )
     ) {

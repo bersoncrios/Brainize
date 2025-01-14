@@ -35,11 +35,11 @@ class ConfigurationsViewModel: ViewModel() {
     private var _collectionEnabled by mutableStateOf(true)
     val collectionEnabled: Boolean get() = _collectionEnabled
 
-    private var _primaryColor by mutableStateOf("#FFFFFF")
-    val primaryColor: String get() = _primaryColor
+    private var _taskColor by mutableStateOf("#90EE90")
+    val taskColor: String get() = _taskColor
 
-    private var _secondaryColor by mutableStateOf("#000000")
-    val secondaryColor: String get() = _secondaryColor
+    private var _reminderColor by mutableStateOf("#bc60c4")
+    val reminderColor: String get() = _reminderColor
 
     fun loadConfigurations(onConfigLoaded: (UserConfigurations)-> Unit) {
         viewModelScope.launch {
@@ -50,8 +50,8 @@ class ConfigurationsViewModel: ViewModel() {
                 _notesEnabled = config.notesEnabled
                 _agendaEnabled = config.agendaEnabled
                 _collectionEnabled = config.collectionEnabled
-                _primaryColor = config.primaryColor
-                _secondaryColor = config.secondaryColor
+                _taskColor = config.taskColor
+                _reminderColor = config.reminderColor
                 onConfigLoaded(config)
             } catch (e: Exception) {
                 Log.e("ConfigurationsViewModel", "Error loading configurations from Firestore", e)
@@ -97,10 +97,7 @@ class ConfigurationsViewModel: ViewModel() {
                 )
                 try {
                     configDocument.set(config).await()
-                    Log.d(
-                        "ConfigurationsViewModel",
-                        "Configurations saved to Firestore for user $userId: carEnabled = $_carEnabled, houseEnabled = $_houseEnabled, notesEnabled = $_notesEnabled, agendaEnabled = $_agendaEnabled"
-                    )} catch (e: Exception) {
+                   } catch (e: Exception) {
                     Log.e(
                         "ConfigurationsViewModel",
                         "Error saving configurations to Firestore for user $userId",
@@ -119,15 +116,11 @@ class ConfigurationsViewModel: ViewModel() {
             if (userId != null) {
                 val configDocument = configCollection.document(userId)
                 val config = UserConfigurations(
-                    primaryColor = _primaryColor,
-                    secondaryColor = _secondaryColor
+                    taskColor = _taskColor,
+                    reminderColor = _reminderColor
                 )
                 try {
                     configDocument.set(config).await()
-                    Log.d(
-                        "ConfigurationsViewModel",
-                        "Configurations saved to Firestore for user $userId: primaryColor = $_primaryColor, secondaryColor = $_secondaryColor"
-                    )
                 } catch (e: Exception) {
                     Log.e(
                         "ConfigurationsViewModel",
@@ -161,12 +154,12 @@ class ConfigurationsViewModel: ViewModel() {
         _collectionEnabled = value
     }
 
-    fun setPrimaryColor(value: String) {
-        _primaryColor = value
+    fun setTaskColor(value: String) {
+        _taskColor = value
     }
 
-    fun setSecondaryColor(value: String) {
-        _secondaryColor = value
+    fun setReminderColor(value: String) {
+        _reminderColor = value
     }
 
     data class UserConfigurations(
@@ -175,7 +168,7 @@ class ConfigurationsViewModel: ViewModel() {
         var notesEnabled: Boolean = true,
         var agendaEnabled: Boolean = true,
         var collectionEnabled: Boolean = true,
-        var primaryColor: String = "#FFFFFF",
-        var secondaryColor: String = "#000000"
+        var taskColor: String = "#90EE90",
+        var reminderColor: String = "#bc60c4"
     )
 }

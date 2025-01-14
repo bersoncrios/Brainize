@@ -22,8 +22,10 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,13 +39,15 @@ import br.com.brainize.components.NoteItem
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
-import br.com.brainize.model.Note
+import br.com.brainize.viewmodel.ConfigurationsViewModel
+import br.com.brainize.components.getColorFromTaskColor
 
 @Composable
 fun NotesScreen(
     navController: NavController,
     viewModel: NotesViewModel,
     loginViewModel: LoginViewModel,
+    configurationsViewModel: ConfigurationsViewModel,
     token: String?
 ) {
     val context = LocalContext.current
@@ -59,18 +63,23 @@ fun NotesScreen(
     val newNoteDueDate = remember { mutableStateOf("") }
     val newNoteDueTime = remember { mutableStateOf("") }
 
+    var isLoading by remember { mutableStateOf(true) }
+
     if (!loginViewModel.hasLoggedUser() && token.isNullOrEmpty()) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
     LaunchedEffect(Unit) {
         viewModel.loadNotes()
+        configurationsViewModel.loadConfigurations {
+            isLoading = false
+        }
     }
 
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = stringResource(R.string.my_notes_label),
+                title =stringResource(R.string.my_notes_label),
                 onBackClick = { navController.popBackStack() }
             )
         },
@@ -108,8 +117,12 @@ fun NotesScreen(
                     items(
                         items = sortedNotes,
                         key = { note -> note.id }) { note ->
+                        val taskColor = getColorFromTaskColor(configurationsViewModel.taskColor)
+                        val reminderColor = getColorFromTaskColor(configurationsViewModel.reminderColor)
                         NoteItem(
                             note = note,
+                            taskColor = taskColor,
+                            reminderColor = reminderColor,
                             onDelete = { noteId -> viewModel.deleteNote(noteId) },
                             onLongPress = {
                                 navController.navigate(DestinationScreen.NotesDetailsScreen.createRoute(token, note.id))

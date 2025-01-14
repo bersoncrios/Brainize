@@ -1,12 +1,17 @@
 package br.com.brainize.screens.configurations
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -40,16 +46,16 @@ fun AppsColorsConfigurationScreen(
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
-    var primaryColorHex by remember { mutableStateOf("#FFFFFF") }
-    var secondaryColorHex by remember { mutableStateOf("#000000") }
-    var showPrimaryColorDialog by remember { mutableStateOf(false) }
-    var showSecondaryColorDialog by remember { mutableStateOf(false) }
+    var taskColorHex by remember { mutableStateOf("#FFFFFF") }
+    var reminderColorHex by remember { mutableStateOf("#000000") }
+    var showTaskColorDialog by remember { mutableStateOf(false) }
+    var showReminderColorDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         configurationsViewModel.loadConfigurations { config ->
             if (config != null) {
-                primaryColorHex = config.primaryColor
-                secondaryColorHex = config.secondaryColor
+                taskColorHex = config.taskColor
+                reminderColorHex = config.reminderColor
             }
         }
     }
@@ -71,43 +77,63 @@ fun AppsColorsConfigurationScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(onClick = { showPrimaryColorDialog = true }) {
-                    Text("Selecionar Cor Primária")
+                Button(onClick = { showTaskColorDialog = true }) {
+                    Text("Selecionar Cor da Tarefa")
                 }
-                Text(text = "Cor Primária: $primaryColorHex")
+                Spacer(modifier = Modifier.height(8.dp))
+                ColorDisplayCard(colorHex = taskColorHex)
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { showSecondaryColorDialog = true }) {
-                    Text("Selecionar Cor Secundária")
+                Button(onClick = { showReminderColorDialog = true }) {
+                    Text("Selecionar Cor do Lembrete")
                 }
-                Text(text = "Cor Secundária: $secondaryColorHex")
+                Spacer(modifier = Modifier.height(8.dp))
+                ColorDisplayCard(colorHex = reminderColorHex)
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = {
-                    configurationsViewModel.setPrimaryColor(primaryColorHex)
-                    configurationsViewModel.setSecondaryColor(secondaryColorHex)
+                    configurationsViewModel.setTaskColor(taskColorHex)
+                    configurationsViewModel.setReminderColor(reminderColorHex)
                     configurationsViewModel.saveColorConfigurations()
                 }) {
                     Text(text = "Salvar Configurações")
-                }
-            }
+                }}
         }
     }
     ColorPickerComposeDialog(
-        showDialog = showPrimaryColorDialog,
-        initialColor = primaryColorHex,
-        title = "Selecione a Cor Primária",
+        showDialog = showTaskColorDialog,
+        initialColor = taskColorHex,
+        title = "Selecione a Cor da Tarefa",
         onColorSelected = { color ->
-            primaryColorHex = color
-            showPrimaryColorDialog = false
+            taskColorHex = color
+            showTaskColorDialog = false
         },
-        onDismiss = { showPrimaryColorDialog = false }
+        onDismiss = { showTaskColorDialog = false }
     )
     ColorPickerComposeDialog(
-        showDialog = showSecondaryColorDialog,initialColor = secondaryColorHex,
-        title = "Selecione a Cor Secundária",
+        showDialog = showReminderColorDialog,initialColor = reminderColorHex,
+        title = "Selecione a Cor do Lembrete",
         onColorSelected = { color ->
-            secondaryColorHex = color
-            showSecondaryColorDialog = false
+            reminderColorHex = color
+            showReminderColorDialog = false
         },
-        onDismiss = { showSecondaryColorDialog = false }
+        onDismiss = { showReminderColorDialog = false }
     )
+}
+
+@Composable
+fun ColorDisplayCard(colorHex: String) {
+    val color = try {
+        Color(android.graphics.Color.parseColor(colorHex))
+    } catch (e: IllegalArgumentException) {
+        Color.Gray // Cor padrão caso a string seja inválida
+    }
+    Card(
+        modifier = Modifier
+            .size(60.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color)
+        )
+    }
 }

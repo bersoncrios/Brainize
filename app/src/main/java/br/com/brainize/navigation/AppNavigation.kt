@@ -103,7 +103,7 @@ fun AppNavigation(
             arguments = DestinationScreen.NotesScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            NotesScreen(navController = navController, viewModel = notesViewModel, loginViewModel = loginViewmodel, token = token)
+            NotesScreen(navController = navController, viewModel = notesViewModel, loginViewModel = loginViewmodel, configurationsViewModel = configurationsViewModel, token = token)
         }
 
         composable(
