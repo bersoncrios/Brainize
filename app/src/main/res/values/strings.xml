@@ -29,6 +29,7 @@
     <string name="unknow_error">Erro desconhecido</string>
     <string name="dont_possible_recovery_uid">não foi possivel resgatar o uid</string>
     <string name="email_label">Email</string>
+    <string name="username">Username</string>
     <string name="password_label">Senha</string>
     <string name="create_account_label">Criar Conta</string>
     <string name="enter_label">Entrar</string>
@@ -61,7 +62,7 @@
     <string name="has_not_icon">has not icon</string>
     <string name="name_placeholder">Ex: José Silva</string>
     <string name="username_label">Defina seu nome de usuário</string>
-    <string name="username_placeholder">ex: seuusername</string>
+    <string name="username_placeholder">seuusername</string>
     <string name="email_register_label">Informe seu email</string>
     <string name="password_register_label">escolha uma senha forte</string>
     <string name="have_account">Tenho uma conta</string>

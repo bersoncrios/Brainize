@@ -54,7 +54,8 @@ class LoginViewModel : ViewModel() {
                     if (document.exists()) {
                         val name = document.getString("completeName") ?: ""
                         _completeName.value = name
-                        continuation.resume(name)} else {
+                        continuation.resume(name)
+                    } else {
                         continuation.resume("")
                     }
                 }
@@ -65,23 +66,53 @@ class LoginViewModel : ViewModel() {
     }
 
     fun loginWithEmailAndPassword(
-        email: String,
+        emailOrUsername: String,
         password: String,
         context: Context
     ) {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             try {
-                val authResult =
-                    auth.signInWithEmailAndPassword(email, password).await()
-                val token =
-                    authResult.user?.getIdToken(false)?.await()?.token
-                _loginState.value =
-                    LoginState.Success(token)
+                // 1. Tentar buscar o usuário pelo username
+                val user = getUserByUsername(emailOrUsername)
+
+                if (user != null) {
+                    // 2. Se encontrou o usuário pelo username, usar o email para login
+                    val authResult = auth.signInWithEmailAndPassword(user.email, password).await()
+                    val token = authResult.user?.getIdToken(false)?.await()?.token
+                    _loginState.value = LoginState.Success(token)
+                } else {
+                    // 3. Se não encontrou, tentar login com email diretamente
+                    val authResult = auth.signInWithEmailAndPassword(emailOrUsername, password).await()
+                    val token = authResult.user?.getIdToken(false)?.await()?.token
+                    _loginState.value = LoginState.Success(token)
+                }
             } catch (e: Exception) {
                 _loginState.value =
                     LoginState.Error(e.message ?: context.getString(R.string.unknow_error))
             }
+        }
+    }
+
+    private suspend fun getUserByUsername(username: String): User? {
+        return suspendCancellableCoroutine { continuation ->
+            firestore.collection(USERS_COLLECTION)
+                .whereEqualTo(USERNAME, username)
+                .limit(1)
+                .get().addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val document = querySnapshot.documents[0]
+                        val email = document.getString(EMAIL) ?: ""
+                        val uid = document.getString(UID) ?: ""
+                        val user = User(email, uid)
+                        continuation.resume(user)
+                    } else {
+                        continuation.resume(null)
+                    }
+                }
+                .addOnFailureListener {
+                    continuation.resume(null)
+                }
         }
     }
 
@@ -131,7 +162,7 @@ class LoginViewModel : ViewModel() {
                         .set(userMap)
                         .await()
                 }
-                _loginState.value = LoginState.Success(token)
+                _loginState.value =LoginState.Success(token)
 
             } catch (e: Exception) {
                 _loginState.value = LoginState.Error(e.message ?: context.getString(R.string.unknow_error))
@@ -159,3 +190,5 @@ class LoginViewModel : ViewModel() {
         private const val UID = "uid"
     }
 }
+
+data class User(val email: String, val uid: String)
