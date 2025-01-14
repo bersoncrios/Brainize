@@ -1,15 +1,17 @@
 package br.com.brainize.screens.configurations
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
@@ -24,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.brainize.R
@@ -74,28 +77,59 @@ fun AppsColorsConfigurationScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(onClick = { showTaskColorDialog = true }) {
-                    Text("Selecionar Cor da Tarefa")
+                // Cor da Tarefa
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Cor da Tarefa:", modifier = Modifier.weight(1f))
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ColorDisplayCard(colorHex = taskColorHex)
+                ColorDisplayCard(
+                    colorHex = taskColorHex,
+                    size = 80.dp,onClick = { showTaskColorDialog = true }
+                )
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { showReminderColorDialog = true }) {
-                    Text("Selecionar Cor do Lembrete")
+
+                // Cor do Lembrete
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Cor do Lembrete:", modifier = Modifier.weight(1f))
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ColorDisplayCard(colorHex = reminderColorHex)
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = {
-                    configurationsViewModel.setTaskColor(taskColorHex)
-                    configurationsViewModel.setReminderColor(reminderColorHex)
-                    configurationsViewModel.saveColorConfigurations()
-                }) {
-                    Text(text = "Salvar Configurações")
-                }}
+                ColorDisplayCard(
+                    colorHex = reminderColorHex,
+                    size = 80.dp,
+                    onClick = { showReminderColorDialog = true }
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = {
+                        configurationsViewModel.setTaskColor(taskColorHex)
+                        configurationsViewModel.setReminderColor(reminderColorHex)
+                        configurationsViewModel.saveColorConfigurations()
+                    }
+                ) {
+                    Text(text = "Salvar Cores")
+                }
+            }
         }
     }
     ColorPickerComposeDialog(
@@ -109,7 +143,8 @@ fun AppsColorsConfigurationScreen(
         onDismiss = { showTaskColorDialog = false }
     )
     ColorPickerComposeDialog(
-        showDialog = showReminderColorDialog,initialColor = reminderColorHex,
+        showDialog = showReminderColorDialog,
+        initialColor = reminderColorHex,
         title = "Selecione a Cor do Lembrete",
         onColorSelected = { color ->
             reminderColorHex = color
@@ -120,20 +155,20 @@ fun AppsColorsConfigurationScreen(
 }
 
 @Composable
-fun ColorDisplayCard(colorHex: String) {
+fun ColorDisplayCard(colorHex: String, size: Dp, onClick: () -> Unit) {
     val color = try {
         Color(android.graphics.Color.parseColor(colorHex))
     } catch (e: IllegalArgumentException) {
-        Color.Gray // Cor padrão caso a string seja inválida
+        Color.Gray
     }
     Card(
         modifier = Modifier
-            .size(60.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color)
-        )
+            .size(size)
+            .clickable { onClick() }
+    ) {Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color)
+    )
     }
 }

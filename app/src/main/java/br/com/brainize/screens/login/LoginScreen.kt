@@ -111,10 +111,10 @@ fun LoginScreen(
 
                 BrainizerOutlinedTextField(
                     value = email,
-                    label = stringResource(R.string.username_label),
+                    label = stringResource(R.string.email_ou_nome_de_usu_rio),
                     icon = Icons.Filled.Person,
                     iconDescription = stringResource(R.string.person_icon_description),
-                    placeholder = stringResource(R.string.username_placeholder)
+                    placeholder = ""
                 ) {
                     email = it
                 }
@@ -126,7 +126,7 @@ fun LoginScreen(
                     label = stringResource(R.string.password_label),
                     icon = Icons.Filled.Lock,
                     iconDescription = stringResource(R.string.password_icon_description),
-                    placeholder = stringResource(R.string.password_placeholder),
+                    placeholder = "******",
                     isPassword = true
                 ) {
                     password = it
