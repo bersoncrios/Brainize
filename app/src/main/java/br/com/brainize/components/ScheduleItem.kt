@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.brainize.R
-import br.com.brainize.viewmodel.Schedule
+import br.com.brainize.model.Schedule
 
 @Composable
 fun ScheduleItem(
@@ -93,6 +93,11 @@ fun ScheduleItem(
             )
             Text(
                 text = "Prioridade: $currentPriority",
+                fontSize = 16.sp,
+                color = Color.DarkGray
+            )
+            Text(
+                text = "TAG: ${schedule.tag}",
                 fontSize = 16.sp,
                 color = Color.DarkGray
             )

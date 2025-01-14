@@ -40,7 +40,6 @@ import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.components.ScheduleItem
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
-import br.com.brainize.viewmodel.Schedule
 import br.com.brainize.viewmodel.ScheduleViewModel
 import java.util.Calendar
 import java.util.Locale
@@ -62,6 +61,7 @@ fun ScheduleScreen(
     val newScheduleTime = remember { mutableStateOf("") }
     val newScheduleDate = remember { mutableStateOf("") }
     val newScheduleName = remember { mutableStateOf("") }
+    val newScheduleTag = remember { mutableStateOf("") }
     var newSchedulePriority by remember { mutableStateOf("") }
     val schedulePriorities = remember { mutableMapOf<String, String>() }
     var expandedPriority by remember { mutableStateOf(false) }
@@ -144,6 +144,11 @@ fun ScheduleScreen(
                         label = { Text("Nome") }
                     )
                     OutlinedTextField(
+                        value = newScheduleTag.value,
+                        onValueChange = { newScheduleTag.value = it },
+                        label = { Text("Tag") }
+                    )
+                    OutlinedTextField(
                         value = newScheduleDate.value,
                         onValueChange = { },
                         label = { Text("Data") },
@@ -207,12 +212,14 @@ fun ScheduleScreen(
                         newScheduleTime.value,
                         newScheduleDate.value,
                         newScheduleName.value,
-                        newSchedulePriority
+                        newSchedulePriority,
+                        newScheduleTag.value
                     )
                     newScheduleTime.value = ""
                     newScheduleDate.value = ""
                     newScheduleName.value = ""
                     newSchedulePriority = ""
+                    newScheduleTag.value = ""
                     openDialog.value = false
                 }) {
                     Text("Salvar")

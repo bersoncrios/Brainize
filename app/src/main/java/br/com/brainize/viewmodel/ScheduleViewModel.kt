@@ -3,6 +3,7 @@ package br.com.brainize.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.brainize.model.Schedule
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -10,23 +11,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.util.UUID
-
-data class Schedule(
-    val id: String = UUID.randomUUID().toString(),
-    val time: String = "",
-    val date: String = "",
-    val name: String = "",
-    val priority: String = ""
-)
 
 class ScheduleViewModel : ViewModel() {
     private val auth: FirebaseAuth = Firebase.auth
     private val firestore: FirebaseFirestore = Firebase.firestore
-
-    private var _completeName = mutableStateOf("")
-    val completeName: String
-        get() = _completeName.value
 
     private val _schedules = mutableStateOf<List<Schedule>>(emptyList())
     val schedules: androidx.compose.runtime.State<List<Schedule>> = _schedules
@@ -34,12 +22,13 @@ class ScheduleViewModel : ViewModel() {
     private fun getCurrentUser() = auth.currentUser
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
 
-    fun addSchedule(time: String, date: String, name: String, priority: String) {
+    fun addSchedule(time: String, date: String, name: String, priority: String, tag: String) {
         val schedule = Schedule(
             time = time,
             date = date,
             name = name,
-            priority = priority
+            priority = priority,
+            tag = tag,
         )
         val userId = getCurrentUser()?.uid
         if (userId != null) {
