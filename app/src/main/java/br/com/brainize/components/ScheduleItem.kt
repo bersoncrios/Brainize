@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -116,16 +118,36 @@ fun ConfirmDeleteDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Deseja excluir esta agenda?") },
-        text = { Text("Realmente deseja excluir esta agenda ?") },
+        title = {
+            Text(
+                text = "Deseja excluir esta agenda?",
+                color = Color.White
+            )
+                },
+        text = {
+            Text(
+                text = "Realmente deseja excluir esta agenda ?",
+                color = Color.White
+            ) },
         confirmButton = {
-            TextButton(onClick = onConfirm){
-                Text(stringResource(R.string.confirm_label))
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFbc60c4)
+                )
+            ){
+                Text(
+                    text = stringResource(R.string.confirm_label),
+                    color = Color.White
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel_label))
+                Text(
+                    text = stringResource(R.string.cancel_label),
+                    color = Color.White
+                )
             }
         },
         containerColor = Color(0xFF372080)
