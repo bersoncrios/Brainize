@@ -1,6 +1,7 @@
 package br.com.brainize.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -66,37 +67,43 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = 32.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(top = 32.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Text(
-                        text = "Olá, ".uppercase(),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = completeName.uppercase(),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+                        .fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 32.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Text(
+                            text = "Olá, ".uppercase(),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = completeName.uppercase(),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                        .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -105,7 +112,8 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly) {
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
                         if (configurationsViewModel.carEnabled && remoteConfigViewModel._carEnable) {
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.CarScreen.route) },
@@ -150,7 +158,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        horizontalArrangement = Arrangement.Start
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         if (configurationsViewModel.collectionEnabled && remoteConfigViewModel._collectionEnable) {
                             BrainizerSelectButton(
@@ -165,8 +173,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
+                        horizontalArrangement = Arrangement.SpaceEvenly) {
                         if (remoteConfigViewModel._configurationtioEnable) {
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.ConfigurationScreen.route) },
@@ -176,10 +183,10 @@ fun HomeScreen(
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        if (remoteConfigViewModel._profileEnable){
+                        if (remoteConfigViewModel._profileEnable) {
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.ProfileScreen.route) },
-                                icon= R.drawable.profile,
+                                icon = R.drawable.profile,
                             )
                         }
                     }
