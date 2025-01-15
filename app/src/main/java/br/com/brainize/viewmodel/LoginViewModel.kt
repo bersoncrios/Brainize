@@ -138,7 +138,7 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             try {
-                checkUsernameExists(username)
+                checkUsernameExists(username.lowercase())
                 if (_usernameExists.value) {
                     _loginState.value = LoginState.Error("Este username já está em uso")
                     return@launch
@@ -151,7 +151,7 @@ class LoginViewModel : ViewModel() {
                     val userMap = hashMapOf(
                         EMAIL to email,
                         COMPLETE_NAME to name,
-                        USERNAME to username,
+                        USERNAME to username.lowercase(),
                         UID to (auth.currentUser?.uid ?: context.getString(R.string.dont_possible_recovery_uid)),
                         CREATEDAT to System.currentTimeMillis()
                     )
@@ -171,7 +171,7 @@ class LoginViewModel : ViewModel() {
     fun checkUsernameExists(username: String) {
         viewModelScope.launch {
             val query = firestore.collection("users")
-                .whereEqualTo("username", username)
+                .whereEqualTo("username", username.lowercase())
                 .limit(1)
                 .get()
                 .await()

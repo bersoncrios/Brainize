@@ -125,7 +125,7 @@ fun RegisterScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     BrainizerOutlinedTextField(
-                        value = username,
+                        value = username.lowercase(),
                         label = stringResource(R.string.username_label),
                         iconDescription = stringResource(R.string.has_not_icon),
                         placeholder = stringResource(R.string.username_placeholder)

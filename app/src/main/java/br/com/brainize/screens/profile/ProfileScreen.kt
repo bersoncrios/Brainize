@@ -150,9 +150,13 @@ fun ProfileScreen(
                     onClick = {
                         loginViewModel.logout(navController)
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
                 ) {
-                    Text(text = "Sair")
+                    Text(
+                        text = "Sair",
+                        color = Color.White
+                    )
                 }
             }
         }
@@ -161,12 +165,19 @@ fun ProfileScreen(
     if (openNameDialog) {
         AlertDialog(
             onDismissRequest = { openNameDialog = false },
-            title = { Text("Editar Nome", style = MaterialTheme.typography.headlineSmall) },
+            title = { Text(
+                text = "Editar Nome",
+                style = MaterialTheme.typography.headlineSmall,
+                color = Color.White
+            ) },
             text = {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Nome") }
+                    label = { Text(
+                        text = "Nome",
+                        color = Color.White
+                    ) }
                 )
             },
             confirmButton = {
@@ -175,16 +186,17 @@ fun ProfileScreen(
                         viewModel.updateUserName(name)
                         openNameDialog = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
                 ) {
-                    Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
+                    Text("Salvar", color = Color.White)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { openNameDialog = false }) {
-                    Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+                    Text(text = "Cancelar", color = Color.White)
                 }
-            }
+            },
+            containerColor = Color(0xFF372080)
         )
     }
 
@@ -194,17 +206,27 @@ fun ProfileScreen(
                 openUsernameDialog = false
                 usernameError = false
             },
-            title = { Text("Editar Username", style = MaterialTheme.typography.headlineSmall) },
+            title = {
+                Text(
+                    text = "Editar Username",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White
+                ) },
             text = {
                 Column {
                     OutlinedTextField(
-                        value = username,
+                        value = username.lowercase(),
                         onValueChange = {
                             username = it
                             usernameError = false
                             viewModel.checkUsernameExists(it)
                         },
-                        label = { Text("Username") },
+                        label = {
+                            Text(
+                                text = "Username",
+                                color = Color.White
+                            )
+                        },
                         isError = usernameError
                     )
                     if (usernameError) {
@@ -222,9 +244,9 @@ fun ProfileScreen(
                             usernameError = true
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
                 ) {
-                    Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
+                    Text("Salvar", color = Color.White)
                 }
             },
             dismissButton = {
@@ -232,9 +254,10 @@ fun ProfileScreen(
                     openUsernameDialog = false
                     usernameError = false
                 }) {
-                    Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+                    Text("Cancelar", color = Color.White)
                 }
-            }
+            },
+            containerColor = Color(0xFF372080)
         )
     }
 }
