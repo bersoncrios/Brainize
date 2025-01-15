@@ -131,7 +131,10 @@ fun ScheduleScreen(
     if (openDialog.value) {
         AlertDialog(
             onDismissRequest = { openDialog.value = false },
-            title = { Text("Nova agenda") },
+            title = { Text(
+                text = "Nova agenda",
+                color = Color.White
+            ) },
             text = {
                 Column {
                     OutlinedTextField(

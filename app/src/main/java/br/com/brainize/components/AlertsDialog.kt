@@ -6,6 +6,9 @@ import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -40,7 +43,10 @@ fun DialogNoteType(
 ){
     AlertDialog(
         onDismissRequest = { openTypeDialog.value = false },
-        title = { Text(stringResource(R.string.note_type_title_alert)) },
+        title = { Text(
+            text = stringResource(R.string.note_type_title_alert),
+            color =  Color.White
+        ) },
         containerColor = Color(0xFF372080),
         tonalElevation = 18.dp,
         text = {
@@ -63,7 +69,7 @@ fun DialogNoteType(
                     )
                     ExposedDropdownMenu(expanded = expanded.value, onDismissRequest = { expanded.value = false }) {
                         options.forEach { option ->
-                            DropdownMenuItem(text = { Text(text = option) },
+                            DropdownMenuItem(text = { Text(text = option, color = Color.White) },
                                 onClick = {
                                     newNoteType.value = option
                                     expanded.value = false
@@ -74,16 +80,26 @@ fun DialogNoteType(
             }
         },
         confirmButton = {
-            TextButton(onClick = {
+            Button(onClick = {
                 openTypeDialog.value = false
                 openDialog.value = true
-            }) {
-                Text(stringResource(id = R.string.continue_label))
+            },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFbc60c4)
+                )
+                ) {
+                Text(
+                    stringResource(id = R.string.continue_label),
+                    color =  Color.White
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = { openTypeDialog.value = false }) {
-                Text(stringResource(id = R.string.cancel_label))
+                Text(
+                    stringResource(id = R.string.cancel_label),
+                    color =  Color.White
+                )
             }
         }
     )
@@ -102,7 +118,10 @@ fun DialogNewNote(
 ){
     AlertDialog(
         onDismissRequest = { openDialog.value = false },
-        title = { Text(stringResource(R.string.dialog_new_anotation_title)) },
+        title = { Text(
+            text = stringResource(R.string.dialog_new_anotation_title),
+            color =  Color.White
+        ) },
         containerColor = Color(0xFF372080),
         tonalElevation = 18.dp,
         text = {
@@ -111,7 +130,10 @@ fun DialogNewNote(
                     value = newNoteTitle.value,
                     onValueChange = { newNoteTitle.value = it },
                     label = {
-                        Text(stringResource(R.string.dialog_new_anotation_title_label))
+                        Text(
+                            text = stringResource(R.string.dialog_new_anotation_title_label),
+                            color =  Color.White
+                        )
                     }
                 )
                 OutlinedTextField(
@@ -120,7 +142,10 @@ fun DialogNewNote(
                     value = newNoteContent.value,
                     onValueChange = { newNoteContent.value = it },
                     label = {
-                        Text(stringResource(R.string.dialog_new_anotation_what_remember))
+                        Text(
+                            text = stringResource(R.string.dialog_new_anotation_what_remember),
+                            color =  Color.White
+                        )
                     }
                 )
                 if (newNoteType.value == TASK_LABEL) {
@@ -148,7 +173,8 @@ fun DialogNewNote(
                         Text(
                             text = if (newNoteDueDate.value.isEmpty())
                                 stringResource(R.string.define_task_date_label) else
-                                stringResource(R.string.done_task_date_label, newNoteDueDate.value)
+                                stringResource(R.string.done_task_date_label, newNoteDueDate.value),
+                            color =  Color.White
                         )
                     }
                     TextButton(onClick = {
@@ -171,15 +197,15 @@ fun DialogNewNote(
                     }) {
                         Text(
                             text = if (newNoteDueTime.value.isEmpty()) stringResource(R.string.task_hour_label) else
-                                stringResource(R.string.define_task_hour_label, newNoteDueTime.value
-                                )
+                                stringResource(R.string.define_task_hour_label, newNoteDueTime.value),
+                            color =  Color.White
                         )
                     }
                 }
             }
         },
         confirmButton = {
-            TextButton(
+            Button(
                 onClick = {
                     viewModel.saveNote(
                         newNoteTitle.value,
@@ -193,8 +219,15 @@ fun DialogNewNote(
                     newNoteDueDate.value = ""
                     newNoteDueTime.value = ""
                     openDialog.value = false
-                }) {
-                Text(stringResource(R.string.save_label))
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFbc60c4)
+                )
+            ) {
+                Text(
+                    text = stringResource(R.string.save_label),
+                    color =  Color.White
+                )
             }
         },
         dismissButton = {
