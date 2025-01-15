@@ -1,12 +1,16 @@
 package br.com.brainize.screens.profile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
@@ -28,7 +32,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -83,80 +91,96 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Profile Header
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = "Nome: ${userData.completeName}",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                    Image(
+                        painter = painterResource(id = R.drawable.profile_placeholder),
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
                     )
-                    IconButton(onClick = { openNameDialog = true }) {
-                        Icon(
-                            Icons.Filled.Edit,
-                            "Editar Nome",tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
                 }
-                Spacer(modifier = Modifier.padding(8.dp))
-                Row(
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = "Username: ${userData.username}",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onSurface
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "@${userData.username}",
+                            style = TextStyle(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
                         )
-                    )
-                    IconButton(onClick = { openUsernameDialog = true }) {
-                        Icon(
-                            Icons.Filled.Edit,
-                            "Editar Username",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
+                        IconButton(onClick = { openUsernameDialog = true }) {
+                            Icon(
+                                Icons.Filled.Edit,
+                                "Editar Nome",
+                                tint = Color.White
+                            )
+                        }
                     }
-                }
-                Spacer(modifier = Modifier.padding(8.dp))
-                Text(
-                    text = "Email: ${userData.email}",
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                )
-            }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Button(
-                    onClick = {
-                        loginViewModel.logout(navController)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = userData.completeName,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White
+                            )
+                        )
+                        IconButton(onClick = { openNameDialog = true }) {
+                            Icon(
+                                Icons.Filled.Edit,
+                                "Editar Username",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.padding(8.dp))
+                // Logout Button
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = "Sair",
-                        color = Color.White
-                    )
+                    Button(
+                        onClick = {
+                            loginViewModel.logout(navController)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
+                    ) {
+                        Text(
+                            text = "Sair",
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }
@@ -165,19 +189,23 @@ fun ProfileScreen(
     if (openNameDialog) {
         AlertDialog(
             onDismissRequest = { openNameDialog = false },
-            title = { Text(
-                text = "Editar Nome",
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color.White
-            ) },
+            title = {
+                Text(
+                    text = "Editar Nome",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White
+                )
+            },
             text = {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text(
-                        text = "Nome",
-                        color = Color.White
-                    ) }
+                    label = {
+                        Text(
+                            text = "Nome",
+                            color = Color.White
+                        )
+                    }
                 )
             },
             confirmButton = {
@@ -209,9 +237,9 @@ fun ProfileScreen(
             title = {
                 Text(
                     text = "Editar Username",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White
-                ) },
+                    style = MaterialTheme.typography.headlineSmall,color = Color.White
+                )
+            },
             text = {
                 Column {
                     OutlinedTextField(
@@ -219,8 +247,7 @@ fun ProfileScreen(
                         onValueChange = {
                             username = it
                             usernameError = false
-                            viewModel.checkUsernameExists(it)
-                        },
+                            viewModel.checkUsernameExists(it)},
                         label = {
                             Text(
                                 text = "Username",
@@ -241,8 +268,7 @@ fun ProfileScreen(
                             viewModel.updateUserUsername(username)
                             openUsernameDialog = false
                         } else {
-                            usernameError = true
-                        }
+                            usernameError = true}
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
                 ) {
