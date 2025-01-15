@@ -33,7 +33,6 @@ fun ScheduleItem(
     onDelete: (String) -> Unit,
 ) {
     var currentPriority by remember { mutableStateOf(schedule.priority) }
-
     var showConfirmDialog by remember { mutableStateOf(false) }
 
 
@@ -50,13 +49,16 @@ fun ScheduleItem(
         colors = CardDefaults.cardColors(containerColor = priorityColor)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment
+                    .CenterVertically
+            ) {
                 Text(
-                    text = schedule.name,
+                    text = schedule.name.uppercase(),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
                 IconButton(
                     onClick = { showConfirmDialog = true },
@@ -99,7 +101,8 @@ fun ScheduleItem(
             Text(
                 text = "TAG: ${schedule.tag}",
                 fontSize = 16.sp,
-                color = Color.DarkGray
+                color = Color.Black,
+                fontWeight = FontWeight.Bold
             )
         }
     }
@@ -124,6 +127,7 @@ fun ConfirmDeleteDialog(
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.cancel_label))
             }
-        }
+        },
+        containerColor = Color(0xFF372080)
     )
 }

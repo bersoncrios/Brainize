@@ -42,8 +42,6 @@ fun NoteItem(
     onLongPress: (Note) -> Unit,
 ) {
     var showConfirmDialog by remember { mutableStateOf(false) }
-
-    Log.d("colors", "NoteItem: $taskColor e $reminderColor")
     Card(
         modifier = Modifier
             .padding(12.dp)
@@ -73,7 +71,7 @@ fun NoteItem(
                         R.string.note_title_text,
                         note.sequentialId,
                         note.title
-                    ),
+                    ).uppercase(),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
