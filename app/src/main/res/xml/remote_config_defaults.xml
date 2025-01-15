@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<defaults>
+  <entry>
+    <key>carEnable</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>houseEnable</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>notesEnable</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>scheduleEnable</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>collectionEnable</key>
+    <value>false</value>
+  </entry>
+  <entry>
+    <key>configurationEnable</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>profileEnable</key>
+    <value>true</value>
+  </entry>
+</defaults>

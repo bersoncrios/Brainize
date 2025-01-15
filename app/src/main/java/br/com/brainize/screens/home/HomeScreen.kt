@@ -33,12 +33,14 @@ import br.com.brainize.components.BrainizerSelectButton
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
+import br.com.brainize.viewmodel.RemoteConfigViewModel
 
 @Composable
 fun HomeScreen(
     navController: NavController,
     loginViewModel: LoginViewModel,
     configurationsViewModel: ConfigurationsViewModel,
+    remoteConfigViewModel: RemoteConfigViewModel,
     token: String?
 ) {
 
@@ -64,24 +66,24 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState()) // Adiciona o scroll vertical
+                    .verticalScroll(rememberScrollState())
             ) {
                 Row(
                     modifier = Modifier
                         .padding(top = 32.dp)
-                        .fillMaxWidth(), // Preenche a largura da tela
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Top
                 ) {
                     Text(
-                        text = "Olá, ",
+                        text = "Olá, ".uppercase(),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = completeName,
+                        text = completeName.uppercase(),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
@@ -89,13 +91,13 @@ fun HomeScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.Center,
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+                    verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // First Row
@@ -104,7 +106,7 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .padding(8.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly) {
-                        if (configurationsViewModel.carEnabled) {
+                        if (configurationsViewModel.carEnabled && remoteConfigViewModel._carEnable) {
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.CarScreen.route) },
                                 icon = R.drawable.car,
@@ -112,7 +114,7 @@ fun HomeScreen(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        if (configurationsViewModel.houseEnabled) {
+                        if (configurationsViewModel.houseEnabled && remoteConfigViewModel._houseEnable) {
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.HouseScreen.route) },
                                 icon = R.drawable.house,
@@ -127,7 +129,7 @@ fun HomeScreen(
                             .padding(8.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        if (configurationsViewModel.notesEnabled) {
+                        if (configurationsViewModel.notesEnabled && remoteConfigViewModel._notesEnable) {
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.NotesScreen.route) },
                                 icon = R.drawable.lembretes,
@@ -135,7 +137,7 @@ fun HomeScreen(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        if (configurationsViewModel.agendaEnabled) {
+                        if (configurationsViewModel.agendaEnabled && remoteConfigViewModel._scheduleEnable) {
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.ScheduleScreen.route) },
                                 icon = R.drawable.agenda,
@@ -148,9 +150,9 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        horizontalArrangement = Arrangement.Start
                     ) {
-                        if (configurationsViewModel.collectionEnabled) {
+                        if (configurationsViewModel.collectionEnabled && remoteConfigViewModel._collectionEnable) {
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.CollectionScreen.route) },
                                 icon = R.drawable.collection,
@@ -163,19 +165,23 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        BrainizerSelectButton(
-                            onClick = { navController.navigate(DestinationScreen.ConfigurationScreen.route) },
-                            icon = R.drawable.config,
-                        )
+                        if (remoteConfigViewModel._configurationtioEnable) {
+                            BrainizerSelectButton(
+                                onClick = { navController.navigate(DestinationScreen.ConfigurationScreen.route) },
+                                icon = R.drawable.config,
+                            )
+                        }
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        BrainizerSelectButton(
-                            onClick = { navController.navigate(DestinationScreen.ProfileScreen.route) },
-                            icon= R.drawable.profile,
-                        )
+                        if (remoteConfigViewModel._profileEnable){
+                            BrainizerSelectButton(
+                                onClick = { navController.navigate(DestinationScreen.ProfileScreen.route) },
+                                icon= R.drawable.profile,
+                            )
+                        }
                     }
                 }
             }

@@ -22,6 +22,7 @@ import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
 import br.com.brainize.viewmodel.ProfileViewModel
+import br.com.brainize.viewmodel.RemoteConfigViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
 import br.com.brainize.viewmodel.factories.CarViewModelFactory
 import br.com.brainize.viewmodel.factories.CollectionViewModelFactory
@@ -30,6 +31,7 @@ import br.com.brainize.viewmodel.factories.HouseViewModelFactory
 import br.com.brainize.viewmodel.factories.LoginViewModelFactory
 import br.com.brainize.viewmodel.factories.NotesViewModelFactory
 import br.com.brainize.viewmodel.factories.ProfileViewModelFactory
+import br.com.brainize.viewmodel.factories.RemoteConfigViewModelFactory
 import br.com.brainize.viewmodel.factories.ScheduleViewModelFactory
 
 class MainActivity : ComponentActivity() {
@@ -61,6 +63,9 @@ class MainActivity : ComponentActivity() {
         val collectionViewModel: CollectionViewModel by viewModels {
             CollectionViewModelFactory()
         }
+        val remoteConfigViewModel: RemoteConfigViewModel by viewModels {
+            RemoteConfigViewModelFactory()
+        }
 
         setContent {
 
@@ -77,7 +82,8 @@ class MainActivity : ComponentActivity() {
                         scheduleViewModel = scheduleViewModel,
                         configurationViewModel = configurationViewModel,
                         profileViewModel = profileViewModel,
-                        collectionViewModel = collectionViewModel
+                        collectionViewModel = collectionViewModel,
+                        remoteConfigViewModel = remoteConfigViewModel
                     )
                 }
             }
@@ -94,7 +100,8 @@ fun BrainizeApp(
     scheduleViewModel: ScheduleViewModel,
     configurationViewModel: ConfigurationsViewModel,
     profileViewModel: ProfileViewModel,
-    collectionViewModel: CollectionViewModel
+    collectionViewModel: CollectionViewModel,
+    remoteConfigViewModel: RemoteConfigViewModel
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -112,7 +119,8 @@ fun BrainizeApp(
                 scheduleViewModel = scheduleViewModel,
                 configurationViewModel = configurationViewModel,
                 profileViewModel = profileViewModel,
-                collectionViewModel = collectionViewModel
+                collectionViewModel = collectionViewModel,
+                remoteConfigViewModel = remoteConfigViewModel
             )
         }
     }

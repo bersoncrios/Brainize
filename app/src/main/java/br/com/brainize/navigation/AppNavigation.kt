@@ -27,6 +27,7 @@ import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
 import br.com.brainize.viewmodel.ProfileViewModel
+import br.com.brainize.viewmodel.RemoteConfigViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
 
 @Composable
@@ -38,7 +39,8 @@ fun AppNavigation(
     scheduleViewModel: ScheduleViewModel,
     configurationViewModel: ConfigurationsViewModel,
     profileViewModel: ProfileViewModel,
-    collectionViewModel: CollectionViewModel
+    collectionViewModel: CollectionViewModel,
+    remoteConfigViewModel: RemoteConfigViewModel
 ) {
     val navController = rememberNavController()
     AppNavigation(
@@ -50,7 +52,8 @@ fun AppNavigation(
         scheduleViewModel,
         configurationViewModel,
         profileViewModel,
-        collectionViewModel
+        collectionViewModel,
+        remoteConfigViewModel
     )
 }
 
@@ -64,7 +67,8 @@ fun AppNavigation(
     scheduleViewModel: ScheduleViewModel,
     configurationsViewModel: ConfigurationsViewModel,
     profileViewModel: ProfileViewModel,
-    collectionViewModel: CollectionViewModel
+    collectionViewModel: CollectionViewModel,
+    remoteConfigViewModel: RemoteConfigViewModel
 ) {
     NavHost(navController = navController, startDestination = DestinationScreen.SplashScreen.route) {
         composable(DestinationScreen.SplashScreen.route) {
@@ -79,7 +83,13 @@ fun AppNavigation(
             arguments = DestinationScreen.HomeScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            HomeScreen(navController = navController, loginViewModel = loginViewmodel, configurationsViewModel = configurationsViewModel, token = token)
+            HomeScreen(
+                navController = navController,
+                loginViewModel = loginViewmodel,
+                configurationsViewModel = configurationsViewModel,
+                token = token,
+                remoteConfigViewModel = remoteConfigViewModel
+            )
         }
 
         composable(
