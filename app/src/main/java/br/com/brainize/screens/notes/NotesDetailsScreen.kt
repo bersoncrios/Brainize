@@ -111,16 +111,31 @@ fun NotesDetailsScreen(
                     CircularProgressIndicator(color = Color.White)
                 } else {
                     noteState.let { note ->
-                        Text(
-                            text = stringResource(
-                                R.string.note_detail_title,
-                                noteState.sequentialId
-                            ),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = noteState.title,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+
+                            IconButton(onClick = {
+                                title = note.title
+                                openTitleDialog = true
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Edit,
+                                    contentDescription = stringResource(R.string.cd_edit_title),
+                                    tint = Color.White
+                                )
+                            }
+                        }
+
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -139,34 +154,6 @@ fun NotesDetailsScreen(
                             )
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = note.title,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = Color.Black,
-                                        modifier = Modifier
-                                            .weight(2f),
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 21.sp
-                                    )
-                                    IconButton(onClick = {
-                                        title = note.title
-                                        openTitleDialog = true
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Edit,
-                                            contentDescription = stringResource(R.string.cd_edit_title),
-                                            tint = Color.White
-                                        )
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
