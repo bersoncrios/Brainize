@@ -1,6 +1,5 @@
 package br.com.brainize.screens.notes
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +44,6 @@ import br.com.brainize.R
 import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.components.getColorFromTaskColor
-import br.com.brainize.model.Note
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
@@ -90,8 +88,13 @@ fun NotesDetailsScreen(
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = stringResource(R.string.note_detail_title, noteState.sequentialId),
-                onBackClick = { navController.popBackStack() }
+                title = stringResource(
+                    R.string.note_detail_title,
+                    noteState.sequentialId
+                ),
+                onBackClick = {
+                    navController.popBackStack()
+                }
             )
         }
     ) { paddingValues ->
@@ -109,13 +112,15 @@ fun NotesDetailsScreen(
                 } else {
                     noteState.let { note ->
                         Text(
-                            text = stringResource(R.string.note_detail_title, noteState.sequentialId),
+                            text = stringResource(
+                                R.string.note_detail_title,
+                                noteState.sequentialId
+                            ),
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
-                        Log.d("colors", "NotesDetailsScreen: ${getColorFromTaskColor(configurationsViewModel.taskColor).value} ")
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -123,9 +128,13 @@ fun NotesDetailsScreen(
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = if (note.type == "Tarefa") {
-                                    Color(getColorFromTaskColor(configurationsViewModel.taskColor).value)
+                                    Color(
+                                        getColorFromTaskColor(configurationsViewModel.taskColor).value
+                                    )
                                 } else {
-                                    Color(getColorFromTaskColor(configurationsViewModel.reminderColor).value)
+                                    Color(
+                                        getColorFromTaskColor(configurationsViewModel.reminderColor).value
+                                    )
                                 }
                             )
                         ) {
@@ -149,13 +158,15 @@ fun NotesDetailsScreen(
                                         openTitleDialog = true
                                     }) {
                                         Icon(
-                                            Icons.Filled.Edit,
-                                            "Editar Título",
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            imageVector = Icons.Filled.Edit,
+                                            contentDescription = stringResource(R.string.cd_edit_title),
+                                            tint = Color.White
                                         )
                                     }
                                 }
+
                                 Spacer(modifier = Modifier.height(8.dp))
+
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
@@ -174,9 +185,9 @@ fun NotesDetailsScreen(
                                         openContentDialog = true
                                     }) {
                                         Icon(
-                                            Icons.Filled.Edit,
-                                            "Editar Conteúdo",
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            imageVector = Icons.Filled.Edit,
+                                            contentDescription = stringResource(R.string.cd_edit_content),
+                                            tint = Color.White
                                         )
                                     }
                                 }
@@ -201,9 +212,9 @@ fun NotesDetailsScreen(
                                             openDueDateDialog = true
                                         }) {
                                             Icon(
-                                                Icons.Filled.Edit,
-                                                "Editar data Final",
-                                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                                imageVector = Icons.Filled.Edit,
+                                                contentDescription = stringResource(R.string.cd_edit_final_date),
+                                                tint = Color.White
                                             )
                                         }
                                     }
@@ -226,9 +237,9 @@ fun NotesDetailsScreen(
                                             openDueTimeDialog = true
                                         }) {
                                             Icon(
-                                                Icons.Filled.Edit,
-                                                "Editar Hora Final",
-                                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                                imageVector = Icons.Filled.Edit,
+                                                contentDescription = stringResource(R.string.cd_final_hour),
+                                                tint = Color.White
                                             )
                                         }
                                     }
@@ -243,12 +254,23 @@ fun NotesDetailsScreen(
     if (openTitleDialog) {
         AlertDialog(
             onDismissRequest = { openTitleDialog = false},
-            title = { Text("Editar Título", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface) },
+            title = {
+                Text(
+                    text = stringResource(R.string.edit_title_text),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White
+                )
+            },
             text = {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Título", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    label = {
+                        Text(
+                            stringResource(R.string.title_card_label),
+                            color = Color.White
+                        )
+                    }
                 )
             },
             confirmButton = {
@@ -260,27 +282,54 @@ fun NotesDetailsScreen(
                         }
                         openTitleDialog = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults
+                        .buttonColors(
+                            containerColor = Color(0xFFbc60c4)
+                        )
                 ) {
-                    Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        text = "Salvar",
+                        color = Color.White
+                    )
                 }
             },
             dismissButton = {
-                TextButton(onClick = { openTitleDialog = false }) {
-                    Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+                TextButton(
+                    onClick = {
+                        openTitleDialog = false
+                    }
+                ) {
+                    Text(
+                        text = "Cancelar",
+                        color = Color.White
+                    )
                 }
-            }
+            },
+            containerColor = Color(0xFF372080)
         )
     }
     if (openContentDialog) {
         AlertDialog(
-            onDismissRequest = { openContentDialog = false },
-            title = { Text("Editar Conteúdo", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface) },
+            onDismissRequest = {
+                openContentDialog = false
+            },
+            title = {
+                Text(
+                    text = "Editar Conteúdo",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White
+                )
+            },
             text = {
                 OutlinedTextField(
                     value = content,
                     onValueChange = { content = it },
-                    label = { Text("Conteúdo", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    label = {
+                        Text(
+                            text = "Conteúdo",
+                            color = Color.White
+                        )
+                    }
                 )
             },
             confirmButton = {
@@ -292,58 +341,106 @@ fun NotesDetailsScreen(
                         }
                         openContentDialog = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults
+                        .buttonColors(
+                            containerColor = Color(0xFFbc60c4)
+                        )
                 ) {
-                    Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        text = "Salvar",
+                        color = Color.White
+                    )
                 }
             },
             dismissButton = {
                 TextButton(onClick = { openContentDialog = false }) {
-                    Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+                    Text(
+                        text = "Cancelar",
+                        color = Color.White
+                    )
                 }
-            }
+            },
+            containerColor = Color(0xFF372080)
         )
     }
     if (openDueDateDialog) {
         AlertDialog(
             onDismissRequest = { openDueDateDialog = false },
-            title = { Text("Editar Data Final", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface) },
+            title = {
+                Text(
+                    text = "Editar Data Final",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White
+
+                )
+                    },
             text = {
                 OutlinedTextField(
                     value = dueDate,
                     onValueChange = { dueDate = it },
-                    label = { Text("Data Final", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    label = {
+                        Text(
+                            text = "Data Final",
+                            color = Color.White
+                        )
+                    }
                 )
             },
             confirmButton = {
                 Button(
                     onClick = {
                         noteState.let { note ->
-                            val updatedNote = note.copy(dueDate = if (dueDate.isNotBlank()) dueDate else null)
+                            val updatedNote = note.copy(
+                                dueDate = if (dueDate.isNotBlank()) dueDate else null
+                            )
                             viewModel.updateNote(updatedNote)
                         }
                         openDueDateDialog = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults
+                        .buttonColors(
+                            containerColor = Color(0xFFbc60c4)
+                        )
                 ) {
-                    Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        text = "Salvar",
+                        color = Color.White
+                    )
                 }
             },
-            dismissButton = {TextButton(onClick = { openDueDateDialog = false }) {
-                Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+            dismissButton = {
+                TextButton(
+                    onClick = { openDueDateDialog = false }
+                ) {
+                Text(
+                    text = "Cancelar",
+                    color = Color.White
+                )
             }
-            }
+            },
+            containerColor = Color(0xFF372080)
         )
     }
     if (openDueTimeDialog) {
         AlertDialog(
             onDismissRequest = { openDueTimeDialog = false },
-            title = { Text("Editar Hora Final", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface) },
+            title = {
+                Text(
+                    text = "Editar Hora Final",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White
+                )
+                    },
             text = {
                 OutlinedTextField(
                     value = dueTime,
                     onValueChange = { dueTime = it },
-                    label = { Text("Hora Final", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    label = {
+                        Text(
+                            text = "Hora Final",
+                            color = Color.White
+                        )
+                    }
                 )
             },
             confirmButton = {
@@ -355,16 +452,26 @@ fun NotesDetailsScreen(
                         }
                         openDueTimeDialog = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults
+                        .buttonColors(
+                            containerColor = Color(0xFFbc60c4)
+                        )
                 ) {
-                    Text("Salvar", color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        text = "Salvar",
+                        color = Color.White
+                    )
                 }
             },
             dismissButton = {
                 TextButton(onClick = { openDueTimeDialog = false }) {
-                    Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+                    Text(
+                        text = "Cancelar",
+                        color = Color.White
+                    )
                 }
-            }
+            },
+            containerColor = Color(0xFF372080)
         )
     }
 }

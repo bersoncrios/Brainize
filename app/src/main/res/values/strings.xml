@@ -72,4 +72,10 @@
     <string name="note_detail_title">Detalhes da nota #%1$s</string>
     <string name="forgot_my_password">Esqueci minha senha</string>
     <string name="email_ou_nome_de_usu_rio">email ou nome de usuário</string>
+    <string name="cd_edit_title">Editar Título</string>
+    <string name="cd_final_hour">Editar Hora Final</string>
+    <string name="cd_edit_final_date">Editar data Final</string>
+    <string name="cd_edit_content">Editar Conteúdo</string>
+    <string name="edit_title_text">Editar Título</string>
+    <string name="title_card_label">Título</string>
 </resources>

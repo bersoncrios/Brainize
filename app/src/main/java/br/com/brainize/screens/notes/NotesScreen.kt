@@ -1,5 +1,6 @@
 package br.com.brainize.screens.notes
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.brainize.R
+import br.com.brainize.components.BrainizeFloatingActionButton
 import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.components.DialogNewNote
@@ -79,21 +81,12 @@ fun NotesScreen(
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title =stringResource(R.string.my_notes_label),
+                title = stringResource(R.string.my_notes_label),
                 onBackClick = { navController.popBackStack() }
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    openTypeDialog.value = true
-                }
-            ) {
-                Icon(
-                    Icons.Filled.Add,
-                    stringResource(R.string.new_note_label)
-                )
-            }
+            BrainizeFloatingActionButton(openDialog = openTypeDialog, title = stringResource(R.string.new_note_label))
         }
     ) { paddingValues ->
         BrainizeScreen(paddingValues = paddingValues) {
