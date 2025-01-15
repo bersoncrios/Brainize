@@ -1,5 +1,6 @@
 package br.com.brainize.screens.notes
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -114,7 +115,7 @@ fun NotesDetailsScreen(
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceAround
                         ) {
                             Text(
                                 text = noteState.title,
@@ -122,25 +123,22 @@ fun NotesDetailsScreen(
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
                                 modifier = Modifier.padding(bottom = 16.dp)
+                                    .clickable {
+                                        title = note.title
+                                        openTitleDialog = true
+                                    }
                             )
-
-                            IconButton(onClick = {
-                                title = note.title
-                                openTitleDialog = true
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Edit,
-                                    contentDescription = stringResource(R.string.cd_edit_title),
-                                    tint = Color.White
-                                )
-                            }
                         }
 
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 8.dp)
-                                .verticalScroll(scrollState),
+                                .verticalScroll(scrollState)
+                                .clickable {
+                                    content = note.content
+                                    openContentDialog = true
+                                },
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = if (note.type == "Tarefa") {
@@ -171,16 +169,6 @@ fun NotesDetailsScreen(
                                         fontWeight = FontWeight.Normal,
                                         fontSize = 16.sp
                                     )
-                                    IconButton(onClick = {
-                                        content = note.content
-                                        openContentDialog = true
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Edit,
-                                            contentDescription = stringResource(R.string.cd_edit_content),
-                                            tint = Color.White
-                                        )
-                                    }
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
 
