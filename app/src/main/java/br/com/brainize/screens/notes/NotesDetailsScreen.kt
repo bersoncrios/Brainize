@@ -70,6 +70,7 @@ fun NotesDetailsScreen(
     var openDueDateDialog by remember { mutableStateOf(false) }
     var openDueTimeDialog by remember { mutableStateOf(false) }
 
+
     if (!loginViewModel.hasLoggedUser() && token.isNullOrEmpty()) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
@@ -102,8 +103,7 @@ fun NotesDetailsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
-                    .verticalScroll(scrollState),
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -139,7 +139,8 @@ fun NotesDetailsScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp),
+                                .padding(vertical = 8.dp)
+                                .verticalScroll(scrollState),
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = if (note.type == "Tarefa") {
@@ -153,7 +154,10 @@ fun NotesDetailsScreen(
                                 }
                             )
                         ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+
+                            ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
