@@ -43,12 +43,28 @@ class ScheduleViewModel : ViewModel() {
             viewModelScope.launch {
                 val snapshot = firestore.collection("users").document(userId).collection("schedules").get().await()
                 val schedulesList = snapshot.documents.mapNotNull { document ->
-                    document.toObject(Schedule::class.java)?.copy(id = document.id)
+                    document.toObject(Schedule::class.java)?.copy(
+                        id = document.id,
+                        isDone = document.getBoolean("isDone") ?: false
+                    )
                 }
                 _schedules.value = schedulesList
             }
         }
     }
+
+    fun updateScheduleIsDone(scheduleId: String, isDone: Boolean) {
+        viewModelScope.launch {
+            val user = auth.currentUser
+            if (user != null) {
+                firestore.collection("users").document(user.uid).collection("schedules").document(scheduleId)
+                    .update("isDone", isDone)
+                    .await()
+                loadSchedules()
+            }
+        }
+    }
+
     fun deleteSchedule(scheduleId: String) {
         viewModelScope.launch {
             val user = auth.currentUser

@@ -8,5 +8,6 @@ data class Schedule(
     val date: String = "",
     val name: String = "",
     val priority: String = "",
-    val tag: String = ""
+    val tag: String = "",
+    val isDone: Boolean = false
 )

@@ -10,6 +10,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -33,10 +35,11 @@ import br.com.brainize.model.Schedule
 fun ScheduleItem(
     schedule: Schedule,
     onDelete: (String) -> Unit,
+    onIsDoneChange: (String, Boolean) -> Unit
 ) {
     var currentPriority by remember { mutableStateOf(schedule.priority) }
     var showConfirmDialog by remember { mutableStateOf(false) }
-
+    var isChecked by remember { mutableStateOf(schedule.isDone) }
 
     val priorityColor = when (currentPriority) {
         "Alta" -> Color(0XFF873D48)
@@ -58,20 +61,23 @@ fun ScheduleItem(
                 Text(
                     text = schedule.name.uppercase(),
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight= FontWeight.Bold,
                     color = Color.Black,
                     modifier = Modifier.weight(1f),
                 )
-                IconButton(
-                    onClick = { showConfirmDialog = true },
-                    modifier = Modifier.align(Alignment.Top)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "Excluir Horário",
-                        tint = Color.White
+                Checkbox(
+                    checked = isChecked,
+                    onCheckedChange = {
+                        isChecked = it
+                        onIsDoneChange(schedule.id, it)
+                    },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = Color.White,
+                        uncheckedColor = Color.White,
+                        checkmarkColor = Color(0xFF372080)
+
                     )
-                }
+                )
                 if (showConfirmDialog) {
                     ConfirmDeleteDialog(onConfirm = {
                         onDelete(schedule.id)
@@ -123,19 +129,20 @@ fun ConfirmDeleteDialog(
                 text = "Deseja excluir esta agenda?",
                 color = Color.White
             )
-                },
+        },
         text = {
             Text(
                 text = "Realmente deseja excluir esta agenda ?",
                 color = Color.White
-            ) },
+            )
+        },
         confirmButton = {
             Button(
                 onClick = onConfirm,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFbc60c4)
                 )
-            ){
+            ) {
                 Text(
                     text = stringResource(R.string.confirm_label),
                     color = Color.White
