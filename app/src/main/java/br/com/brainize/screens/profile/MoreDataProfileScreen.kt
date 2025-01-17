@@ -10,13 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -71,6 +70,7 @@ fun MoreDataProfileScreen(
     val year = calendar.get(Calendar.YEAR)
     val month = calendar.get(Calendar.MONTH)
     val day = calendar.get(Calendar.DAY_OF_MONTH)
+    var expandedGenderMenu by remember { mutableStateOf(false) }
 
     val datePickerDialog = DatePickerDialog(
         context,
@@ -171,22 +171,51 @@ fun MoreDataProfileScreen(
             AlertDialog(
                 onDismissRequest = { openGenderDialog = false },
                 title = {
-                    Text(text = "Sexo",
+                    Text(text = "Gênero",
                         style = MaterialTheme.typography.headlineSmall,
                         color = Color.White
                     )
                 },
+
                 text = {
-                    OutlinedTextField(
-                        value = gender,
-                        onValueChange = { gender = it },
-                        label = {
-                            Text(
-                                text = "Sexo",
-                                color = Color.White
-                            )
-                        }
-                    )
+                    Column {
+                        OutlinedTextField(
+                            value = gender,
+                            onValueChange = { gender = it },
+                            label = {
+                                Text(
+                                    text = "Gênero",
+                                    color = Color.White
+                                )
+                            },
+                            readOnly = true,
+                            trailingIcon = {
+                                Icon(
+                                    painter = painterResource(id =R.drawable.baseline_arrow_drop_down_24),
+                                    contentDescription = "Selecionar Gênero",
+                                    modifier = Modifier.clickable { expandedGenderMenu = true },
+                                    tint = Color.White,
+                                )
+                                DropdownMenu(
+                                    expanded = expandedGenderMenu,
+                                    onDismissRequest = { expandedGenderMenu = false }
+                                ) {
+                                    DropdownMenuItem(text = { Text("Masculino") }, onClick = {
+                                        gender = "Masculino"
+                                        expandedGenderMenu = false
+                                    })
+                                    DropdownMenuItem(text = { Text("Feminino") }, onClick = {
+                                        gender = "Feminino"
+                                        expandedGenderMenu = false
+                                    })
+                                    DropdownMenuItem(text = { Text("Outros") }, onClick = {
+                                        gender = "Outros"
+                                        expandedGenderMenu = false
+                                    })
+                                }
+                            }
+                        )
+                    }
                 },
                 confirmButton = {
                     Button(
