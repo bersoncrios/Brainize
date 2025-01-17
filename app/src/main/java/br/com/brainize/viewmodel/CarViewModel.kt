@@ -17,8 +17,9 @@ import kotlin.coroutines.resumeWithException
 class CarViewModel : ViewModel() {
 
     private val firestore = FirebaseFirestore.getInstance()
-    private val auth= FirebaseAuth.getInstance()
-    private val carStatusCollection = firestore.collection("car")
+    private val auth = FirebaseAuth.getInstance()
+    private val carCollection = firestore.collection("car")
+    private val carStatusCollection = firestore.collection("carStatus")
 
     var windowClosed by mutableStateOf(true)
     var doorClosed by mutableStateOf(true)
@@ -46,7 +47,12 @@ class CarViewModel : ViewModel() {
                 val carStatusDocument = carStatusCollection.document(userId)
                 carStatusDocument.get()
                     .addOnSuccessListener { document ->
-                        if (document.exists()) {val status = document.toObject(CarStatus::class.java) ?: CarStatus(windowClosed = true, doorClosed = true)
+                        if (document.exists()) {
+                            val status =
+                                document.toObject(CarStatus::class.java) ?: CarStatus(
+                                    windowClosed = true,
+                                    doorClosed = true
+                                )
                             continuation.resume(status)
                         } else {
                             continuation.resume(CarStatus(windowClosed = true, doorClosed = true))
@@ -78,6 +84,46 @@ class CarViewModel : ViewModel() {
             }
         }
     }
+
+    fun hasCar(onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                val carDocument = carCollection.document(userId)
+                try {
+                    val document = carDocument.get().await()
+                    onResult(document.exists())
+                } catch (e: Exception) {
+                    Log.e("CarViewModel", "Error checking car existence for user $userId", e)
+                    onResult(false)
+                }
+            } else {
+                onResult(false)
+            }
+        }
+    }
+
+    fun registerCar(carBrand: String, carModel: String, carPlate: String, onComplete: () -> Unit) {
+        viewModelScope.launch {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                val carData = hashMapOf(
+                    "brand" to carBrand,
+                    "model" to carModel,
+                    "plate" to carPlate
+                )
+                try {
+                    carCollection.document(userId).set(carData).await()
+                    onComplete()
+                } catch (e: Exception) {
+                    Log.e("CarViewModel", "Errorregistering car for user $userId", e)
+                }
+            } else {
+                Log.e("CarViewModel", "User not logged in, cannot register car")
+            }
+        }
+    }
+
 
     data class CarStatus(
         var windowClosed: Boolean = true,

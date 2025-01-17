@@ -81,4 +81,11 @@
     <string name="edit_title_text">Editar Título</string>
     <string name="title_card_label">Título</string>
     <string name="new_schedule_lavel">Nova agenda</string>
+
+
+    <string name="register_car_label">Cadastrar Carro</string>
+    <string name="car_brand_label">Marca</string>
+    <string name="car_model_label">Modelo</string>
+    <string name="car_plate_label">Placa</string>
+    <string name="register_label">Cadastrar</string>
 </resources>

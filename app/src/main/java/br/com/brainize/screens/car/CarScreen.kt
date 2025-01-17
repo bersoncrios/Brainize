@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,7 +35,7 @@ import br.com.brainize.viewmodel.CarViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun CarScreen (
+fun CarScreen(
     navController: NavController,
     viewModel: CarViewModel,
     loginViewModel: LoginViewModel,
@@ -46,62 +48,75 @@ fun CarScreen (
 
     var windowClosed by rememberSaveable { mutableStateOf(viewModel.windowClosed) }
     var doorClosed by rememberSaveable { mutableStateOf(viewModel.doorClosed) }
+    var hasCar by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            BrainizerTopAppBar(
-                title = stringResource(R.string.my_car_label),
-                onBackClick = { navController.popBackStack() }
-            )
+
+    LaunchedEffect(Unit) {
+        viewModel.hasCar { hasCarResult ->
+            hasCar = hasCarResult
+            if (!hasCar) {
+                navController.navigate(DestinationScreen.CarRegisterScreen.route)
+            }
         }
-    ) { paddingValues ->
-        BrainizeScreen(paddingValues = paddingValues) {
-            Text(
-                text = "Status do seu \$CARRO", //TODO: mudar para o nome do carro cadastrado
-                modifier = Modifier
-                    .padding(top = 32.dp),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                textAlign = TextAlign.Center
-            )
+    }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
+    if (hasCar) {
+        Scaffold(
+            topBar = {
+                BrainizerTopAppBar(
+                    title = stringResource(R.string.my_car_label),
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+        ) { paddingValues ->
+            BrainizeScreen(paddingValues = paddingValues) {
+                Text(
+                    text = "Status do seu \$CARRO", //TODO: mudar para o nome do carro cadastrado
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .padding(top = 32.dp),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
                         .padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    BrainizerAlternateSelectButton(
-                        defaultIcon = R.drawable.windowglassopened,
-                        alternateIcon = R.drawable.windowglassclosed,
-                        isSelected = windowClosed,
-                        onToggle = { selected ->
-                            windowClosed = selected
-                            viewModel.windowClosed = selected
-                            viewModel.saveStatus()
-                        }
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        BrainizerAlternateSelectButton(
+                            defaultIcon = R.drawable.windowglassopened,
+                            alternateIcon = R.drawable.windowglassclosed,
+                            isSelected = windowClosed,
+                            onToggle = { selected ->
+                                windowClosed = selected
+                                viewModel.windowClosed = selected
+                                viewModel.saveStatus()
+                            }
+                        )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
 
-                    BrainizerAlternateSelectButton(
-                        defaultIcon = R.drawable.opened,
-                        alternateIcon = R.drawable.closed,
-                        isSelected = doorClosed,
-                        onToggle = { selected ->
-                            doorClosed = selected
-                            viewModel.doorClosed = selected
-                            viewModel.saveStatus()
-                        }
-                    )
+                        BrainizerAlternateSelectButton(
+                            defaultIcon = R.drawable.opened,
+                            alternateIcon = R.drawable.closed,
+                            isSelected = doorClosed,
+                            onToggle = { selected ->
+                                doorClosed = selected
+                                viewModel.doorClosed = selected
+                                viewModel.saveStatus()
+                            }
+                        )
+                    }
                 }
             }
         }

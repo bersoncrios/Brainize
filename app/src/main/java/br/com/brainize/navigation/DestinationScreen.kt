@@ -26,6 +26,13 @@ sealed class DestinationScreen(val route: String) {
         )
     }
 
+    object CarRegisterScreen : DestinationScreen("car_register_screen/{token}") {
+        fun createRoute(token: String?): String = "car_register_screen/$token"
+        val arguments = listOf(
+            navArgument("token") { type = NavType.StringType }
+        )
+    }
+
     object HouseScreen : DestinationScreen("house_screen/{token}") {
         fun createRoute(token: String?): String = "house_screen/$token"
         val arguments = listOf(
@@ -101,6 +108,7 @@ sealed class DestinationScreen(val route: String) {
         SplashScreen.route -> SplashScreen
         HomeScreen.route.replace("{token}", "").substringBefore("/") -> HomeScreen
         CarScreen.route.replace("{token}", "").substringBefore("/") -> CarScreen
+        CarRegisterScreen.route.replace("{token}", "").substringBefore("/") -> CarRegisterScreen
         HouseScreen.route.replace("{token}", "").substringBefore("/") -> HouseScreen
         NotesScreen.route.replace("{token}", "").substringBefore("/") -> NotesScreen
         NotesDetailsScreen.route.replace("{token}", "").substringBefore("/") -> NotesDetailsScreen

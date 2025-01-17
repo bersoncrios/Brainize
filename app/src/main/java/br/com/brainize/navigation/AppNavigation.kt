@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.com.brainize.screens.car.CarRegisterScreen
 import br.com.brainize.screens.car.CarScreen
 import br.com.brainize.screens.collection.CollectionScreen
 import br.com.brainize.screens.configurations.AppsColorsConfigurationScreen
@@ -99,6 +100,14 @@ fun AppNavigation(
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             CarScreen(navController = navController, viewModel = carViewModel, loginViewModel = loginViewmodel, token = token)
+        }
+
+        composable(
+            route = DestinationScreen.CarRegisterScreen.route,
+            arguments = DestinationScreen.CarRegisterScreen.arguments
+        ) { backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token")
+            CarRegisterScreen(navController = navController, viewModel = carViewModel, loginViewModel = loginViewmodel, token = token)
         }
 
         composable(
