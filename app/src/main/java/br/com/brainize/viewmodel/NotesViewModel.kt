@@ -66,6 +66,7 @@ class NotesViewModel : ViewModel() {
         title: String,
         content: String,
         type: String,
+        tag: String,
         dueDate: String? = null,
         dueTime: String? = null
     ) {
@@ -87,7 +88,8 @@ class NotesViewModel : ViewModel() {
                         type = type,
                         dueDate = dueDate,
                         dueTime = dueTime,
-                        sequentialId = nextId
+                        sequentialId = nextId,
+                        tag = tag
                     )
                 firestore
                     .collection(USERS_COLLECTION)

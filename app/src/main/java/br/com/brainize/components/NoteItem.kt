@@ -82,12 +82,6 @@ fun NoteItem(
                     fontSize = 16.sp,
                     color = Color.DarkGray
                 )
-                Text(
-                    text = stringResource(R.string.note_type_label, note.type),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF372080)
-                )
                 if (note.type == "Tarefa") {
                     if (!note.dueDate.isNullOrEmpty() && !note.dueTime.isNullOrEmpty()) {
                         Text(
@@ -102,6 +96,18 @@ fun NoteItem(
                         )
                     }
                 }
+                Text(
+                    text = stringResource(R.string.note_type_label, note.type),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color(0xFF372080)
+                )
+                Text(
+                    text = stringResource(R.string.note_tag_label, note.tag),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF372080)
+                )
             }
             Spacer(modifier =Modifier.width(8.dp))
             IconButton(onClick = { showConfirmDialog = true }) {

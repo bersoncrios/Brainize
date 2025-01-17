@@ -62,6 +62,7 @@ fun NotesScreen(
     val newNoteTitle = remember { mutableStateOf("") }
     val newNoteContent = remember { mutableStateOf("") }
     val newNoteType = remember { mutableStateOf("") }
+    val newNoteTag = remember { mutableStateOf("") }
     val newNoteDueDate = remember { mutableStateOf("") }
     val newNoteDueTime = remember { mutableStateOf("") }
 
@@ -143,6 +144,7 @@ fun NotesScreen(
             newNoteType = newNoteType,
             newNoteDueDate = newNoteDueDate,
             newNoteDueTime = newNoteDueTime,
+            newNoteTag = newNoteTag,
             viewModel = viewModel,
             context = context
         )

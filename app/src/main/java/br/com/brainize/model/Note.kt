@@ -7,5 +7,6 @@ data class Note(
     val type: String = "Lembrete",
     val dueDate: String? = null,
     val dueTime: String? = null,
-    val sequentialId: Int = 0
+    val sequentialId: Int = 0,
+    val tag: String = ""
 )

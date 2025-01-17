@@ -111,6 +111,7 @@ fun DialogNewNote(
     newNoteTitle: MutableState<String>,
     newNoteContent: MutableState<String>,
     newNoteType: MutableState<String>,
+    newNoteTag: MutableState<String>,
     newNoteDueDate: MutableState<String>,
     newNoteDueTime: MutableState<String>,
     viewModel: NotesViewModel,
@@ -144,6 +145,16 @@ fun DialogNewNote(
                     label = {
                         Text(
                             text = stringResource(R.string.dialog_new_anotation_what_remember),
+                            color =  Color.White
+                        )
+                    }
+                )
+                OutlinedTextField(
+                    value = newNoteTag.value,
+                    onValueChange = { newNoteTag.value = it },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.dialog_new_anotation_tag),
                             color =  Color.White
                         )
                     }
@@ -208,11 +219,12 @@ fun DialogNewNote(
             Button(
                 onClick = {
                     viewModel.saveNote(
-                        newNoteTitle.value,
-                        newNoteContent.value,
-                        newNoteType.value,
-                        if (newNoteType.value == TASK_LABEL) newNoteDueDate.value else null,
-                        if (newNoteType.value == TASK_LABEL) newNoteDueTime.value else null
+                        title = newNoteTitle.value,
+                        content = newNoteContent.value,
+                        type = newNoteType.value,
+                        tag = newNoteTag.value,
+                        dueDate = if (newNoteType.value == TASK_LABEL) newNoteDueDate.value else null,
+                        dueTime = if (newNoteType.value == TASK_LABEL) newNoteDueTime.value else null
                     )
                     newNoteTitle.value = ""
                     newNoteContent.value = ""

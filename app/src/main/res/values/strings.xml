@@ -12,6 +12,7 @@
     <string name="dialog_new_anotation_title">Criar nova anotação</string>
     <string name="dialog_new_anotation_title_label">Dê um titulo a sua anotação</string>
     <string name="dialog_new_anotation_what_remember">O que você quer lembrar?</string>
+    <string name="dialog_new_anotation_tag">Tag</string>
     <string name="define_task_date_label">Definir Data de Conclusão</string>
     <string name="done_task_date_label">Concluir em: %1$s</string>
     <string name="task_hour_label">Horário Limite</string>
@@ -20,7 +21,8 @@
     <string name="cancel_label">Cancelar</string>
     <string name="drop_note_label">Excluir Nota</string>
     <string name="label_note_card_task_duedate_duetime">Até: %1$s ás %2$s</string>
-    <string name="note_type_label">Tag: %1$s</string>
+    <string name="note_tag_label">Tag: %1$s</string>
+    <string name="note_type_label">Tipo: %1$s</string>
     <string name="note_title_text">#%1$s - %2$s</string>
     <string name="continue_label">Continuar</string>
     <string name="note_type_title_alert">Tipo de Nota</string>
