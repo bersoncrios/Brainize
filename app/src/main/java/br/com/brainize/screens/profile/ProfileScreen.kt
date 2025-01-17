@@ -1,6 +1,7 @@
 package br.com.brainize.screens.profile
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,18 +12,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -71,7 +72,6 @@ fun ProfileScreen(
     val usernameExists by viewModel.usernameExists.collectAsState()
     val isUserChecked by loginViewModel.isEmailVerified.collectAsState()
     var userEmailChecked by remember { mutableStateOf(false) }
-    var expandedMenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(isUserChecked) {
         userEmailChecked = isUserChecked
@@ -80,7 +80,6 @@ fun ProfileScreen(
     LaunchedEffect(Unit) {
         viewModel.loadUserData()
     }
-
     LaunchedEffect(userData) {
         name = userData.completeName
         username = userData.username
@@ -94,7 +93,7 @@ fun ProfileScreen(
             )
         }
     ) { paddingValues ->
-        BrainizeScreen(paddingValues = paddingValues) {
+        BrainizeScreen(paddingValues= paddingValues) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -105,7 +104,7 @@ fun ProfileScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp),verticalAlignment = Alignment.CenterVertically,
+                        .padding(bottom = 16.dp), verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Image(
@@ -121,29 +120,26 @@ fun ProfileScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
                             text = "@${userData.username}",
+                            modifier = Modifier
+                                .clickable {
+                                    openUsernameDialog = true
+                                },
                             style = TextStyle(
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
                         )
-                        IconButton(onClick = { openUsernameDialog = true }) {
-                            Icon(
-                                Icons.Filled.Edit,
-                                "Editar Nome",
-                                tint = Color.White
-                            )
-                        }
                     }
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -152,22 +148,19 @@ fun ProfileScreen(
                     ) {
                         Text(
                             text = userData.completeName,
-                            style= TextStyle(
+                            modifier = Modifier
+                                .clickable {
+                                    openNameDialog = true
+                                },
+                            style = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
                                 color = Color.White
                             )
                         )
-                        IconButton(onClick = { openNameDialog = true }) {
-                            Icon(
-                                Icons.Filled.Edit,
-                                "Editar Username",
-                                tint = Color.White
-                            )
-                        }
                     }
 
-                    if (!userEmailChecked){
+                    if (!userEmailChecked) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -192,25 +185,31 @@ fun ProfileScreen(
                         }
                     }
                 }
-                // Menu Button
+                Spacer(modifier = Modifier.height(32.dp))
+                // Menu Options as a List
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Button(onClick = { expandedMenu = true }) {
-                        Text(text = "Mais Dados")
-                    }
-                    DropdownMenu(
-                        expanded = expandedMenu,
-                        onDismissRequest = { expandedMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Dados Pessoais") },
-                            onClick = {
-                                expandedMenu = false
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
                                 navController.navigate(DestinationScreen.MoreDataProfileScreen.route)
                             }
+                            .padding(vertical = 8.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color(0xFF442c8a)
+                    ) {
+                        Text(
+                            text = "Dados Pessoais",
+                            modifier = Modifier.padding(16.dp),
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White
+                            )
                         )
                     }
                 }
@@ -228,9 +227,11 @@ fun ProfileScreen(
                         onClick = {
                             loginViewModel.logout(navController)
                         },
-                        modifier = Modifier.fillMaxWidth(),colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
                     ) {
-                        Text(text = "Sair",
+                        Text(
+                            text = "Sair",
                             color = Color.White
                         )
                     }
@@ -238,7 +239,6 @@ fun ProfileScreen(
             }
         }
     }
-
     if (openNameDialog) {
         AlertDialog(
             onDismissRequest = { openNameDialog = false },title = {
@@ -340,33 +340,5 @@ fun ProfileScreen(
             },
             containerColor = Color(0xFF372080)
         )
-    }
-}
-
-@Composable
-fun MoreDataProfileScreen(navController: NavController) {
-    Scaffold(
-        topBar = {
-            BrainizerTopAppBar(
-                title = "Dados Pessoais",
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-    ) { paddingValues ->
-        BrainizeScreen(paddingValues = paddingValues) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Tela de Dados Pessoais",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White
-                )
-            }
-        }
     }
 }

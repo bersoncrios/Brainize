@@ -65,6 +65,7 @@ fun MoreDataProfileScreen(
     var openBirthdayDialog by remember { mutableStateOf(false) }
     var gender by remember { mutableStateOf(userData.gender) }
     var birthday by remember { mutableStateOf(userData.birthday) }
+    var email by remember { mutableStateOf(userData.email) }
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
@@ -90,6 +91,7 @@ fun MoreDataProfileScreen(
     LaunchedEffect(userData) {
         gender = userData.gender
         birthday = userData.birthday
+        email = userData.email
     }
 
     Scaffold(
@@ -111,29 +113,20 @@ fun MoreDataProfileScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row (
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = userData.gender,
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
+                    Text(
+                        text =  if (userData.gender.isEmpty()) "Gênero" else userData.gender,
+                        modifier = Modifier
+                            .clickable {
+                                openGenderDialog = true
+                            },
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
                         )
-                        IconButton(onClick = { openGenderDialog = true }) {
-                            Icon(
-                                Icons.Filled.Edit,
-                                "Editar genero",
-                                tint = Color.White
-                            )
-                        }
-                    }
+                    )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -141,120 +134,134 @@ fun MoreDataProfileScreen(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = userData.birthday,
+                            text =  if (userData.birthday .isEmpty()) "Data de nascimento" else userData.birthday,
+                            modifier = Modifier
+                                .clickable {
+                                    openBirthdayDialog = true
+                                },
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
                                 color = Color.White
                             )
                         )
-                        IconButton(onClick = { openBirthdayDialog = true }) {
-                            Icon(
-                                Icons.Filled.Edit,
-                                "editar data de nascimento",
-                                tint = Color.White
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text =  userData.email,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White
                             )
-                        }
+                        )
                     }
                 }
             }
         }
-    }
 
-    if (openGenderDialog) {
-        AlertDialog(
-            onDismissRequest = { openGenderDialog = false },
-            title = {
-                Text(text = "Sexo",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White
-                )
-            },
-            text = {
-                OutlinedTextField(
-                    value = gender,
-                    onValueChange = { gender = it },
-                    label = {
-                        Text(
-                            text = "Sexo",
-                            color = Color.White
-                        )
-                    }
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        viewModel.updateUserSexo(gender)
-                        openGenderDialog = false
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
-                ) {
-                    Text("Salvar", color = Color.White)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { openGenderDialog = false }) {
-                    Text(text = "Cancelar", color = Color.White)
-                }
-            },
-            containerColor = Color(0xFF372080)
-        )
-    }
-
-    if (openBirthdayDialog) {
-        AlertDialog(
-            onDismissRequest = {
-                openBirthdayDialog = false
-            },
-            title = {
-                Text(
-                    text = "Data de nascimento",
-                    style = MaterialTheme.typography.headlineSmall,color = Color.White
-                )
-            },
-            text = {
-                Column {
+        if (openGenderDialog) {
+            AlertDialog(
+                onDismissRequest = { openGenderDialog = false },
+                title = {
+                    Text(text = "Sexo",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color.White
+                    )
+                },
+                text = {
                     OutlinedTextField(
-                        value = birthday,
-                        onValueChange = { },
+                        value = gender,
+                        onValueChange = { gender = it },
                         label = {
                             Text(
-                                text = "Data de nascimento",
+                                text = "Sexo",
                                 color = Color.White
-                            )
-                        },
-                        readOnly = true,
-                                trailingIcon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.baseline_calendar_month_24),
-                                contentDescription = "Selecionar Data",
-                                tint = Color.White,
-                                modifier = Modifier.clickable { datePickerDialog.show() }
                             )
                         }
                     )
-                }
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        viewModel.updateUserNascimento(birthday)
-                        openBirthdayDialog = false
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
-                ) {
-                    Text("Salvar", color = Color.White)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.updateUserSexo(gender)
+                            openGenderDialog = false
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
+                    ) {
+                        Text("Salvar", color = Color.White)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { openGenderDialog = false }) {
+                        Text(text = "Cancelar", color = Color.White)
+                    }
+                },
+                containerColor = Color(0xFF372080)
+            )
+        }
+
+        if (openBirthdayDialog) {
+            AlertDialog(
+                onDismissRequest = {
                     openBirthdayDialog = false
-                }) {
-                    Text("Cancelar", color = Color.White)
-                }
-            },
-            containerColor = Color(0xFF372080)
-        )
+                },
+                title = {
+                    Text(
+                        text = "Data de nascimento",
+                        style = MaterialTheme.typography.headlineSmall,color = Color.White
+                    )
+                },
+                text = {
+                    Column {
+                        OutlinedTextField(
+                            value = birthday,
+                            onValueChange = { },
+                            label = {
+                                Text(
+                                    text = "Data de nascimento",
+                                    color = Color.White
+                                )
+                            },
+                            readOnly = true,
+                            trailingIcon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.baseline_calendar_month_24),
+                                    contentDescription = "Selecionar Data",
+                                    tint = Color.White,
+                                    modifier = Modifier.clickable { datePickerDialog.show() }
+                                )
+                            }
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.updateUserNascimento(birthday)
+                            openBirthdayDialog = false
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
+                    ) {
+                        Text("Salvar", color = Color.White)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        openBirthdayDialog = false
+                    }) {
+                        Text("Cancelar", color = Color.White)
+                    }
+                },
+                containerColor = Color(0xFF372080)
+            )
+        }
     }
 }
