@@ -159,7 +159,9 @@ class LoginViewModel : ViewModel() {
                         .collection(USERS_COLLECTION)
                         .document(it.uid)
                         .set(userMap)
-                        .await()}
+                        .await()
+                    it.sendEmailVerification().await()
+                }
                 _loginState.value =LoginState.Success(token)
 
             } catch (e: Exception) {
