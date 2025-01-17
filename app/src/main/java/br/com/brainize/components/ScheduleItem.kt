@@ -30,7 +30,11 @@ import br.com.brainize.model.Schedule
 @Composable
 fun ScheduleItem(
     schedule: Schedule,
-    onIsDoneChange: (String, Boolean) -> Unit
+    onIsDoneChange: (String, Boolean) -> Unit,
+    priorityHighColor: Color = Color(0XFF873D48),
+    priorityMediumColor: Color = Color(0xFFA6CFD5),
+    priorityLowColor: Color =  Color(0xFF90EE90)
+
 ) {
     var currentPriority by remember { mutableStateOf(schedule.priority) }
     var showConfirmDialog by remember { mutableStateOf(false) }
@@ -41,9 +45,9 @@ fun ScheduleItem(
     val lowPriority = "Baixa"
 
     val priorityColor = when (currentPriority) {
-        hightPriority -> Color(0XFF873D48)
-        mediumPriority -> Color(0xFFA6CFD5)
-        lowPriority -> Color(0xFF90EE90)
+        hightPriority -> priorityHighColor
+        mediumPriority -> priorityMediumColor
+        lowPriority -> priorityLowColor
         else -> Color(0xFFbc60c4)
     }
 
@@ -79,21 +83,20 @@ fun ScheduleItem(
             Text(
                 text = "Data: ${schedule.date}",
                 fontSize = 16.sp,
-                color = Color.White
+                color = Color.DarkGray
             )
             Text(
                 text = "Horário: ${schedule.time}",
                 fontSize = 16.sp,
-                color = Color.White
+                color = Color.DarkGray
             )
             Text(
                 text = "Prioridade:$currentPriority",
                 fontSize = 16.sp,
-                color = Color.White
+                color = Color.DarkGray
             )
             Text(
-                text = "TAG: ${schedule.tag}",
-                fontSize = 16.sp,
+                text = "TAG: ${schedule.tag}",fontSize = 16.sp,
                 color = Color.Black,
                 fontWeight = FontWeight.Bold
             )

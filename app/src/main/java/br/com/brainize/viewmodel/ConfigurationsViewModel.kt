@@ -14,11 +14,10 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class ConfigurationsViewModel: ViewModel() {
+class ConfigurationsViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val configCollection = firestore
-        .collection("userConfigurations")
+    private val configCollection = firestore.collection("userConfigurations")
 
     private var _carEnabled by mutableStateOf(true)
     val carEnabled: Boolean get() = _carEnabled
@@ -41,7 +40,17 @@ class ConfigurationsViewModel: ViewModel() {
     private var _reminderColor by mutableStateOf("#bc60c4")
     val reminderColor: String get() = _reminderColor
 
-    fun loadConfigurations(onConfigLoaded: (UserConfigurations)-> Unit) {
+    private var _priorityHighColor by mutableStateOf("#873D48")
+    val priorityHighColor: String get() = _priorityHighColor
+
+    private var _priorityMediumColor by mutableStateOf("#A6CFD5")
+    val priorityMediumColor: String get() = _priorityMediumColor
+
+    private var _priorityLowColor by mutableStateOf("#90EE90")
+    val priorityLowColor: String get() = _priorityLowColor
+
+
+    fun loadConfigurations(onConfigLoaded: (UserConfigurations) -> Unit) {
         viewModelScope.launch {
             try {
                 val config = getConfigurationsFromFirestore()
@@ -52,6 +61,9 @@ class ConfigurationsViewModel: ViewModel() {
                 _collectionEnabled = config.collectionEnabled
                 _taskColor = config.taskColor
                 _reminderColor = config.reminderColor
+                _priorityHighColor = config.priorityHighColor
+                _priorityMediumColor = config.priorityMediumColor
+                _priorityLowColor = config.priorityLowColor
                 onConfigLoaded(config)
             } catch (e: Exception) {
                 Log.e("ConfigurationsViewModel", "Error loading configurations from Firestore", e)
@@ -88,14 +100,17 @@ class ConfigurationsViewModel: ViewModel() {
             val userId = auth.currentUser?.uid
             if (userId != null) {
                 val configDocument = configCollection.document(userId)
-                val updates = hashMapOf<String, Any>(
+                val updates= hashMapOf<String, Any>(
                     "carEnabled" to _carEnabled,
                     "houseEnabled" to _houseEnabled,
                     "notesEnabled" to _notesEnabled,
                     "agendaEnabled" to _agendaEnabled,
                     "collectionEnabled" to _collectionEnabled,
                     "taskColor" to _taskColor,
-                    "reminderColor" to _reminderColor
+                    "reminderColor" to _reminderColor,
+                    "priorityHighColor" to _priorityHighColor,
+                    "priorityMediumColor" to _priorityMediumColor,
+                    "priorityLowColor" to _priorityLowColor
                 )
                 try {
                     configDocument.set(updates, com.google.firebase.firestore.SetOptions.merge()).await()
@@ -122,7 +137,10 @@ class ConfigurationsViewModel: ViewModel() {
                 val configDocument = configCollection.document(userId)
                 val updates = hashMapOf<String, Any>(
                     "taskColor" to _taskColor,
-                    "reminderColor" to _reminderColor
+                    "reminderColor" to _reminderColor,
+                    "priorityHighColor" to _priorityHighColor,
+                    "priorityMediumColor" to _priorityMediumColor,
+                    "priorityLowColor" to _priorityLowColor
                 )
                 try {
                     configDocument.set(updates, com.google.firebase.firestore.SetOptions.merge()).await()
@@ -138,9 +156,9 @@ class ConfigurationsViewModel: ViewModel() {
             } else {
                 Log.e("ConfigurationsViewModel", "User not logged in, cannot save configurations")
                 onSaveComplete(false)
-            }
-        }
+            }}
     }
+
     fun setCarEnabled(value: Boolean) {
         _carEnabled = value
     }
@@ -169,6 +187,19 @@ class ConfigurationsViewModel: ViewModel() {
         _reminderColor = value
     }
 
+    fun setPriorityHighColor(value: String) {
+        _priorityHighColor = value
+    }
+
+    fun setPriorityMediumColor(value: String) {
+        _priorityMediumColor = value
+    }
+
+    fun setPriorityLowColor(value: String) {
+        _priorityLowColor = value
+    }
+
+
     data class UserConfigurations(
         var carEnabled: Boolean = true,
         var houseEnabled: Boolean = true,
@@ -176,6 +207,9 @@ class ConfigurationsViewModel: ViewModel() {
         var agendaEnabled: Boolean = true,
         var collectionEnabled: Boolean = true,
         var taskColor: String = "#90EE90",
-        var reminderColor: String = "#bc60c4"
+        var reminderColor: String = "#bc60c4",
+        var priorityHighColor: String = "#873D48",
+        var priorityMediumColor: String = "#A6CFD5",
+        var priorityLowColor: String = "#90EE90"
     )
 }

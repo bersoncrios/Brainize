@@ -122,7 +122,7 @@ fun AppNavigation(
             arguments = DestinationScreen.ScheduleScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            ScheduleScreen(navController = navController, viewModel = scheduleViewModel, loginViewModel = loginViewmodel, token = token)
+            ScheduleScreen(navController = navController, viewModel = scheduleViewModel, loginViewModel = loginViewmodel, configurationsViewModel = configurationsViewModel, token = token)
         }
 
         composable(

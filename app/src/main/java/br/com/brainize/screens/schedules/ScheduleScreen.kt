@@ -38,9 +38,11 @@ import br.com.brainize.components.BrainizeFloatingActionButton
 import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.components.ScheduleItem
+import br.com.brainize.components.getColorFromTaskColor
 import br.com.brainize.navigation.DestinationScreen
-import br.com.brainize.screens.schedules.ScheduleScreen.Companion.DATE_FORMAT
-import br.com.brainize.screens.schedules.ScheduleScreen.Companion.HOUR_FORMAT
+import br.com.brainize.screens.schedules.ScheduleScreenOps.Companion.DATE_FORMAT
+import br.com.brainize.screens.schedules.ScheduleScreenOps.Companion.HOUR_FORMAT
+import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
 import java.util.Calendar
@@ -51,6 +53,7 @@ fun ScheduleScreen(
     navController: NavController,
     viewModel: ScheduleViewModel,
     loginViewModel: LoginViewModel,
+    configurationsViewModel: ConfigurationsViewModel,
     token: String?
 ) {
 
@@ -66,7 +69,9 @@ fun ScheduleScreen(
     val newScheduleTag = remember { mutableStateOf("") }
     var newSchedulePriority by remember { mutableStateOf("") }
     var expandedPriority by remember { mutableStateOf(false) }
-
+    var priorityHighColor by remember { mutableStateOf("#873D48") }
+    var priorityMediumColor by remember { mutableStateOf("#A6CFD5") }
+    var priorityLowColor by remember { mutableStateOf("#90EE90") }
 
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -84,8 +89,7 @@ fun ScheduleScreen(
                     Locale.getDefault(),
                     DATE_FORMAT,
                     dayOfMonth,
-                    month + 1,
-                    year
+                    month + 1,year
                 )
         }, year, month, day
     )
@@ -104,6 +108,13 @@ fun ScheduleScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadSchedules()
+        configurationsViewModel.loadConfigurations { config ->
+            if (config != null) {
+                priorityHighColor = config.priorityHighColor
+                priorityMediumColor = config.priorityMediumColor
+                priorityLowColor = config.priorityLowColor
+            }
+        }
     }
 
     Scaffold(
@@ -134,9 +145,16 @@ fun ScheduleScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(filteredSchedules, key = { schedule -> schedule.id }) { schedule ->
+                        val priorityHighColor = getColorFromTaskColor(configurationsViewModel.priorityHighColor)
+                        val priorityMediumColor = getColorFromTaskColor(configurationsViewModel.priorityMediumColor)
+                        val priorityLowColor = getColorFromTaskColor(configurationsViewModel.priorityLowColor)
+
                         ScheduleItem(
                             schedule = schedule,
-                            onIsDoneChange = { scheduleId, isDone -> viewModel.updateScheduleIsDone(scheduleId, isDone) }
+                            onIsDoneChange = { scheduleId, isDone -> viewModel.updateScheduleIsDone(scheduleId, isDone) },
+                            priorityHighColor = priorityHighColor,
+                            priorityMediumColor = priorityMediumColor,
+                            priorityLowColor = priorityLowColor
                         )
                     }
                 }
@@ -146,8 +164,7 @@ fun ScheduleScreen(
 
     if (openDialog.value) {
         AlertDialog(
-            onDismissRequest = { openDialog.value = false },
-            title = {
+            onDismissRequest = { openDialog.value = false },title = {
                 Text(
                     text = "Nova agenda",
                     color = Color.White
@@ -223,8 +240,7 @@ fun ScheduleScreen(
                             Text(
                                 text = "Prioridade",
                                 color = Color.White
-                            )
-                        },
+                            )},
                         readOnly = true,
                         trailingIcon = {
                             Icon(
@@ -234,7 +250,7 @@ fun ScheduleScreen(
                                 tint = Color.White,
                             )
                             DropdownMenu(
-                                expanded = expandedPriority,
+                                expanded =expandedPriority,
                                 onDismissRequest = { expandedPriority = false }
                             ) {
                                 DropdownMenuItem(text = { Text("Alta") }, onClick = {
@@ -295,7 +311,7 @@ fun ScheduleScreen(
     }
 }
 
-class ScheduleScreen {
+class ScheduleScreenOps {
     companion object {
         const val DATE_FORMAT = "%02d/%02d/%d"
         const val HOUR_FORMAT = "%02d:%02d"

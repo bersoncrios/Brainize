@@ -56,8 +56,14 @@ fun AppsColorsConfigurationScreen(
 
     var taskColorHex by remember { mutableStateOf("#FFFFFF") }
     var reminderColorHex by remember { mutableStateOf("#000000") }
+    var priorityHighColorHex by remember { mutableStateOf("#000000") }
+    var priorityMediumColorHex by remember { mutableStateOf("#000000") }
+    var priorityLowColorHex by remember { mutableStateOf("#000000") }
     var showTaskColorDialog by remember { mutableStateOf(false) }
     var showReminderColorDialog by remember { mutableStateOf(false) }
+    var showPriorityHighColorDialog by remember { mutableStateOf(false) }
+    var showPriorityMediumColorDialog by remember { mutableStateOf(false) }
+    var showPriorityLowColorDialog by remember { mutableStateOf(false) }
     var isSaving by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -67,6 +73,9 @@ fun AppsColorsConfigurationScreen(
             if (config != null) {
                 taskColorHex = config.taskColor
                 reminderColorHex = config.reminderColor
+                priorityHighColorHex = config.priorityHighColor
+                priorityMediumColorHex = config.priorityMediumColor
+                priorityLowColorHex = config.priorityLowColor
             }
         }
     }
@@ -119,6 +128,54 @@ fun AppsColorsConfigurationScreen(
                     size = 80.dp,
                     onClick = { showReminderColorDialog = true }
                 )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Cor da Prioridade Alta
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Cor da Prioridade Alta:", modifier = Modifier.weight(1f))
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                ColorDisplayCard(
+                    colorHex = priorityHighColorHex,
+                    size = 80.dp,
+                    onClick = { showPriorityHighColorDialog = true }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Cor da Prioridade Média
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Cor da Prioridade Média:", modifier = Modifier.weight(1f))
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                ColorDisplayCard(
+                    colorHex = priorityMediumColorHex,
+                    size = 80.dp,
+                    onClick = { showPriorityMediumColorDialog = true }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Cor da Prioridade Baixa
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Cor da Prioridade Baixa:", modifier = Modifier.weight(1f))
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                ColorDisplayCard(
+                    colorHex = priorityLowColorHex,
+                    size = 80.dp,
+                    onClick = { showPriorityLowColorDialog = true }
+                )
             }
 
             Column(
@@ -135,6 +192,9 @@ fun AppsColorsConfigurationScreen(
                         isSaving = true
                         configurationsViewModel.setTaskColor(taskColorHex)
                         configurationsViewModel.setReminderColor(reminderColorHex)
+                        configurationsViewModel.setPriorityHighColor(priorityHighColorHex)
+                        configurationsViewModel.setPriorityMediumColor(priorityMediumColorHex)
+                        configurationsViewModel.setPriorityLowColor(priorityLowColorHex)
                         configurationsViewModel.saveColorConfigurations { success ->
                             isSaving = false
                             coroutineScope.launch {
@@ -146,16 +206,14 @@ fun AppsColorsConfigurationScreen(
                                 } else {
                                     snackbarHostState.showSnackbar(
                                         message = "Erro ao Salvar as Cores!",
-                                        duration =androidx.compose.material3.SnackbarDuration.Short
-                                    )
-                                }
+                                        duration = androidx.compose.material3.SnackbarDuration.Short
+                                    )}
                             }
                         }
                     },
                     enabled = !isSaving
                 ) {
-                    if (isSaving) {
-                        CircularProgressIndicator(color = Color.White)
+                    if (isSaving) { CircularProgressIndicator(color = Color.White)
                     } else {
                         Text(text = "Salvar Cores")
                     }
@@ -165,7 +223,7 @@ fun AppsColorsConfigurationScreen(
     }
     ColorPickerComposeDialog(
         showDialog = showTaskColorDialog,
-        initialColor = taskColorHex,
+        initialColor= taskColorHex,
         title = "Selecione a Cor da Tarefa",
         onColorSelected = { color ->
             taskColorHex = color
@@ -179,9 +237,38 @@ fun AppsColorsConfigurationScreen(
         title = "Selecione a Cor do Lembrete",
         onColorSelected = { color ->
             reminderColorHex = color
-            showReminderColorDialog = false
-        },
+            showReminderColorDialog = false},
         onDismiss = { showReminderColorDialog = false }
+    )
+    ColorPickerComposeDialog(
+        showDialog = showPriorityHighColorDialog,
+        initialColor = priorityHighColorHex,
+        title = "Selecione a Cor da Prioridade Alta",
+        onColorSelected = { color ->
+            priorityHighColorHex = color
+            showPriorityHighColorDialog = false
+        },
+        onDismiss = { showPriorityHighColorDialog = false }
+    )
+    ColorPickerComposeDialog(
+        showDialog = showPriorityMediumColorDialog,
+        initialColor = priorityMediumColorHex,
+        title = "Selecione a Cor da Prioridade Média",
+        onColorSelected = { color ->
+            priorityMediumColorHex = color
+            showPriorityMediumColorDialog = false
+        },
+        onDismiss = { showPriorityMediumColorDialog = false }
+    )
+    ColorPickerComposeDialog(
+        showDialog = showPriorityLowColorDialog,
+        initialColor = priorityLowColorHex,
+        title = "Selecione a Cor da Prioridade Baixa",
+        onColorSelected = { color ->
+            priorityLowColorHex= color
+            showPriorityLowColorDialog = false
+        },
+        onDismiss = { showPriorityLowColorDialog = false }
     )
 }
 
