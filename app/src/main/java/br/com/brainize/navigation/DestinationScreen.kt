@@ -61,6 +61,13 @@ sealed class DestinationScreen(val route: String) {
         )
     }
 
+    object MoreDataProfileScreen : DestinationScreen("more_data_profile_screen/{token}") {
+        fun createRoute(token: String?): String = "more_data_profile_screen/$token"
+        val arguments = listOf(
+            navArgument("token") { type = NavType.StringType }
+        )
+    }
+
     object CollectionScreen : DestinationScreen("collection_screen/{token}") {
         fun createRoute(token: String?): String = "collection_screen/$token"
         val arguments = listOf(
@@ -102,6 +109,7 @@ sealed class DestinationScreen(val route: String) {
         MainMenuConfigurationScreen.route.replace("{token}", "").substringBefore("/") -> MainMenuConfigurationScreen
         AppsColorsConfigurationScreen.route.replace("{token}", "").substringBefore("/") -> AppsColorsConfigurationScreen
         ProfileScreen.route.replace("{token}", "").substringBefore("/") -> ProfileScreen
+        MoreDataProfileScreen.route.replace("{token}", "").substringBefore("/") -> MoreDataProfileScreen
         CollectionScreen.route.replace("{token}", "").substringBefore("/") -> CollectionScreen
         LoginScreen.route -> LoginScreen
         ForgotPasswordScreen.route -> ForgotPasswordScreen

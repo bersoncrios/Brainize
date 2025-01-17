@@ -16,6 +16,8 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +38,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -68,10 +69,9 @@ fun ProfileScreen(
     var username by remember { mutableStateOf(userData.username) }
     var usernameError by remember { mutableStateOf(false) }
     val usernameExists by viewModel.usernameExists.collectAsState()
-
     val isUserChecked by loginViewModel.isEmailVerified.collectAsState()
-
     var userEmailChecked by remember { mutableStateOf(false) }
+    var expandedMenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(isUserChecked) {
         userEmailChecked = isUserChecked
@@ -152,7 +152,7 @@ fun ProfileScreen(
                     ) {
                         Text(
                             text = userData.completeName,
-                            style = TextStyle(
+                            style= TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
                                 color = Color.White
@@ -192,6 +192,28 @@ fun ProfileScreen(
                         }
                     }
                 }
+                // Menu Button
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Button(onClick = { expandedMenu = true }) {
+                        Text(text = "Mais Dados")
+                    }
+                    DropdownMenu(
+                        expanded = expandedMenu,
+                        onDismissRequest = { expandedMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Dados Pessoais") },
+                            onClick = {
+                                expandedMenu = false
+                                navController.navigate(DestinationScreen.MoreDataProfileScreen.route)
+                            }
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.padding(8.dp))
                 // Logout Button
@@ -206,11 +228,9 @@ fun ProfileScreen(
                         onClick = {
                             loginViewModel.logout(navController)
                         },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
+                        modifier = Modifier.fillMaxWidth(),colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
                     ) {
-                        Text(
-                            text = "Sair",
+                        Text(text = "Sair",
                             color = Color.White
                         )
                     }
@@ -221,8 +241,7 @@ fun ProfileScreen(
 
     if (openNameDialog) {
         AlertDialog(
-            onDismissRequest = { openNameDialog = false },
-            title = {
+            onDismissRequest = { openNameDialog = false },title = {
                 Text(
                     text = "Editar Nome",
                     style = MaterialTheme.typography.headlineSmall,
@@ -270,7 +289,8 @@ fun ProfileScreen(
             title = {
                 Text(
                     text = "Editar Username",
-                    style = MaterialTheme.typography.headlineSmall,color = Color.White
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White
                 )
             },
             text = {
@@ -280,8 +300,9 @@ fun ProfileScreen(
                         onValueChange = {
                             username = it
                             usernameError = false
-                            viewModel.checkUsernameExists(it)},
-                        label = {
+                            viewModel.checkUsernameExists(it)
+                        },
+                        label= {
                             Text(
                                 text = "Username",
                                 color = Color.White
@@ -301,7 +322,8 @@ fun ProfileScreen(
                             viewModel.updateUserUsername(username)
                             openUsernameDialog = false
                         } else {
-                            usernameError = true}
+                            usernameError = true
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
                 ) {
@@ -318,5 +340,33 @@ fun ProfileScreen(
             },
             containerColor = Color(0xFF372080)
         )
+    }
+}
+
+@Composable
+fun MoreDataProfileScreen(navController: NavController) {
+    Scaffold(
+        topBar = {
+            BrainizerTopAppBar(
+                title = "Dados Pessoais",
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+    ) { paddingValues ->
+        BrainizeScreen(paddingValues = paddingValues) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Tela de Dados Pessoais",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White
+                )
+            }
+        }
     }
 }

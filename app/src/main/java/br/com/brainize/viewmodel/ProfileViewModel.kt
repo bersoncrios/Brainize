@@ -12,11 +12,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import com.google.firebase.firestore.Query
 
 data class UserData(
     val completeName: String = "",
-    val email: String = "",val username: String = ""
+    val email: String = "",
+    val username: String = "",
+    val gender: String = "",
+    val birthday: String = ""
 )
 
 class ProfileViewModel : ViewModel() {
@@ -81,5 +83,24 @@ class ProfileViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun updateUserSexo(sexo: String) {
+        val userId = getCurrentUser()?.uid
+        if (userId != null) {
+            viewModelScope.launch {
+                firestore.collection("users").document(userId).update("gender", sexo).await()
+                loadUserData()
+            }
+        }
+    }
+
+    fun updateUserNascimento(dataNascimento: String) {
+        val userId = getCurrentUser()?.uid
+        if (userId != null) {
+            viewModelScope.launch {
+                firestore.collection("users").document(userId).update("birthday", dataNascimento).await()
+                loadUserData()
+            }}
     }
 }
