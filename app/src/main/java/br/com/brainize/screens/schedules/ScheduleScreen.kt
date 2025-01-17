@@ -39,6 +39,8 @@ import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.components.ScheduleItem
 import br.com.brainize.navigation.DestinationScreen
+import br.com.brainize.screens.schedules.ScheduleScreen.Companion.DATE_FORMAT
+import br.com.brainize.screens.schedules.ScheduleScreen.Companion.HOUR_FORMAT
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
 import java.util.Calendar
@@ -63,7 +65,6 @@ fun ScheduleScreen(
     val newScheduleName = remember { mutableStateOf("") }
     val newScheduleTag = remember { mutableStateOf("") }
     var newSchedulePriority by remember { mutableStateOf("") }
-    val schedulePriorities = remember { mutableMapOf<String, String>() }
     var expandedPriority by remember { mutableStateOf(false) }
 
 
@@ -79,14 +80,25 @@ fun ScheduleScreen(
         context,
         { _, year, month, dayOfMonth ->
             newScheduleDate.value =
-                String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, month + 1, year)
+                String.format(
+                    Locale.getDefault(),
+                    DATE_FORMAT,
+                    dayOfMonth,
+                    month + 1,
+                    year
+                )
         }, year, month, day
     )
 
     val timePickerDialog = TimePickerDialog(
         context,
         { _, hourOfDay, minute ->
-            newScheduleTime.value = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute)
+            newScheduleTime.value = String.format(
+                Locale.getDefault(),
+                HOUR_FORMAT,
+                hourOfDay,
+                minute
+            )
         }, hour, minute, true
     )
 
@@ -102,7 +114,10 @@ fun ScheduleScreen(
             )
         },
         floatingActionButton = {
-            BrainizeFloatingActionButton(openDialog = openDialog, title = "Nova agenda")
+            BrainizeFloatingActionButton(
+                openDialog = openDialog,
+                title = stringResource(R.string.new_schedule_lavel)
+            )
         }
     ) { paddingValues ->
         BrainizeScreen(paddingValues = paddingValues) {
@@ -121,7 +136,6 @@ fun ScheduleScreen(
                     items(filteredSchedules, key = { schedule -> schedule.id }) { schedule ->
                         ScheduleItem(
                             schedule = schedule,
-                            onDelete = { scheduleId -> viewModel.deleteSchedule(scheduleId) },
                             onIsDoneChange = { scheduleId, isDone -> viewModel.updateScheduleIsDone(scheduleId, isDone) }
                         )
                     }
@@ -133,145 +147,158 @@ fun ScheduleScreen(
     if (openDialog.value) {
         AlertDialog(
             onDismissRequest = { openDialog.value = false },
-            title = { Text(
-                text = "Nova agenda",
-                color = Color.White
-            ) },
-            text = {Column {
-                OutlinedTextField(
-                    value = newScheduleName.value,
-                    onValueChange = { newScheduleName.value = it },
-                    label = { Text(
-                        text = "Nome",
-                        color = Color.White
-                    ) }
+            title = {
+                Text(
+                    text = "Nova agenda",
+                    color = Color.White
                 )
-                OutlinedTextField(
-                    value = newScheduleTag.value,
-                    onValueChange = { newScheduleTag.value = it },
-                    label = { Text(
-                        text = "Tag",
-                        color = Color.White
-                    ) }
-                )
-                OutlinedTextField(
-                    value = newScheduleDate.value,
-                    onValueChange = { },
-                    modifier = Modifier
-                        .clickable {
-                            datePickerDialog.show()
+            },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = newScheduleName.value,
+                        onValueChange = { newScheduleName.value = it },
+                        label = {
+                            Text(
+                                text = "Nome",
+                                color = Color.White
+                            )
+                        }
+                    )
+                    OutlinedTextField(
+                        value = newScheduleTag.value,
+                        onValueChange = { newScheduleTag.value = it },
+                        label = { Text(
+                            text = "Tag",
+                            color = Color.White
+                        ) }
+                    )
+                    OutlinedTextField(
+                        value = newScheduleDate.value,
+                        onValueChange = { },
+                        modifier = Modifier
+                            .clickable {
+                                datePickerDialog.show()
+                            },
+                        label = { Text(
+                            text = "Data",
+                            color = Color.White
+                        )
                         },
-                    label = { Text(
-                        text = "Data",
+                        readOnly = true,
+                        trailingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.baseline_calendar_month_24),
+                                contentDescription = "Selecionar Data",
+                                tint = Color.White,
+                                modifier = Modifier.clickable { datePickerDialog.show() }
+                            )
+                        }
+                    )
+                    OutlinedTextField(
+                        value = newScheduleTime.value,
+                        onValueChange = { },
+                        label = {
+                            Text(
+                                text = "Horário",
+                                color = Color.White
+                            )
+                        },
+                        readOnly = true,
+                        modifier = Modifier
+                            .clickable { timePickerDialog.show() },
+                        trailingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.baseline_access_time_24),
+                                contentDescription = "Selecionar Horário",
+                                tint = Color.White,
+                                modifier = Modifier.clickable { timePickerDialog.show() }
+                            )
+                        }
+                    )
+                    OutlinedTextField(
+                        value = newSchedulePriority,
+                        onValueChange = { },
+                        label = {
+                            Text(
+                                text = "Prioridade",
+                                color = Color.White
+                            )
+                        },
+                        readOnly = true,
+                        trailingIcon = {
+                            Icon(
+                                painter = painterResource(id =R.drawable.baseline_arrow_drop_down_24),
+                                contentDescription = "Selecionar Prioridade",
+                                modifier = Modifier.clickable { expandedPriority = true },
+                                tint = Color.White,
+                            )
+                            DropdownMenu(
+                                expanded = expandedPriority,
+                                onDismissRequest = { expandedPriority = false }
+                            ) {
+                                DropdownMenuItem(text = { Text("Alta") }, onClick = {
+                                    newSchedulePriority = "Alta"
+                                    expandedPriority = false
+                                })
+                                DropdownMenuItem(text = { Text("Média") }, onClick = {
+                                    newSchedulePriority = "Média"
+                                    expandedPriority = false
+                                })
+                                DropdownMenuItem(text = { Text("Baixa") }, onClick = {
+                                    newSchedulePriority = "Baixa"
+                                    expandedPriority = false
+                                })
+                            }
+                        }
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.addSchedule(
+                            newScheduleTime.value,
+                            newScheduleDate.value,
+                            newScheduleName.value,
+                            newSchedulePriority,
+                            newScheduleTag.value
+                        )
+                        newScheduleTime.value = ""
+                        newScheduleDate.value = ""
+                        newScheduleName.value = ""
+                        newSchedulePriority = ""
+                        newScheduleTag.value = ""
+                        openDialog.value = false
+                    },
+                    colors = ButtonDefaults
+                        .buttonColors(
+                            containerColor = Color(0xFFbc60c4)
+                        )
+                ) {
+                    Text(
+                        text = "Salvar",
                         color = Color.White
                     )
-                    },
-                    readOnly = true,
-                    trailingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_calendar_month_24),
-                            contentDescription = "Selecionar Data",
-                            tint = Color.White,
-                            modifier = Modifier.clickable { datePickerDialog.show() }
-                        )
-                    }
-                )
-                OutlinedTextField(
-                    value = newScheduleTime.value,
-                    onValueChange = { },
-                    label = {
-                        Text(
-                            text = "Horário",
-                            color = Color.White
-                        )
-                    },
-                    readOnly = true,
-                    modifier = Modifier
-                        .clickable { timePickerDialog.show() },
-                    trailingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_access_time_24),
-                            contentDescription = "Selecionar Horário",
-                            tint = Color.White,
-                            modifier = Modifier.clickable { timePickerDialog.show() }
-                        )
-                    }
-                )
-                OutlinedTextField(
-                    value = newSchedulePriority,
-                    onValueChange = { },
-                    label = {
-                        Text(
-                            text = "Prioridade",
-                            color = Color.White
-                        )
-                    },
-                    readOnly = true,
-                    trailingIcon = {
-                        Icon(
-                            painter = painterResource(id =R.drawable.baseline_arrow_drop_down_24),
-                            contentDescription = "Selecionar Prioridade",
-                            modifier = Modifier.clickable { expandedPriority = true },
-                            tint = Color.White,
-                        )
-                        DropdownMenu(
-                            expanded = expandedPriority,
-                            onDismissRequest = { expandedPriority = false }
-                        ) {
-                            DropdownMenuItem(text = { Text("Alta") }, onClick = {
-                                newSchedulePriority = "Alta"
-                                expandedPriority = false
-                            })
-                            DropdownMenuItem(text = { Text("Média") }, onClick = {
-                                newSchedulePriority = "Média"
-                                expandedPriority = false
-                            })
-                            DropdownMenuItem(text = { Text("Baixa") }, onClick = {
-                                newSchedulePriority = "Baixa"
-                                expandedPriority = false
-                            })
-                        }
-                    }
-                )
-                    }
+                }
             },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            viewModel.addSchedule(
-                                newScheduleTime.value,
-                                newScheduleDate.value,
-                                newScheduleName.value,
-                                newSchedulePriority,
-                                newScheduleTag.value
-                            )
-                            newScheduleTime.value = ""
-                            newScheduleDate.value = ""
-                            newScheduleName.value = ""
-                            newSchedulePriority = ""
-                            newScheduleTag.value = ""
-                            openDialog.value = false
-                        },
-                        colors = ButtonDefaults
-                            .buttonColors(
-                                containerColor = Color(0xFFbc60c4)
-                            )
-                    ) {
-                        Text(
-                            text = "Salvar",
-                            color = Color.White
-                        )
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { openDialog.value = false }) {
-                        Text(
-                            text = "Cancelar",
-                            color = Color.White
-                        )
-                    }
-                },
-                containerColor = Color(0xFF372080)
-                )
-            }
+            dismissButton = {
+                TextButton(onClick = { openDialog.value = false }) {
+                    Text(
+                        text = "Cancelar",
+                        color = Color.White
+                    )
+                }
+            },
+            containerColor = Color(0xFF372080)
+        )
     }
+}
+
+class ScheduleScreen {
+    companion object {
+        const val DATE_FORMAT = "%02d/%02d/%d"
+        const val HOUR_FORMAT = "%02d:%02d"
+
+    }
+}

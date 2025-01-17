@@ -1,5 +1,6 @@
 package br.com.brainize.viewmodel
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,12 +18,18 @@ class ScheduleViewModel : ViewModel() {
     private val firestore: FirebaseFirestore = Firebase.firestore
 
     private val _schedules = mutableStateOf<List<Schedule>>(emptyList())
-    val schedules: androidx.compose.runtime.State<List<Schedule>> = _schedules
+    val schedules: State<List<Schedule>> = _schedules
 
     private fun getCurrentUser() = auth.currentUser
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
 
-    fun addSchedule(time: String, date: String, name: String, priority: String, tag: String) {
+    fun addSchedule(
+        time: String,
+        date: String,
+        name: String,
+        priority: String,
+        tag: String
+    ) {
         val schedule = Schedule(
             time = time,
             date = date,
@@ -32,7 +39,11 @@ class ScheduleViewModel : ViewModel() {
         )
         val userId = getCurrentUser()?.uid
         if (userId != null) {
-            firestore.collection("users").document(userId).collection("schedules").add(schedule)
+            firestore
+                .collection(USER_COLLECTIONS)
+                .document(userId)
+                .collection(SCHEDULE_COLLECTIONS)
+                .add(schedule)
             loadSchedules()
         }
     }
@@ -41,11 +52,16 @@ class ScheduleViewModel : ViewModel() {
         val userId = getCurrentUser()?.uid
         if (userId != null) {
             viewModelScope.launch {
-                val snapshot = firestore.collection("users").document(userId).collection("schedules").get().await()
+                val snapshot = firestore
+                    .collection(USER_COLLECTIONS)
+                    .document(userId)
+                    .collection(SCHEDULE_COLLECTIONS)
+                    .get()
+                    .await()
                 val schedulesList = snapshot.documents.mapNotNull { document ->
                     document.toObject(Schedule::class.java)?.copy(
                         id = document.id,
-                        isDone = document.getBoolean("isDone") ?: false
+                        isDone = document.getBoolean(IS_DONE_LABEL) ?: false
                     )
                 }
                 _schedules.value = schedulesList
@@ -53,12 +69,19 @@ class ScheduleViewModel : ViewModel() {
         }
     }
 
-    fun updateScheduleIsDone(scheduleId: String, isDone: Boolean) {
+    fun updateScheduleIsDone(
+        scheduleId: String,
+        isDone: Boolean
+    ) {
         viewModelScope.launch {
             val user = auth.currentUser
             if (user != null) {
-                firestore.collection("users").document(user.uid).collection("schedules").document(scheduleId)
-                    .update("isDone", isDone)
+                firestore
+                    .collection(USER_COLLECTIONS)
+                    .document(user.uid)
+                    .collection(SCHEDULE_COLLECTIONS)
+                    .document(scheduleId)
+                    .update(IS_DONE_LABEL, isDone)
                     .await()
                 loadSchedules()
             }
@@ -69,9 +92,22 @@ class ScheduleViewModel : ViewModel() {
         viewModelScope.launch {
             val user = auth.currentUser
             if (user != null) {
-                firestore.collection("users").document(user.uid).collection("schedules").document(scheduleId).delete().await()
+                firestore
+                    .collection(USER_COLLECTIONS)
+                    .document(user.uid)
+                    .collection(SCHEDULE_COLLECTIONS)
+                    .document(scheduleId)
+                    .delete()
+                    .await()
                 loadSchedules()
             }
         }
+    }
+
+    companion object {
+        private const val USER_COLLECTIONS = "users"
+        private const val SCHEDULE_COLLECTIONS = "schedules"
+        private const val IS_DONE_LABEL = "isDone"
+
     }
 }
