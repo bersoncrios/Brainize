@@ -168,10 +168,10 @@ fun ProfileScreen(
                     }
 
                     if (!userEmailChecked){
-                        Row(
+                        Column(
                             modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
                             Text(
                                 text = "VERIFIQUE SEU ENDEREÇO DE EMAIL".lowercase(),
