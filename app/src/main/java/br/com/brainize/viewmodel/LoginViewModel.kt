@@ -2,7 +2,6 @@ package br.com.brainize.viewmodel
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
@@ -36,6 +35,9 @@ class LoginViewModel : ViewModel() {
     val loginState: State<LoginState>
         get() = _loginState
 
+    private var _isEmailVerified = MutableStateFlow(false)
+    var isEmailVerified: StateFlow<Boolean> = _isEmailVerified
+
     fun getCurrentUser() = auth.currentUser
 
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
@@ -55,6 +57,8 @@ class LoginViewModel : ViewModel() {
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
                         val name = document.getString("completeName") ?: ""
+                        val isEmailVerified = document.getBoolean(IS_EMAIL_VERIFIED) ?: false
+                        _isEmailVerified.value = isEmailVerified
                         _completeName.value = name
                         continuation.resume(name)
                     } else {
@@ -87,6 +91,17 @@ class LoginViewModel : ViewModel() {
                                 .document(uid)
                                 .update(IS_EMAIL_VERIFIED, true)
                                 .await()
+                            _isEmailVerified.value = true
+                        }
+                    } else {
+                        auth.currentUser?.uid?.let { uid ->
+                            firestore.collection(USERS_COLLECTION)
+                                .document(uid)
+                                .get()
+                                .addOnSuccessListener { document ->
+                                    val isEmailVerifiedFirestore = document.getBoolean(IS_EMAIL_VERIFIED) ?: false
+                                    _isEmailVerified.value = isEmailVerifiedFirestore
+                                }
                         }
                     }
                     _loginState.value = LoginState.Success(token)
@@ -95,11 +110,21 @@ class LoginViewModel : ViewModel() {
                     val token = authResult.user?.getIdToken(false)?.await()?.token
                     val isEmailVerified = authResult.user?.isEmailVerified ?: false
                     if (isEmailVerified) {
+                        auth.currentUser?.uid?.let { uid ->firestore.collection(USERS_COLLECTION)
+                            .document(uid)
+                            .update(IS_EMAIL_VERIFIED, true)
+                            .await()
+                            _isEmailVerified.value = true
+                        }
+                    } else {
                         auth.currentUser?.uid?.let { uid ->
                             firestore.collection(USERS_COLLECTION)
                                 .document(uid)
-                                .update(IS_EMAIL_VERIFIED, true)
-                                .await()
+                                .get()
+                                .addOnSuccessListener { document ->
+                                    val isEmailVerifiedFirestore = document.getBoolean(IS_EMAIL_VERIFIED) ?: false
+                                    _isEmailVerified.value = isEmailVerifiedFirestore
+                                }
                         }
                     }
                     _loginState.value = LoginState.Success(token)
@@ -112,22 +137,23 @@ class LoginViewModel : ViewModel() {
     }
 
     private suspend fun getUserByUsername(username: String): User? {
-        return suspendCancellableCoroutine { continuation ->firestore.collection(USERS_COLLECTION)
-            .whereEqualTo(USERNAME, username).limit(1)
-            .get().addOnSuccessListener { querySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    val document = querySnapshot.documents[0]
-                    val email = document.getString(EMAIL) ?: ""
-                    val uid = document.getString(UID) ?: ""
-                    val user = User(email, uid)
-                    continuation.resume(user)
-                } else {
+        return suspendCancellableCoroutine { continuation ->
+            firestore.collection(USERS_COLLECTION)
+                .whereEqualTo(USERNAME, username).limit(1)
+                .get().addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val document = querySnapshot.documents[0]
+                        val email = document.getString(EMAIL) ?: ""
+                        val uid = document.getString(UID) ?: ""
+                        val user = User(email, uid)
+                        continuation.resume(user)
+                    } else {
+                        continuation.resume(null)
+                    }
+                }
+                .addOnFailureListener {
                     continuation.resume(null)
                 }
-            }
-            .addOnFailureListener {
-                continuation.resume(null)
-            }
         }
     }
 
@@ -143,6 +169,24 @@ class LoginViewModel : ViewModel() {
                         e.message ?: context.getString(R.string.unknow_error)
                     )
             }
+        }
+    }
+
+    suspend fun loadIsEmailVerified(): Boolean {
+        return suspendCancellableCoroutine { continuation ->
+            auth.currentUser?.uid?.let { uid ->
+                firestore.collection(USERS_COLLECTION)
+                    .document(uid)
+                    .get()
+                    .addOnSuccessListener { document ->
+                        val isEmailVerifiedFirestore = document.getBoolean(IS_EMAIL_VERIFIED) ?: false
+                        _isEmailVerified.value = isEmailVerifiedFirestore
+                        continuation.resume(isEmailVerifiedFirestore)
+                    }
+                    .addOnFailureListener {
+                        continuation.resume(false)
+                    }
+            } ?: continuation.resume(false)
         }
     }
 
@@ -183,8 +227,7 @@ class LoginViewModel : ViewModel() {
                         .await()
                     it.sendEmailVerification().await()
                 }
-                _loginState.value =LoginState.Success(token)
-
+                _loginState.value = LoginState.Success(token)
             } catch (e: Exception) {
                 _loginState.value = LoginState.Error(
                     e.message ?: context.getString(R.string.unknow_error)

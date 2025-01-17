@@ -69,6 +69,14 @@ fun ProfileScreen(
     var usernameError by remember { mutableStateOf(false) }
     val usernameExists by viewModel.usernameExists.collectAsState()
 
+    val isUserChecked by loginViewModel.isEmailVerified.collectAsState()
+
+    var userEmailChecked by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isUserChecked) {
+        userEmailChecked = isUserChecked
+    }
+
     LaunchedEffect(Unit) {
         viewModel.loadUserData()
     }
@@ -155,6 +163,31 @@ fun ProfileScreen(
                                 Icons.Filled.Edit,
                                 "Editar Username",
                                 tint = Color.White
+                            )
+                        }
+                    }
+
+                    if (!userEmailChecked){
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "VERIFIQUE SEU ENDEREÇO DE EMAIL".lowercase(),
+                                color = Color.Red,
+                                style = TextStyle(
+                                    fontSize = 21.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                            Text(
+                                text = "Após verificação, logue novamente no app".lowercase(),
+                                color = Color.LightGray,
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Normal
+                                )
                             )
                         }
                     }
