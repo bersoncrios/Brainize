@@ -1,7 +1,7 @@
 package br.com.brainize.viewmodel
 
 import android.content.Context
-import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,7 +15,6 @@ import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.states.LoginState
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +23,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 class LoginViewModel : ViewModel() {
-    private val auth: FirebaseAuth = Firebase.auth
+    private val auth: FirebaseAuth =Firebase.auth
     private val firestore: FirebaseFirestore = Firebase.firestore
     private var _completeName = mutableStateOf("")
 
@@ -81,10 +80,28 @@ class LoginViewModel : ViewModel() {
                 if (user != null) {
                     val authResult = auth.signInWithEmailAndPassword(user.email, password).await()
                     val token = authResult.user?.getIdToken(false)?.await()?.token
+                    val isEmailVerified = authResult.user?.isEmailVerified ?: false
+                    if (isEmailVerified) {
+                        auth.currentUser?.uid?.let { uid ->
+                            firestore.collection(USERS_COLLECTION)
+                                .document(uid)
+                                .update(IS_EMAIL_VERIFIED, true)
+                                .await()
+                        }
+                    }
                     _loginState.value = LoginState.Success(token)
                 } else {
                     val authResult = auth.signInWithEmailAndPassword(emailOrUsername, password).await()
                     val token = authResult.user?.getIdToken(false)?.await()?.token
+                    val isEmailVerified = authResult.user?.isEmailVerified ?: false
+                    if (isEmailVerified) {
+                        auth.currentUser?.uid?.let { uid ->
+                            firestore.collection(USERS_COLLECTION)
+                                .document(uid)
+                                .update(IS_EMAIL_VERIFIED, true)
+                                .await()
+                        }
+                    }
                     _loginState.value = LoginState.Success(token)
                 }
             } catch (e: Exception) {
@@ -95,23 +112,22 @@ class LoginViewModel : ViewModel() {
     }
 
     private suspend fun getUserByUsername(username: String): User? {
-        return suspendCancellableCoroutine { continuation ->
-            firestore.collection(USERS_COLLECTION)
-                .whereEqualTo(USERNAME, username).limit(1)
-                .get().addOnSuccessListener { querySnapshot ->
-                    if (!querySnapshot.isEmpty) {
-                        val document = querySnapshot.documents[0]
-                        val email = document.getString(EMAIL) ?: ""
-                        val uid = document.getString(UID) ?: ""
-                        val user = User(email, uid)
-                        continuation.resume(user)
-                    } else {
-                        continuation.resume(null)
-                    }
-                }
-                .addOnFailureListener {
+        return suspendCancellableCoroutine { continuation ->firestore.collection(USERS_COLLECTION)
+            .whereEqualTo(USERNAME, username).limit(1)
+            .get().addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val document = querySnapshot.documents[0]
+                    val email = document.getString(EMAIL) ?: ""
+                    val uid = document.getString(UID) ?: ""
+                    val user = User(email, uid)
+                    continuation.resume(user)
+                } else {
                     continuation.resume(null)
                 }
+            }
+            .addOnFailureListener {
+                continuation.resume(null)
+            }
         }
     }
 
@@ -123,7 +139,9 @@ class LoginViewModel : ViewModel() {
                 _loginState.value = LoginState.Success(null)
             } catch (e: Exception) {
                 _loginState.value =
-                    LoginState.Error(e.message ?: context.getString(R.string.unknow_error))
+                    LoginState.Error(
+                        e.message ?: context.getString(R.string.unknow_error)
+                    )
             }
         }
     }
@@ -152,8 +170,11 @@ class LoginViewModel : ViewModel() {
                         EMAIL to email,
                         COMPLETE_NAME to name,
                         USERNAME to username.lowercase(),
-                        UID to (auth.currentUser?.uid ?: context.getString(R.string.dont_possible_recovery_uid)),
-                        CREATEDAT to System.currentTimeMillis()
+                        UID to (
+                                auth.currentUser?.uid ?: context.getString(R.string.dont_possible_recovery_uid)
+                                ),
+                        CREATEDAT to System.currentTimeMillis(),
+                        IS_EMAIL_VERIFIED to false
                     )
                     firestore
                         .collection(USERS_COLLECTION)
@@ -165,15 +186,17 @@ class LoginViewModel : ViewModel() {
                 _loginState.value =LoginState.Success(token)
 
             } catch (e: Exception) {
-                _loginState.value = LoginState.Error(e.message ?: context.getString(R.string.unknow_error))
+                _loginState.value = LoginState.Error(
+                    e.message ?: context.getString(R.string.unknow_error)
+                )
             }
         }
     }
 
     fun checkUsernameExists(username: String) {
         viewModelScope.launch {
-            val query = firestore.collection("users")
-                .whereEqualTo("username", username.lowercase())
+            val query = firestore.collection(USERS_COLLECTION)
+                .whereEqualTo(USERNAME, username.lowercase())
                 .limit(1)
                 .get()
                 .await()
@@ -188,6 +211,7 @@ class LoginViewModel : ViewModel() {
         private const val USERNAME = "username"
         private const val CREATEDAT = "createdAt"
         private const val UID = "uid"
+        private const val IS_EMAIL_VERIFIED = "isEmailVerified"
     }
 }
 
