@@ -18,11 +18,14 @@ class CarViewModel : ViewModel() {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
-    private val carCollection = firestore.collection("car")
+    private val carCollection = firestore.collection("cars")
     private val carStatusCollection = firestore.collection("carStatus")
 
     var windowClosed by mutableStateOf(true)
     var doorClosed by mutableStateOf(true)
+    var carBrand by mutableStateOf("")
+    var carModel by mutableStateOf("")
+
 
     init {
         loadStatus()
@@ -34,8 +37,7 @@ class CarViewModel : ViewModel() {
                 val status = getCarStatusFromFirestore()
                 windowClosed = status.windowClosed
                 doorClosed = status.doorClosed
-            } catch (e: Exception) {
-                Log.e("CarViewModel", "Error loading status from Firestore", e)
+            } catch (e: Exception) {Log.e("CarViewModel", "Error loading status from Firestore", e)
             }
         }
     }
@@ -120,6 +122,25 @@ class CarViewModel : ViewModel() {
                 }
             } else {
                 Log.e("CarViewModel", "User not logged in, cannot register car")
+            }
+        }
+    }
+
+    fun loadCarInfo(onComplete: () -> Unit) {
+        viewModelScope.launch {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                try {
+                    val document = carCollection.document(userId).get().await()
+                    if (document.exists()) {
+                        carBrand = document.getString("brand") ?: ""
+                        carModel = document.getString("model") ?: ""
+                    }
+                } catch (e: Exception) {
+                    Log.e("CarViewModel", "Error loading car info from Firestore", e)
+                } finally {
+                    onComplete()
+                }
             }
         }
     }

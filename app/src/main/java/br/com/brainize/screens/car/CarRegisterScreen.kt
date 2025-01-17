@@ -48,7 +48,9 @@ fun CarRegisterScreen(
         topBar = {
             BrainizerTopAppBar(
                 title = stringResource(R.string.register_car_label),
-                onBackClick = { navController.popBackStack() }
+                onBackClick = {
+                    navController.navigate(DestinationScreen.HomeScreen.route)
+                }
             )
         }
     ) { paddingValues ->

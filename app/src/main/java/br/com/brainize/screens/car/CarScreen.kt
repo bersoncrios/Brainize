@@ -42,13 +42,15 @@ fun CarScreen(
     token: String?
 ) {
 
-    if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
+    if(!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
     var windowClosed by rememberSaveable { mutableStateOf(viewModel.windowClosed) }
     var doorClosed by rememberSaveable { mutableStateOf(viewModel.doorClosed) }
     var hasCar by remember { mutableStateOf(false) }
+    var carBrand by remember { mutableStateOf(viewModel.carBrand) }
+    var carModel by remember { mutableStateOf(viewModel.carModel) }
 
 
     LaunchedEffect(Unit) {
@@ -56,6 +58,11 @@ fun CarScreen(
             hasCar = hasCarResult
             if (!hasCar) {
                 navController.navigate(DestinationScreen.CarRegisterScreen.route)
+            } else {
+                viewModel.loadCarInfo {
+                    carBrand = viewModel.carBrand
+                    carModel = viewModel.carModel
+                }
             }
         }
     }
@@ -65,13 +72,13 @@ fun CarScreen(
             topBar = {
                 BrainizerTopAppBar(
                     title = stringResource(R.string.my_car_label),
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.navigate(DestinationScreen.HomeScreen.route) }
                 )
             }
         ) { paddingValues ->
             BrainizeScreen(paddingValues = paddingValues) {
                 Text(
-                    text = "Status do seu \$CARRO", //TODO: mudar para o nome do carro cadastrado
+                    text = "Status do seu $carBrand $carModel",
                     modifier = Modifier
                         .padding(top = 32.dp),
                     fontSize = 18.sp,
@@ -97,8 +104,7 @@ fun CarScreen(
                             defaultIcon = R.drawable.windowglassopened,
                             alternateIcon = R.drawable.windowglassclosed,
                             isSelected = windowClosed,
-                            onToggle = { selected ->
-                                windowClosed = selected
+                            onToggle = { selected ->windowClosed = selected
                                 viewModel.windowClosed = selected
                                 viewModel.saveStatus()
                             }
