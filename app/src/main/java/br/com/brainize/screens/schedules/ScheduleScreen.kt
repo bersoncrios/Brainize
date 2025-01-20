@@ -139,7 +139,7 @@ fun ScheduleScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val filteredSchedules = schedules.filter { !it.isDone }
+                val filteredSchedules = schedules.filter { !it.done }
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize()
@@ -278,7 +278,8 @@ fun ScheduleScreen(
                             newScheduleDate.value,
                             newScheduleName.value,
                             newSchedulePriority,
-                            newScheduleTag.value
+                            newScheduleTag.value,
+                            false
                         )
                         newScheduleTime.value = ""
                         newScheduleDate.value = ""

@@ -38,7 +38,7 @@ fun ScheduleItem(
 ) {
     var currentPriority by remember { mutableStateOf(schedule.priority) }
     var showConfirmDialog by remember { mutableStateOf(false) }
-    var isChecked by remember { mutableStateOf(schedule.isDone) }
+    var isChecked by remember { mutableStateOf(schedule.done) }
 
     val hightPriority = "Alta"
     val mediumPriority = "Média"

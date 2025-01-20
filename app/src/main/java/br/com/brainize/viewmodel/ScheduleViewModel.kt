@@ -29,7 +29,8 @@ class ScheduleViewModel : ViewModel() {
         date: String,
         name: String,
         priority: String,
-        tag: String
+        tag: String,
+        isDone:Boolean
     ) {
         val schedule = Schedule(
             time = time,
@@ -37,6 +38,7 @@ class ScheduleViewModel : ViewModel() {
             name = name,
             priority = priority,
             tag = tag,
+            done = isDone
         )
         val userId = getCurrentUser()?.uid
         if (userId != null) {
@@ -62,7 +64,7 @@ class ScheduleViewModel : ViewModel() {
                 val schedulesList = snapshot.documents.mapNotNull { document ->
                     document.toObject(Schedule::class.java)?.copy(
                         id = document.id,
-                        isDone = document.getBoolean(IS_DONE_LABEL) ?: false
+                        done = document.getBoolean(IS_DONE_LABEL) ?: false
                     )
                 }
                 _schedules.value = schedulesList
@@ -132,7 +134,6 @@ class ScheduleViewModel : ViewModel() {
     companion object {
         private const val USER_COLLECTIONS = "users"
         private const val SCHEDULE_COLLECTIONS = "schedules"
-        private const val IS_DONE_LABEL = "isDone"
-
+        private const val IS_DONE_LABEL = "done"
     }
 }

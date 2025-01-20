@@ -9,5 +9,5 @@ data class Schedule(
     val name: String = "",
     val priority: String = "",
     val tag: String = "",
-    val isDone: Boolean = false
+    val done: Boolean = false
 )
