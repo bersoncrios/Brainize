@@ -4,14 +4,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -68,8 +74,10 @@ fun CollectionScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                LazyColumn(
-                    modifier = Modifier.padding(16.dp)
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
                 ) {
                     items(collections) { collection ->
                         CollectionItem(
@@ -158,15 +166,17 @@ fun CreateCollectionDialog(
     )
 }
 
+
 @Composable
 fun CollectionItem(collectionName: String, onItemClick: () -> Unit) {
-    Surface(
-        modifier = Modifier
+    Card(
+        modifier= Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable { onItemClick() },
         shape = RoundedCornerShape(8.dp),
-        color = Color(0xFF442c8a)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF442c8a)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Text(
             text = collectionName,

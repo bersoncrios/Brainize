@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import com.google.firebase.firestore.SetOptions
 
 class CollectionViewModel(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
@@ -41,11 +42,11 @@ class CollectionViewModel(
 
                     val collections = snapshot.documents.map { doc ->
                         Collection(
-                            name = doc.id,
+                            name = doc.getString("name") ?: "",
                             id = doc.id
                         )
                     }
-                    _collections.value = collections
+                    _collections.value= collections
                 } catch (e: Exception) {
                     Log.e("CollectionViewModel", "Error loading collections", e)
                 }
@@ -58,12 +59,20 @@ class CollectionViewModel(
             val user = auth.currentUser
             if (user != null) {
                 try {
-                    val newCollection = Collection(name = collectionName, id = collectionName)
-                    firestore.collection(USER_COLLECTIONS).document(user.uid)
+                    val newCollectionRef = firestore.collection(USER_COLLECTIONS)
+                        .document(user.uid)
                         .collection(COLLECTION_COLLECTIONS)
-                        .document(collectionName)
-                        .set(newCollection)
+                        .document()
+                    val newCollectionId = newCollectionRef.id
+
+                    val data = hashMapOf(
+                        "name" to collectionName,
+                        "id" to newCollectionId
+                    )
+
+                    newCollectionRef.set(data, SetOptions.merge())
                         .await()
+
                     loadCollections()
                 } catch (e: Exception) {
                     Log.e("CollectionViewModel", "Error saving collection", e)
