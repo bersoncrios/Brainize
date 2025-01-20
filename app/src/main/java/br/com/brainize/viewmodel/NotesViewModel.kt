@@ -62,7 +62,7 @@ class NotesViewModel : ViewModel() {
     }
 
 
-    fun saveNote (
+    fun saveNote(
         title: String,
         content: String,
         type: String,
@@ -78,8 +78,7 @@ class NotesViewModel : ViewModel() {
                     .collection(USERS_COLLECTION)
                     .document(user.uid)
                     .collection(NOTES_COLLECTION)
-                    .document()
-                    .id
+                    .document().id
                 val note =
                     Note(
                         id = noteId,
@@ -125,16 +124,18 @@ class NotesViewModel : ViewModel() {
     fun deleteNote(noteId: String) {
         viewModelScope.launch {
             val user = auth.currentUser
-            if (user != null) {firestore.collection(USERS_COLLECTION)
-                .document(user.uid)
-                .collection(NOTES_COLLECTION)
-                .document(noteId)
-                .delete()
-                .await()
+            if (user != null) {
+                firestore.collection(USERS_COLLECTION)
+                    .document(user.uid)
+                    .collection(NOTES_COLLECTION)
+                    .document(noteId)
+                    .delete()
+                    .await()
                 loadNotes()
             }
         }
     }
+
     fun getNoteById(noteId: String) {
         viewModelScope.launch {
             val user = auth.currentUser
@@ -164,6 +165,7 @@ class NotesViewModel : ViewModel() {
             }
         }
     }
+
     fun updateNote(note: Note) {
         viewModelScope.launch {
             val user = auth.currentUser
@@ -179,6 +181,30 @@ class NotesViewModel : ViewModel() {
             }
         }
     }
+
+    fun getNotesCount(onResult: (Int) -> Unit) {
+        viewModelScope.launch {
+            val user = auth.currentUser
+            if (user != null) {
+                try {
+                    val snapshot = firestore
+                        .collection(USERS_COLLECTION)
+                        .document(user.uid)
+                        .collection(NOTES_COLLECTION)
+                        .get()
+                        .await()
+                    val count = snapshot.size()
+                    onResult(count)
+                } catch (e: Exception) {
+                    Log.e("NotesViewModel", "Error getting notes count", e)
+                    onResult(0)
+                }
+            } else {
+                onResult(0)
+            }
+        }
+    }
+
     companion object {
         private const val NOTES_COLLECTION = "notes"
         private const val USERS_COLLECTION = "users"

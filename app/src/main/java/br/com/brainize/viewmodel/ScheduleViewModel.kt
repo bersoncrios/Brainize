@@ -1,5 +1,6 @@
 package br.com.brainize.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -100,6 +101,30 @@ class ScheduleViewModel : ViewModel() {
                     .delete()
                     .await()
                 loadSchedules()
+            }
+        }
+    }
+
+    fun getSchedulesCount(onResult: (Int) -> Unit) {
+        viewModelScope.launch {
+            val user = auth.currentUser
+            if (user != null) {
+                try {
+                    val snapshot = firestore
+                        .collection(USER_COLLECTIONS)
+                        .document(user.uid)
+                        .collection(SCHEDULE_COLLECTIONS)
+                        .whereEqualTo(IS_DONE_LABEL, false)
+                        .get()
+                        .await()
+                    val count = snapshot.size()
+                    onResult(count)
+                } catch (e: Exception) {
+                    Log.e("ScheduleViewModel", "Error getting schedule count", e)
+                    onResult(0)
+                }
+            } else {
+                onResult(0)
             }
         }
     }
