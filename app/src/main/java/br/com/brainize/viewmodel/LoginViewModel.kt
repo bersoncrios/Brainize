@@ -218,7 +218,8 @@ class LoginViewModel : ViewModel() {
                                 auth.currentUser?.uid ?: context.getString(R.string.dont_possible_recovery_uid)
                                 ),
                         CREATEDAT to System.currentTimeMillis(),
-                        IS_EMAIL_VERIFIED to false
+                        IS_EMAIL_VERIFIED to false,
+                        USER_IS_PREMIUM to false
                     )
                     firestore
                         .collection(USERS_COLLECTION)
@@ -255,6 +256,7 @@ class LoginViewModel : ViewModel() {
         private const val CREATEDAT = "createdAt"
         private const val UID = "uid"
         private const val IS_EMAIL_VERIFIED = "isEmailVerified"
+        private const val USER_IS_PREMIUM = "userIsPremium"
     }
 }
 
