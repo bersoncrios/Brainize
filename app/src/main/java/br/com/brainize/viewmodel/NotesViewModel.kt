@@ -98,7 +98,30 @@ class NotesViewModel : ViewModel() {
                     .set(note)
                     .await()
 
+                incrementUserScore()
                 loadNotes()
+            }
+        }
+    }
+
+    private suspend fun incrementUserScore() {
+        val user = auth.currentUser
+        if (user != null) {
+            try {
+                val userDocRef = firestore
+                    .collection(USERS_COLLECTION)
+                    .document(user.uid)
+                val userDoc = userDocRef.get().await()
+                if (userDoc.exists()) {
+                    val currentScore = userDoc.getLong("score") ?: 0
+                    val newScore = currentScore + 1
+
+                    userDocRef.update("score", newScore).await()
+                } else {
+                    Log.w("NotesViewModel", "User document not found")
+                }
+            } catch (e: Exception) {
+                Log.e("NotesViewModel", "Error incrementing user score", e)
             }
         }
     }

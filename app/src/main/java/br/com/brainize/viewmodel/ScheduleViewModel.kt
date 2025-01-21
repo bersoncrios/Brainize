@@ -32,22 +32,47 @@ class ScheduleViewModel : ViewModel() {
         tag: String,
         isDone:Boolean
     ) {
-        val schedule = Schedule(
-            time = time,
-            date = date,
-            name = name,
-            priority = priority,
-            tag = tag,
-            done = isDone
-        )
-        val userId = getCurrentUser()?.uid
-        if (userId != null) {
-            firestore
-                .collection(USER_COLLECTIONS)
-                .document(userId)
-                .collection(SCHEDULE_COLLECTIONS)
-                .add(schedule)
-            loadSchedules()
+        viewModelScope.launch {
+            val schedule = Schedule(
+                time = time,
+                date = date,
+                name = name,
+                priority = priority,
+                tag = tag,
+                done = isDone
+            )
+            val userId = getCurrentUser()?.uid
+            if (userId != null) {
+                firestore
+                    .collection(USER_COLLECTIONS)
+                    .document(userId)
+                    .collection(SCHEDULE_COLLECTIONS)
+                    .add(schedule)
+                incrementUserScore()
+                loadSchedules()
+            }
+        }
+    }
+
+    private suspend fun incrementUserScore() {
+        val user = auth.currentUser
+        if (user != null) {
+            try {
+                val userDocRef = firestore
+                    .collection(USER_COLLECTIONS)
+                    .document(user.uid)
+                val userDoc = userDocRef.get().await()
+                if (userDoc.exists()) {
+                    val currentScore = userDoc.getLong("score") ?: 0
+                    val newScore = currentScore + 1
+
+                    userDocRef.update("score", newScore).await()
+                } else {
+                    Log.w("NotesViewModel", "User document not found")
+                }
+            } catch (e: Exception) {
+                Log.e("NotesViewModel", "Error incrementing user score", e)
+            }
         }
     }
 

@@ -214,7 +214,7 @@ class LoginViewModel : ViewModel() {
                     email = email,
                     completeName = name,
                     username = username.lowercase(),
-                    createdAt = System.currentTimeMillis().toString(),
+                    createdAt = System.currentTimeMillis(),
                     isEmailVerified = false,
                     userIsPremium = false,
                     score = 0

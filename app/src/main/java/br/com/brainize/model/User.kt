@@ -7,7 +7,7 @@ data class User (
     val email: String = "",
     val completeName: String = "",
     val username: String = "",
-    val createdAt: String = "",
+    val createdAt: Long = System.currentTimeMillis(),
     val isEmailVerified: Boolean = false,
     val userIsPremium: Boolean = false,
     val score: Int = 0,
