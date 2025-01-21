@@ -48,13 +48,13 @@ class ScheduleViewModel : ViewModel() {
                     .document(userId)
                     .collection(SCHEDULE_COLLECTIONS)
                     .add(schedule)
-                incrementUserScore()
+                incrementUserScore(1)
                 loadSchedules()
             }
         }
     }
 
-    private suspend fun incrementUserScore() {
+    private suspend fun incrementUserScore(value: Int) {
         val user = auth.currentUser
         if (user != null) {
             try {
@@ -64,7 +64,7 @@ class ScheduleViewModel : ViewModel() {
                 val userDoc = userDocRef.get().await()
                 if (userDoc.exists()) {
                     val currentScore = userDoc.getLong("score") ?: 0
-                    val newScore = currentScore + 1
+                    val newScore = currentScore + value
 
                     userDocRef.update("score", newScore).await()
                 } else {
@@ -111,6 +111,7 @@ class ScheduleViewModel : ViewModel() {
                     .document(scheduleId)
                     .update(IS_DONE_LABEL, isDone)
                     .await()
+                incrementUserScore(3)
                 loadSchedules()
             }
         }

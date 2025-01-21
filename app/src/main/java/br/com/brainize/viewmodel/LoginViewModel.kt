@@ -1,6 +1,7 @@
 package br.com.brainize.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +26,9 @@ class LoginViewModel : ViewModel() {
     private val auth: FirebaseAuth =Firebase.auth
     private val firestore: FirebaseFirestore = Firebase.firestore
     private var _completeName = mutableStateOf("")
+
+    private val _userScore = MutableStateFlow<Int>(0)
+    val userScore: StateFlow<Int> = _userScore
 
     private val _usernameExists = MutableStateFlow(false)
     val usernameExists: StateFlow<Boolean> = _usernameExists
@@ -132,6 +136,24 @@ class LoginViewModel : ViewModel() {
             } catch (e: Exception) {
                 _loginState.value =
                     LoginState.Error(e.message ?: context.getString(R.string.unknow_error))
+            }
+        }
+    }
+
+    fun loadUserScore() {
+        viewModelScope.launch {
+            val user = auth.currentUser
+            if (user != null) {
+                try {
+                    val userDoc = firestore.collection(USERS_COLLECTION).document(user.uid).get().await()
+                    if (userDoc.exists()) {
+                        _userScore.value = userDoc.getLong("score")?.toInt() ?: 0
+                    } else {
+                        Log.w("LoginViewModel", "User document not found")
+                    }
+                } catch (e: Exception) {
+                    Log.e("LoginViewModel", "Error loading user score", e)
+                }
             }
         }
     }

@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +45,7 @@ fun HomeScreen(
     token: String?
 ) {
 
+    val userScore by loginViewModel.userScore.collectAsState()
     var completeName by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(true) }
 
@@ -53,6 +55,7 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
         val userId = loginViewModel.getCurrentUser()?.uid
+        loginViewModel.loadUserScore()
         if (userId != null) {
             completeName = loginViewModel.getUserByUID(userId)
         }
@@ -65,8 +68,7 @@ fun HomeScreen(
         BrainizeScreen(paddingValues = paddingValues) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 32.dp),
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column(
@@ -95,13 +97,28 @@ fun HomeScreen(
                             textAlign = TextAlign.Center
                         )
                     }
-
-                    Spacer(modifier = Modifier.height(32.dp))
                 }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "$userScore XP",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(2.dp))
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                        .padding(start = 8.dp, end = 8.dp, bottom = 16.dp)
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.CenterHorizontally

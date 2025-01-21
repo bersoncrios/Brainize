@@ -98,13 +98,19 @@ class NotesViewModel : ViewModel() {
                     .set(note)
                     .await()
 
-                incrementUserScore()
+                if (type == "Tarefa") {
+                    incrementUserScore(2)
+                } else if (type == "Lembrete") {
+                    incrementUserScore(1)
+                } else {
+                    incrementUserScore(0)
+                }
                 loadNotes()
             }
         }
     }
 
-    private suspend fun incrementUserScore() {
+    private suspend fun incrementUserScore(value: Int) {
         val user = auth.currentUser
         if (user != null) {
             try {
@@ -114,7 +120,7 @@ class NotesViewModel : ViewModel() {
                 val userDoc = userDocRef.get().await()
                 if (userDoc.exists()) {
                     val currentScore = userDoc.getLong("score") ?: 0
-                    val newScore = currentScore + 1
+                    val newScore = currentScore + value
 
                     userDocRef.update("score", newScore).await()
                 } else {
