@@ -43,6 +43,7 @@ import br.com.brainize.R
 import br.com.brainize.components.BrainizeFloatingActionButton
 import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
+import br.com.brainize.components.CollectionResourceItem
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.CollectionViewModel
 import br.com.brainize.viewmodel.LoginViewModel
@@ -96,7 +97,7 @@ fun CollectionItemsScreen(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
                 ) {
                     items(items) { item ->
-                        CollectionItemCard(
+                        CollectionResourceItem(
                             item = item,
                             onItemClick = {
                                 // Lógica para navegar para a tela de detalhes do item
@@ -116,49 +117,6 @@ fun CollectionItemsScreen(
                 openDialog.value = false
             }
         )
-    }
-}
-
-@Composable
-fun CollectionItemCard(
-    item: CollectionItem,
-    onItemClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable { onItemClick() },
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF442c8a)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = item.name.uppercase(),
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                ),
-                modifier = Modifier.padding(8.dp)
-            )
-            Text(
-                    text = item.description,
-            style = TextStyle(
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.White,
-                textAlign = TextAlign.Center
-            ),
-            modifier = Modifier.padding(8.dp)
-            )
-        }
     }
 }
 
