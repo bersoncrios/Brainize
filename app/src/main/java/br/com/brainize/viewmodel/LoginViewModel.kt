@@ -209,22 +209,21 @@ class LoginViewModel : ViewModel() {
                 val user = authResult.user
                 val token = user?.getIdToken(false)?.await()?.token
 
+                val userData = br.com.brainize.model.User(
+                    uid = auth.currentUser?.uid ?: context.getString(R.string.dont_possible_recovery_uid),
+                    email = email,
+                    completeName = name,
+                    username = username.lowercase(),
+                    createdAt = System.currentTimeMillis().toString(),
+                    isEmailVerified = false,
+                    userIsPremium = false,
+                    score = 0
+                )
                 user?.let {
-                    val userMap = hashMapOf(
-                        EMAIL to email,
-                        COMPLETE_NAME to name,
-                        USERNAME to username.lowercase(),
-                        UID to (
-                                auth.currentUser?.uid ?: context.getString(R.string.dont_possible_recovery_uid)
-                                ),
-                        CREATEDAT to System.currentTimeMillis(),
-                        IS_EMAIL_VERIFIED to false,
-                        USER_IS_PREMIUM to false
-                    )
                     firestore
                         .collection(USERS_COLLECTION)
                         .document(it.uid)
-                        .set(userMap)
+                        .set(userData)
                         .await()
                     it.sendEmailVerification().await()
                 }
@@ -251,12 +250,9 @@ class LoginViewModel : ViewModel() {
     companion object {
         private const val USERS_COLLECTION = "users"
         private const val EMAIL = "email"
-        private const val COMPLETE_NAME = "completeName"
         private const val USERNAME = "username"
-        private const val CREATEDAT = "createdAt"
         private const val UID = "uid"
         private const val IS_EMAIL_VERIFIED = "isEmailVerified"
-        private const val USER_IS_PREMIUM = "userIsPremium"
     }
 }
 

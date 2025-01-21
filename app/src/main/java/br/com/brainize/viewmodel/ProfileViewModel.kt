@@ -3,6 +3,7 @@ package br.com.brainize.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.brainize.model.User
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -13,14 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-data class UserData(
-    val completeName: String = "",
-    val email: String = "",
-    val username: String = "",
-    val gender: String = "",
-    val birthday: String = ""
-)
-
 class ProfileViewModel : ViewModel() {
     private val auth: FirebaseAuth = Firebase.auth
     private val firestore: FirebaseFirestore = Firebase.firestore
@@ -29,8 +22,8 @@ class ProfileViewModel : ViewModel() {
     val completeName: String
         get() = _completeName.value
 
-    private val _userData = MutableStateFlow(UserData())
-    val userData: StateFlow<UserData> = _userData
+    private val _userData = MutableStateFlow(User())
+    val userData: StateFlow<User> = _userData
 
     private val _usernameExists = MutableStateFlow(false)
     val usernameExists: StateFlow<Boolean> = _usernameExists
@@ -44,8 +37,8 @@ class ProfileViewModel : ViewModel() {
             viewModelScope.launch {
                 val document = firestore.collection("users").document(userId).get().await()
                 if (document.exists()) {
-                    val user = document.toObject(UserData::class.java)
-                    _userData.value = user ?: UserData()
+                    val user = document.toObject(User::class.java)
+                    _userData.value = user ?: User()
                 }
             }
         }
