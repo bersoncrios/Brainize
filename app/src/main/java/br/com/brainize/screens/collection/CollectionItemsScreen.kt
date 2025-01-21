@@ -48,7 +48,6 @@ fun CollectionItemsScreen(
 ) {
     val collectionState by viewModel.collectionState.collectAsState()
 
-
     var isLoading by remember { mutableStateOf(true) }
 
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
@@ -56,7 +55,6 @@ fun CollectionItemsScreen(
     }
 
     val openDialog = remember { mutableStateOf(false) }
-    val collections by viewModel.collections.collectAsState()
 
     LaunchedEffect(collectionId) {
         isLoading = true
@@ -91,8 +89,8 @@ fun CollectionItemsScreen(
     if (openDialog.value) {
         CreateCollectionItemDialog(
             onDismiss = { openDialog.value = false },
-            onConfirm = { name ->
-                viewModel.saveCollection(name)
+            onConfirm = { name, description ->
+                viewModel.saveItem(collectionState.id, name, description )
                 openDialog.value = false
             }
         )
@@ -102,9 +100,10 @@ fun CollectionItemsScreen(
 @Composable
 fun CreateCollectionItemDialog(
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (String, String) -> Unit
 ) {
-    var collectionName by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
 
     AlertDialog(
         onDismissRequest = { onDismiss() },
@@ -118,11 +117,22 @@ fun CreateCollectionItemDialog(
         text = {
             Column {
                 OutlinedTextField(
-                    value = collectionName,
-                    onValueChange = { collectionName = it },
+                    value = name,
+                    onValueChange = { name = it },
                     label = {
                         Text(
-                            text = "Nome da Coleção",
+                            text = "Como o item se chama",
+                            color = Color.White
+                        )
+                    }
+                )
+
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = {
+                        Text(
+                            text = "descreva seu item",
                             color = Color.White
                         )
                     }
@@ -131,7 +141,7 @@ fun CreateCollectionItemDialog(
         },
         confirmButton = {
             Button(
-                onClick = { onConfirm(collectionName) },
+                onClick = { onConfirm(name, description) },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
             ) {
                 Text("Salvar", color = Color.White)

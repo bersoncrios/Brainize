@@ -79,8 +79,6 @@ fun CollectionScreen(
                             collection = collection,
                             onItemClick = {
                                 navController.navigate(DestinationScreen.CollectionItemsScreen.createRoute(token, collection.id))
-
-//                                navController.navigate(DestinationScreen.CollectionItemsScreen.route + "/${collection.id}")
                             }
                         )
                     }
