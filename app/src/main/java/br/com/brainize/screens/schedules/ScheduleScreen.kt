@@ -141,7 +141,7 @@ fun ScheduleScreen(
             ) {
                 val filteredSchedules = schedules.filter { !it.done }
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                    columns = GridCells.Fixed(1),
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(filteredSchedules, key = { schedule -> schedule.id }) { schedule ->
@@ -273,7 +273,7 @@ fun ScheduleScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.addSchedule(
+                        viewModel.createNewSchedule(
                             newScheduleTime.value,
                             newScheduleDate.value,
                             newScheduleName.value,

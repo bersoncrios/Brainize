@@ -66,7 +66,7 @@ class NotesViewModel : ViewModel() {
     }
 
 
-    fun saveNote(
+    fun createNewNote(
         title: String,
         content: String,
         type: String,

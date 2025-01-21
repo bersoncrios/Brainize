@@ -27,13 +27,13 @@ class ScheduleViewModel : ViewModel() {
     private fun getCurrentUser() = auth.currentUser
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
 
-    fun addSchedule(
+    fun createNewSchedule(
         time: String,
         date: String,
         name: String,
         priority: String,
         tag: String,
-        isDone:Boolean
+        isDone: Boolean
     ) {
         viewModelScope.launch {
             val schedule = Schedule(
