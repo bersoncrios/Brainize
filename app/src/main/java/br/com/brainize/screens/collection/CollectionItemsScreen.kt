@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,17 +33,24 @@ import br.com.brainize.components.BrainizeFloatingActionButton
 import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.components.CollectionItem
+import br.com.brainize.model.Collection
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.CollectionViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 
 @Composable
-fun CollectionScreen(
+fun CollectionItemsScreen(
     navController: NavController,
     viewModel: CollectionViewModel,
     loginViewModel: LoginViewModel,
-    token: String?
+    token: String?,
+    collectionId: String?
 ) {
+    val collectionState by viewModel.collectionState.collectAsState()
+
+
+    var isLoading by remember { mutableStateOf(true) }
+
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
@@ -50,10 +58,18 @@ fun CollectionScreen(
     val openDialog = remember { mutableStateOf(false) }
     val collections by viewModel.collections.collectAsState()
 
+    LaunchedEffect(collectionId) {
+        isLoading = true
+        if (!collectionId.isNullOrEmpty()) {
+            viewModel.getCollectionById(collectionId)
+        }
+        isLoading = false
+    }
+
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = stringResource(R.string.my_collections_label),
+                title = collectionState.name,
                 onBackClick = { navController.popBackStack() }
             )
         },
@@ -67,30 +83,13 @@ fun CollectionScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                LazyVerticalGrid(
-                    modifier = Modifier.weight(1f),
-                    columns = GridCells.Fixed(2),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
-                ) {
-                    items(collections) { collection ->
-                        CollectionItem(
-                            collection = collection,
-                            onItemClick = {
-                                navController.navigate(DestinationScreen.CollectionItemsScreen.createRoute(token, collection.id))
-
-//                                navController.navigate(DestinationScreen.CollectionItemsScreen.route + "/${collection.id}")
-                            }
-                        )
-                    }
-                }
+                Text(text = collectionState.name)
             }
         }
     }
 
     if (openDialog.value) {
-        CreateCollectionDialog(
+        CreateCollectionItemDialog(
             onDismiss = { openDialog.value = false },
             onConfirm = { name ->
                 viewModel.saveCollection(name)
@@ -101,7 +100,7 @@ fun CollectionScreen(
 }
 
 @Composable
-fun CreateCollectionDialog(
+fun CreateCollectionItemDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit
 ) {

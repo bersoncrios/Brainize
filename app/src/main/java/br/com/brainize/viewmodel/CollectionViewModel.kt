@@ -3,6 +3,8 @@ package br.com.brainize.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.brainize.model.Collection
+import br.com.brainize.model.Note
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.flow.stateIn
 
 class CollectionViewModel(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
@@ -24,6 +27,13 @@ class CollectionViewModel(
     private val _collections = MutableStateFlow<List<Collection>>(emptyList())
     val collections: StateFlow<List<Collection>> = _collections
 
+    private val _collectionState = MutableStateFlow(Collection())
+    val collectionState: StateFlow<Collection> = _collectionState.stateIn(
+        scope = viewModelScope,
+        started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
+        initialValue = Collection()
+    )
+
     init {
         loadCollections()
     }
@@ -37,16 +47,15 @@ class CollectionViewModel(
                         .collection(USER_COLLECTIONS)
                         .document(user.uid)
                         .collection(COLLECTION_COLLECTIONS)
-                        .get()
-                        .await()
+                        .get().await()
 
                     val collections = snapshot.documents.map { doc ->
                         Collection(
-                            name = doc.getString("name") ?: "",
-                            id = doc.id
+                            id = doc.id,
+                            name = doc.getString("name") ?: ""
                         )
                     }
-                    _collections.value= collections
+                    _collections.value = collections
                 } catch (e: Exception) {
                     Log.e("CollectionViewModel", "Error loading collections", e)
                 }
@@ -80,9 +89,34 @@ class CollectionViewModel(
             }
         }
     }
-}
 
-data class Collection(
-    val name: String = "",
-    val id: String = ""
-)
+    fun getCollectionById(collectionId: String) {
+        viewModelScope.launch {
+            val user = auth.currentUser
+            if (user != null) {
+                try {
+                    Log.d("NotesViewModel", "Fetching note with id: $collectionId")
+                    val document = firestore
+                        .collection(USER_COLLECTIONS)
+                        .document(user.uid)
+                        .collection(COLLECTION_COLLECTIONS)
+                        .document(collectionId)
+                        .get()
+                        .await()
+
+                    if (document.exists()) {
+                        val collection = document.toObject(Collection::class.java)
+                        Log.d("NotesViewModel", "Note found: $collection")
+                        _collectionState.value = collection ?: Collection()
+                    } else {
+                        Log.w("NotesViewModel", "Document with id $collectionId not found")
+                        _collectionState.value = Collection()
+                    }
+                } catch (e: Exception) {
+                    Log.e("NotesViewModel", "Error fetching note with id $collectionId", e)
+                    _collectionState.value = Collection()
+                }
+            }
+        }
+    }
+}

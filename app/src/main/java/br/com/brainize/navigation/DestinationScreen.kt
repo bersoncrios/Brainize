@@ -82,6 +82,13 @@ sealed class DestinationScreen(val route: String) {
         )
     }
 
+    object CollectionItemsScreen : DestinationScreen("collection_items_screen/{token}/{collectionId}") {
+        fun createRoute(token: String?, collectionId: String?): String = "collection_items_screen/$token/$collectionId"
+        val arguments = listOf(
+            navArgument("token") { type = NavType.StringType }
+        )
+    }
+
     object MainMenuConfigurationScreen : DestinationScreen("main_menu_configuration_screen/{token}") {
         fun createRoute(token: String?): String = "main_menu_configuration_screen/$token"
         val arguments = listOf(
@@ -119,6 +126,7 @@ sealed class DestinationScreen(val route: String) {
         ProfileScreen.route.replace("{token}", "").substringBefore("/") -> ProfileScreen
         MoreDataProfileScreen.route.replace("{token}", "").substringBefore("/") -> MoreDataProfileScreen
         CollectionScreen.route.replace("{token}", "").substringBefore("/") -> CollectionScreen
+        CollectionItemsScreen.route.replace("{token}", "").substringBefore("/") -> CollectionItemsScreen
         LoginScreen.route -> LoginScreen
         ForgotPasswordScreen.route -> ForgotPasswordScreen
         RegisterScreen.route -> RegisterScreen
