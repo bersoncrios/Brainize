@@ -39,8 +39,11 @@ class CollectionViewModel(
     val itemState: StateFlow<CollectionItem> = _itemState.stateIn(
         scope = viewModelScope,
         started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
-        initialValue = CollectionItem(id = "", name = "", description= "")
+        initialValue = CollectionItem(id = "", name = "", description = "")
     )
+
+    private val _items = MutableStateFlow<List<CollectionItem>>(emptyList())
+    val items: StateFlow<List<CollectionItem>> = _items
 
     init {
         loadCollections()
@@ -87,8 +90,7 @@ class CollectionViewModel(
                         "id" to newCollectionId
                     )
 
-                    newCollectionRef.set(data, SetOptions.merge())
-                        .await()
+                    newCollectionRef.set(data, SetOptions.merge()).await()
 
                     loadCollections()
                 } catch (e: Exception) {
@@ -103,25 +105,24 @@ class CollectionViewModel(
             val user = auth.currentUser
             if (user != null) {
                 try {
-                    Log.d("NotesViewModel", "Fetching note with id: $collectionId")
+                    Log.d("CollectionViewModel", "Fetching collection with id: $collectionId")
                     val document = firestore
                         .collection(USER_COLLECTIONS)
                         .document(user.uid)
                         .collection(COLLECTION_COLLECTIONS)
                         .document(collectionId)
-                        .get()
-                        .await()
+                        .get().await()
 
                     if (document.exists()) {
                         val collection = document.toObject(Collection::class.java)
-                        Log.d("NotesViewModel", "Note found: $collection")
+                        Log.d("CollectionViewModel", "Collection found: $collection")
                         _collectionState.value = collection ?: Collection(id = "", name = "")
                     } else {
-                        Log.w("NotesViewModel", "Document with id $collectionId not found")
+                        Log.w("CollectionViewModel", "Document with id $collectionId not found")
                         _collectionState.value = Collection(id = "", name = "")
                     }
                 } catch (e: Exception) {
-                    Log.e("NotesViewModel", "Error fetching note with id $collectionId", e)
+                    Log.e("CollectionViewModel", "Error fetching collection with id $collectionId", e)
                     _collectionState.value = Collection(id = "", name = "")
                 }
             }
@@ -151,13 +152,71 @@ class CollectionViewModel(
                     )
 
                     // Save the item to the collection
-                    newItemRef.set(data, SetOptions.merge())
-                        .await()
+                    newItemRef.set(data, SetOptions.merge()).await()
 
                     // Load the updated list of items
-                    loadCollections()
+                    loadItems(collectionId)
                 } catch (e: Exception) {
                     Log.e("CollectionViewModel", "Error saving item", e)
+                }
+            }
+        }
+    }
+
+    fun getItemById(collectionId: String, itemId: String) {
+        viewModelScope.launch {
+            val user = auth.currentUser
+            if (user != null) {
+                try {
+                    Log.d("CollectionViewModel", "Fetching item with id: $itemId")
+                    val document = firestore
+                        .collection(USER_COLLECTIONS)
+                        .document(user.uid)
+                        .collection(COLLECTION_COLLECTIONS)
+                        .document(collectionId)
+                        .collection(ITEM_COLLECTIONS)
+                        .document(itemId)
+                        .get().await()
+
+                    if (document.exists()) {
+                        val item = document.toObject(CollectionItem::class.java)
+                        Log.d("CollectionViewModel", "Item found: $item")
+                        _itemState.value = item ?: CollectionItem(id = "", name = "", description = "")
+                    } else {
+                        Log.w("CollectionViewModel", "Document with id $itemId not found")
+                        _itemState.value = CollectionItem(id = "", name = "", description = "")
+                    }
+                } catch (e: Exception) {
+                    Log.e("CollectionViewModel", "Error fetching item with id $itemId", e)
+                    _itemState.value = CollectionItem(id = "", name = "", description = "")
+                }
+            }
+        }
+    }
+
+    fun loadItems(collectionId: String) {
+        viewModelScope.launch {
+            val user = auth.currentUser
+            if (user != null) {
+                try {
+                    val snapshot = firestore
+                        .collection(USER_COLLECTIONS)
+                        .document(user.uid)
+                        .collection(COLLECTION_COLLECTIONS)
+                        .document(collectionId)
+                        .collection(ITEM_COLLECTIONS)
+                        .get().await()
+
+                    val items = snapshot.documents.map { doc ->
+                        CollectionItem(
+                            id = doc.id,
+                            name = doc.getString("name") ?: "",
+                            description = doc.getString("description") ?: ""
+                        )
+                    }
+                    _items.value = items
+                } catch (e: Exception) {
+                    Log.e("CollectionViewModel", "Error loading items", e)
                 }
             }
         }
