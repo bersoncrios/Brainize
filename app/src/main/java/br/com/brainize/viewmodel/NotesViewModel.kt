@@ -4,6 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.brainize.model.Note
+import br.com.brainize.utils.UserUtils.Companion.DONT_HAVE_SCORE
+import br.com.brainize.utils.UserUtils.Companion.INCREMENT_POINT_NEW_ELEMENT_SIMPLE
+import br.com.brainize.utils.UserUtils.Companion.INCREMENT_POINT_NEW_ELEMENT_SPECIAL
+import br.com.brainize.utils.incrementUserScore
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -99,38 +103,17 @@ class NotesViewModel : ViewModel() {
                     .await()
 
                 if (type == "Tarefa") {
-                    incrementUserScore(2)
+                    incrementUserScore(INCREMENT_POINT_NEW_ELEMENT_SPECIAL, auth, firestore)
                 } else if (type == "Lembrete") {
-                    incrementUserScore(1)
+                    incrementUserScore(INCREMENT_POINT_NEW_ELEMENT_SIMPLE, auth, firestore)
                 } else {
-                    incrementUserScore(0)
+                    incrementUserScore(DONT_HAVE_SCORE, auth, firestore)
                 }
                 loadNotes()
             }
         }
     }
 
-    private suspend fun incrementUserScore(value: Int) {
-        val user = auth.currentUser
-        if (user != null) {
-            try {
-                val userDocRef = firestore
-                    .collection(USERS_COLLECTION)
-                    .document(user.uid)
-                val userDoc = userDocRef.get().await()
-                if (userDoc.exists()) {
-                    val currentScore = userDoc.getLong("score") ?: 0
-                    val newScore = currentScore + value
-
-                    userDocRef.update("score", newScore).await()
-                } else {
-                    Log.w("NotesViewModel", "User document not found")
-                }
-            } catch (e: Exception) {
-                Log.e("NotesViewModel", "Error incrementing user score", e)
-            }
-        }
-    }
 
     fun loadNotes() {
         viewModelScope.launch {

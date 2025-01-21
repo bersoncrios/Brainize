@@ -6,6 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.brainize.model.Schedule
+import br.com.brainize.utils.UserUtils.Companion.INCREMENT_POINT_DONE_SCHEDULE
+import br.com.brainize.utils.UserUtils.Companion.INCREMENT_POINT_NEW_ELEMENT_SIMPLE
+import br.com.brainize.utils.incrementUserScore
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -48,30 +51,8 @@ class ScheduleViewModel : ViewModel() {
                     .document(userId)
                     .collection(SCHEDULE_COLLECTIONS)
                     .add(schedule)
-                incrementUserScore(1)
+                incrementUserScore(INCREMENT_POINT_NEW_ELEMENT_SIMPLE, auth, firestore)
                 loadSchedules()
-            }
-        }
-    }
-
-    private suspend fun incrementUserScore(value: Int) {
-        val user = auth.currentUser
-        if (user != null) {
-            try {
-                val userDocRef = firestore
-                    .collection(USER_COLLECTIONS)
-                    .document(user.uid)
-                val userDoc = userDocRef.get().await()
-                if (userDoc.exists()) {
-                    val currentScore = userDoc.getLong("score") ?: 0
-                    val newScore = currentScore + value
-
-                    userDocRef.update("score", newScore).await()
-                } else {
-                    Log.w("NotesViewModel", "User document not found")
-                }
-            } catch (e: Exception) {
-                Log.e("NotesViewModel", "Error incrementing user score", e)
             }
         }
     }
@@ -111,7 +92,7 @@ class ScheduleViewModel : ViewModel() {
                     .document(scheduleId)
                     .update(IS_DONE_LABEL, isDone)
                     .await()
-                incrementUserScore(3)
+                incrementUserScore(INCREMENT_POINT_DONE_SCHEDULE, auth, firestore)
                 loadSchedules()
             }
         }

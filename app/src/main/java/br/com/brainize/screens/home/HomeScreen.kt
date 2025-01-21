@@ -118,7 +118,6 @@ fun HomeScreen(
                                 ),
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .border(2.dp, Color.Transparent, RoundedCornerShape(8.dp))
                             .padding(12.dp)
                     ) {
                         Text(
