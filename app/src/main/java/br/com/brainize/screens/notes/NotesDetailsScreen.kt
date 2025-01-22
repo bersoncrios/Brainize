@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,6 +45,9 @@ import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
+import br.com.brainize.components.EditDetailItemOnNotesBottomSheet
+import br.com.brainize.components.EditDueDateBottomSheet
+import br.com.brainize.components.EditDueTimeBottomSheet
 import br.com.brainize.components.getColorFromTaskColor
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.ConfigurationsViewModel
@@ -66,11 +70,12 @@ fun NotesDetailsScreen(
     var dueTime by remember {mutableStateOf("") }
     val scrollState = rememberScrollState()
     var isLoading by remember { mutableStateOf(true) }
-    var openTitleDialog by remember { mutableStateOf(false) }
-    var openContentDialog by remember { mutableStateOf(false) }
-    var openDueDateDialog by remember { mutableStateOf(false) }
-    var openDueTimeDialog by remember { mutableStateOf(false) }
+    var openTitleDialog = remember { mutableStateOf(false) }
+    var openContentDialog = remember { mutableStateOf(false) }
+    var openDueDateDialog = remember { mutableStateOf(false) }
+    var openDueTimeDialog = remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
 
     if (!loginViewModel.hasLoggedUser() && token.isNullOrEmpty()) {
         navController.navigate(DestinationScreen.LoginScreen.route)
@@ -122,10 +127,11 @@ fun NotesDetailsScreen(
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
-                                modifier = Modifier.padding(bottom = 16.dp)
+                                modifier = Modifier
+                                    .padding(bottom = 16.dp)
                                     .clickable {
                                         title = note.title
-                                        openTitleDialog = true
+                                        openTitleDialog.value = true
                                     }
                             )
                         }
@@ -137,7 +143,7 @@ fun NotesDetailsScreen(
                                 .verticalScroll(scrollState)
                                 .clickable {
                                     content = note.content
-                                    openContentDialog = true
+                                    openContentDialog.value = true
                                 },
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                             colors = CardDefaults.cardColors(
@@ -182,45 +188,35 @@ fun NotesDetailsScreen(
                                             text = note.dueDate ?: "",
                                             style = MaterialTheme.typography.bodyLarge,
                                             color = Color.Black,
-                                            modifier = Modifier.weight(2f),
+                                            modifier = Modifier
+                                                .clickable {
+                                                    dueDate = note.dueDate ?: ""
+                                                    openDueDateDialog.value = true
+                                                },
                                             fontWeight = FontWeight.Normal,
                                             fontSize = 16.sp
                                         )
-                                        IconButton(onClick = {
-                                            dueDate = note.dueDate ?: ""
-                                            openDueDateDialog = true
-                                        }) {
-                                            Icon(
-                                                imageVector = Icons.Filled.Edit,
-                                                contentDescription = stringResource(R.string.cd_edit_final_date),
-                                                tint = Color.White
-                                            )
-                                        }
-                                    }
 
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
+                                        Text(
+                                            text = "às",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = Color.Black,
+                                            fontWeight = FontWeight.Normal,
+                                            fontSize = 16.sp
+                                        )
+
                                         Text(
                                             text = note.dueTime ?: "",
                                             style = MaterialTheme.typography.bodyLarge,
                                             color = Color.Black,
-                                            modifier = Modifier.weight(2f),
+                                            modifier = Modifier
+                                                .clickable {
+                                                    dueTime = note.dueTime ?: ""
+                                                    openDueTimeDialog.value = true
+                                                },
                                             fontWeight = FontWeight.Normal,
                                             fontSize = 16.sp
                                         )
-                                        IconButton(onClick = {
-                                            dueTime = note.dueTime ?: ""
-                                            openDueTimeDialog = true
-                                        }) {
-                                            Icon(
-                                                imageVector = Icons.Filled.Edit,
-                                                contentDescription = stringResource(R.string.cd_final_hour),
-                                                tint = Color.White
-                                            )
-                                        }
                                     }
                                 }
                             }
@@ -230,227 +226,42 @@ fun NotesDetailsScreen(
             }
         }
     }
-    if (openTitleDialog) {
-        AlertDialog(
-            onDismissRequest = { openTitleDialog = false},
-            title = {
-                Text(
-                    text = stringResource(R.string.edit_title_text),
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White
-                )
-            },
-            text = {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = {
-                        Text(
-                            stringResource(R.string.title_card_label),
-                            color = Color.White
-                        )
-                    }
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        noteState.let { note ->
-                            val updatedNote = note.copy(title = title)
-                            viewModel.updateNote(updatedNote)
-                        }
-                        openTitleDialog = false
-                    },
-                    colors = ButtonDefaults
-                        .buttonColors(
-                            containerColor = Color(0xFFbc60c4)
-                        )
-                ) {
-                    Text(
-                        text = "Salvar",
-                        color = Color.White
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        openTitleDialog = false
-                    }
-                ) {
-                    Text(
-                        text = "Cancelar",
-                        color = Color.White
-                    )
-                }
-            },
-            containerColor = Color(0xFF372080)
+    if (openTitleDialog.value) {
+        EditDetailItemOnNotesBottomSheet(
+            openBottomSheet = openTitleDialog,
+            viewModel = viewModel,
+            item = remember { mutableStateOf(noteState.title) },
+            fieldName = "title",
+            label = "Editar titulo",
+            hint = "Titulo"
         )
     }
-    if (openContentDialog) {
-        AlertDialog(
-            onDismissRequest = {
-                openContentDialog = false
-            },
-            title = {
-                Text(
-                    text = "Editar Conteúdo",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White
-                )
-            },
-            text = {
-                OutlinedTextField(
-                    value = content,
-                    onValueChange = { content = it },
-                    label = {
-                        Text(
-                            text = "Conteúdo",
-                            color = Color.White
-                        )
-                    }
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        noteState.let { note ->
-                            val updatedNote = note.copy(content = content)
-                            viewModel.updateNote(updatedNote)
-                        }
-                        openContentDialog = false
-                    },
-                    colors = ButtonDefaults
-                        .buttonColors(
-                            containerColor = Color(0xFFbc60c4)
-                        )
-                ) {
-                    Text(
-                        text = "Salvar",
-                        color = Color.White
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { openContentDialog = false }) {
-                    Text(
-                        text = "Cancelar",
-                        color = Color.White
-                    )
-                }
-            },
-            containerColor = Color(0xFF372080)
+    if (openContentDialog.value) {
+        EditDetailItemOnNotesBottomSheet(
+            openBottomSheet = openContentDialog,
+            viewModel = viewModel,
+            item = remember { mutableStateOf(noteState.content) },
+            fieldName = "content",
+            label = "Editar conteúdo",
+            hint = "Conteúdo"
         )
     }
-    if (openDueDateDialog) {
-        AlertDialog(
-            onDismissRequest = { openDueDateDialog = false },
-            title = {
-                Text(
-                    text = "Editar Data Final",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White
-
-                )
-                    },
-            text = {
-                OutlinedTextField(
-                    value = dueDate,
-                    onValueChange = { dueDate = it },
-                    label = {
-                        Text(
-                            text = "Data Final",
-                            color = Color.White
-                        )
-                    }
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        noteState.let { note ->
-                            val updatedNote = note.copy(
-                                dueDate = if (dueDate.isNotBlank()) dueDate else null
-                            )
-                            viewModel.updateNote(updatedNote)
-                        }
-                        openDueDateDialog = false
-                    },
-                    colors = ButtonDefaults
-                        .buttonColors(
-                            containerColor = Color(0xFFbc60c4)
-                        )
-                ) {
-                    Text(
-                        text = "Salvar",
-                        color = Color.White
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { openDueDateDialog = false }
-                ) {
-                Text(
-                    text = "Cancelar",
-                    color = Color.White
-                )
-            }
-            },
-            containerColor = Color(0xFF372080)
+    if (openDueDateDialog.value) {
+        EditDueDateBottomSheet(
+            openBottomSheet = openDueDateDialog,
+            viewModel = viewModel,
+            context = context,
+            noteState = noteState,
+            newDuedate = remember { mutableStateOf(noteState.dueDate ?: "") }
         )
     }
-    if (openDueTimeDialog) {
-        AlertDialog(
-            onDismissRequest = { openDueTimeDialog = false },
-            title = {
-                Text(
-                    text = "Editar Hora Final",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White
-                )
-                    },
-            text = {
-                OutlinedTextField(
-                    value = dueTime,
-                    onValueChange = { dueTime = it },
-                    label = {
-                        Text(
-                            text = "Hora Final",
-                            color = Color.White
-                        )
-                    }
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        noteState.let { note ->
-                            val updatedNote = note.copy(dueTime = if (dueTime.isNotBlank()) dueTime else null)
-                            viewModel.updateNote(updatedNote)
-                        }
-                        openDueTimeDialog = false
-                    },
-                    colors = ButtonDefaults
-                        .buttonColors(
-                            containerColor = Color(0xFFbc60c4)
-                        )
-                ) {
-                    Text(
-                        text = "Salvar",
-                        color = Color.White
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { openDueTimeDialog = false }) {
-                    Text(
-                        text = "Cancelar",
-                        color = Color.White
-                    )
-                }
-            },
-            containerColor = Color(0xFF372080)
+    if (openDueTimeDialog.value) {
+        EditDueTimeBottomSheet(
+            openBottomSheet = openDueTimeDialog,
+            viewModel = viewModel,
+            context = context,
+            noteState = noteState,
+            newDueTime = remember { mutableStateOf(noteState.dueTime ?: "") }
         )
     }
 }

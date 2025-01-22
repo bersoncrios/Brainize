@@ -12,17 +12,20 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -30,6 +33,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,10 +43,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import br.com.brainize.R
 import br.com.brainize.components.BrainizeBottonSheets.Companion.TASK_LABEL
+import br.com.brainize.model.Note
 import br.com.brainize.utils.showDatePicker
 import br.com.brainize.utils.showTimePicker
 import br.com.brainize.viewmodel.NotesViewModel
@@ -75,7 +81,7 @@ fun BottomSheetNoteType(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight() // Ajuste a altura dinamicamente
+                        .wrapContentHeight()
                         .heightIn(min = 128.dp)
                         .padding(16.dp)
                 ) {
@@ -103,7 +109,12 @@ fun BottomSheetNoteType(
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                             modifier = Modifier
                                 .menuAnchor()
-                                .fillMaxWidth()
+                                .fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color.White,
+                                unfocusedBorderColor = Color.White
+                            ),
+                            textStyle = TextStyle(color = Color.White)
                         )
                         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                             options.forEach { option ->
@@ -141,6 +152,7 @@ fun BottomSheetNoteType(
                 }
             },
             scaffoldState = scaffoldState,
+            sheetContainerColor = Color(0xFF372080)
         ) {}
     }
 }
@@ -188,7 +200,13 @@ fun BottomSheetNewNote(
                         value = newNoteTitle.value,
                         onValueChange = { newNoteTitle.value = it },
                         label = { Text(text = stringResource(R.string.dialog_new_anotation_title_label), color = Color.White) },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White
+                        ),
+                        textStyle = TextStyle(color = Color.White)
                     )
 
                     OutlinedTextField(
@@ -197,14 +215,24 @@ fun BottomSheetNewNote(
                         label = { Text(text = stringResource(R.string.dialog_new_anotation_what_remember), color = Color.White) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(160.dp)
+                            .height(160.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White
+                        ),
+                        textStyle = TextStyle(color = Color.White)
                     )
 
                     OutlinedTextField(
                         value = newNoteTag.value,
                         onValueChange = { newNoteTag.value = it },
                         label = { Text(text = stringResource(R.string.dialog_new_anotation_tag), color = Color.White) },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White
+                        ),
+                        textStyle = TextStyle(color = Color.White)
                     )
 
                     if (newNoteType.value == TASK_LABEL) {
@@ -268,6 +296,7 @@ fun BottomSheetNewNote(
                 }
             },
             scaffoldState = scaffoldState,
+            sheetContainerColor = Color(0xFF372080)
         ) {}
     }
 }
@@ -318,13 +347,23 @@ fun NewScheduleBottomSheet(
                         value = newScheduleName.value,
                         onValueChange = { newScheduleName.value = it },
                         label = { Text("Nome", color = Color.White) },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White
+                        ),
+                        textStyle = TextStyle(color = Color.White)
                     )
                     OutlinedTextField(
                         value = newScheduleTag.value,
                         onValueChange = { newScheduleTag.value = it },
                         label = { Text("Tag", color = Color.White) },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White
+                        ),
+                        textStyle = TextStyle(color = Color.White)
                     )
                     OutlinedTextField(
                         value = newScheduleDate.value,
@@ -341,7 +380,12 @@ fun NewScheduleBottomSheet(
                                 tint = Color.White,
                                 modifier = Modifier.clickable { showDatePicker(context, newScheduleDate) }
                             )
-                        }
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White
+                        ),
+                        textStyle = TextStyle(color = Color.White)
                     )
                     OutlinedTextField(
                         value = newScheduleTime.value,
@@ -358,7 +402,12 @@ fun NewScheduleBottomSheet(
                                 tint = Color.White,
                                 modifier = Modifier.clickable { showTimePicker(context, newScheduleTime) }
                             )
-                        }
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White
+                        ),
+                        textStyle = TextStyle(color = Color.White)
                     )
                     OutlinedTextField(
                         value = newSchedulePriority,
@@ -390,7 +439,12 @@ fun NewScheduleBottomSheet(
                                     expandedPriority = false
                                 })
                             }
-                        }
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White
+                        ),
+                        textStyle = TextStyle(color = Color.White)
                     )
 
                     // Botões Salvar e Cancelar
@@ -428,8 +482,255 @@ fun NewScheduleBottomSheet(
                     }
                 }
             },
+            sheetContainerColor = Color(0xFF372080)
         ) {}
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditDetailItemOnNotesBottomSheet(
+    openBottomSheet: MutableState<Boolean>,
+    viewModel: NotesViewModel,
+    item:  MutableState<String>,
+    fieldName: String,
+    label: String = "",
+    hint: String = "",
+) {
+    val scaffoldState = rememberBottomSheetScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
+    val item = item
+    val noteState by viewModel.noteState.collectAsState()
+
+    if (openBottomSheet.value) {
+        LaunchedEffect(Unit) {
+            coroutineScope.launch {
+                scaffoldState.bottomSheetState.expand()
+            }
+        }
+
+        BottomSheetScaffold(
+            scaffoldState = scaffoldState,
+            sheetContent = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Text(
+                        text= label,
+                        color = Color.White,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        textAlign = TextAlign.Center
+                    )
+
+                    OutlinedTextField(
+                        value = item.value,
+                        onValueChange = { item.value = it },
+                        label = { Text(hint, color = Color.White) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White
+                        ),
+                        textStyle = TextStyle(color = Color.White)
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(
+                            onClick = { openBottomSheet.value = false }
+                        ) {
+                            Text("Cancelar", color = Color.White)
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = {
+                                noteState.let { note ->
+                                    val updatedNote = updateNoteField(note, fieldName, item.value)
+                                    viewModel.updateNote(updatedNote)
+                                }
+                                openBottomSheet.value = false
+                            },
+                            colors = ButtonDefaults
+                                .buttonColors(
+                                    containerColor = Color(0xFFbc60c4)
+                                )
+                        ) {
+                            Text("Salvar", color = Color.White)
+                        }
+                    }
+                }
+            },
+            sheetContainerColor = Color(0xFF372080)
+        ) {}
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditDueDateBottomSheet(
+    openBottomSheet: MutableState<Boolean>,
+    viewModel: NotesViewModel,
+    context: Context,
+    noteState: Note,
+    newDuedate: MutableState<String>
+) {
+    val scaffoldState = rememberBottomSheetScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
+
+
+    if (openBottomSheet.value) {
+        LaunchedEffect(Unit) {
+            coroutineScope.launch {
+                scaffoldState.bottomSheetState.expand()
+            }
+        }
+
+        BottomSheetScaffold(
+            scaffoldState = scaffoldState,
+            sheetContent = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Editar Data Final",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color.White,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        textAlign = TextAlign.Center
+                    )
+
+                    Button(
+                        onClick = { showDatePicker(context, newDuedate) },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                    ) {
+                        Text(text = newDuedate.value.ifBlank { "Selecionar Data" }, color = Color.White)}
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(onClick = { openBottomSheet.value = false }) {
+                            Text("Cancelar", color = Color.White)
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = {
+                                noteState.let { note ->
+                                    val updatedNote = note.copy(dueDate = if (newDuedate.value.isNotBlank()) newDuedate.value else null)
+                                    viewModel.updateNote(updatedNote)
+                                }
+                                openBottomSheet.value = false
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
+                        ) {
+                            Text("Salvar", color = Color.White)
+                        }
+                    }
+                }
+            },
+            sheetContainerColor = Color(0xFF372080)
+        ) {}
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditDueTimeBottomSheet(
+    openBottomSheet: MutableState<Boolean>,
+    viewModel: NotesViewModel,
+    context: Context,
+    noteState: Note,
+    newDueTime: MutableState<String>
+) {
+    val scaffoldState = rememberBottomSheetScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
+
+    if (openBottomSheet.value) {
+        LaunchedEffect(Unit) {
+            coroutineScope.launch {
+                scaffoldState.bottomSheetState.expand()
+            }
+        }
+
+        BottomSheetScaffold(
+            scaffoldState = scaffoldState,
+            sheetContent = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Editar Hora Final",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color.White,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        textAlign = TextAlign.Center
+                    )
+
+                    Button(
+                        onClick = { showTimePicker(context, newDueTime) },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                    ) {
+                        Text(text = newDueTime.value.ifBlank { "SelecionarHora" }, color = Color.White)
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(onClick = { openBottomSheet.value = false }) {
+                            Text("Cancelar", color = Color.White)
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = {
+                                noteState.let { note ->
+                                    val updatedNote = note.copy(dueTime = if (newDueTime.value.isNotBlank()) newDueTime.value else null)
+                                    viewModel.updateNote(updatedNote)
+                                }
+                                openBottomSheet.value = false
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
+                        ) {
+                            Text("Salvar", color = Color.White)
+                        }
+                    }
+                }
+            },
+            sheetContainerColor = Color(0xFF372080)
+        ) {}
+    }
+}
+
+private fun updateNoteField(note: Note, fieldName: String, fieldValue: String): Note {
+    val noteClass = note::class.java
+    val field = noteClass.getDeclaredField(fieldName)
+    field.isAccessible = true
+    field.set(note, fieldValue)
+    return note
 }
 
 class BrainizeBottonSheets {
