@@ -11,10 +11,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -73,61 +80,61 @@ fun HomeScreen(
         BrainizeScreen(paddingValues = paddingValues) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(top = 28.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(top = 32.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.Top
-                    ) {
-                        Text(
-                            text = "Olá, ".uppercase(),
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = completeName.uppercase(),
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(16.dp)
                 ) {
                     Box(
                         modifier = Modifier
-                            .background(
-                                brush = Brush.horizontalGradient(
-                                    colors = listOf(Color(0xFFbc60c4), Color(0xFF93449d))
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .padding(12.dp)
+                            .fillMaxWidth()
+                            .wrapContentSize(Alignment.TopEnd)
                     ) {
-                        Text(
-                            text = "$userScore XP",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            textAlign = TextAlign.Center
-                        )
+                        Card(
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Star,
+                                    contentDescription = "Score",
+                                    tint = Color(0xFFbc60c4),
+                                    modifier = Modifier.size(20.dp)
+                                )
+
+                                Spacer(modifier = Modifier.width(4.dp))
+
+                                Text(
+                                    text = "$userScore XP",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFFbc60c4)
+                                )
+                            }
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "Olá, $completeName".uppercase(),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentSize(Alignment.Center)
+                            .padding(top = 8.dp),
+                        textAlign = TextAlign.Center
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(2.dp))
