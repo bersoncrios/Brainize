@@ -1,5 +1,6 @@
 package br.com.brainize.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,16 +41,14 @@ fun NoteItem(
     taskColor: Color = Color(0xFF90EE90),
     reminderColor: Color = Color(0xFFbc60c4),
     onDelete: (String) -> Unit,
-    onLongPress: (Note) -> Unit,
+    onClick: (Note) -> Unit,
 ) {
     var showConfirmDialog by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .padding(12.dp)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onLongPress = { onLongPress(note) }
-                )
+            .clickable {
+                onClick(note)
             },
         elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
         colors = CardDefaults.cardColors(
