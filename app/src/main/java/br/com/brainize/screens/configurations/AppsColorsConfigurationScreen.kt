@@ -12,8 +12,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -91,102 +96,66 @@ fun AppsColorsConfigurationScreen(
     ) { paddingValues ->
 
         BrainizeScreen(paddingValues = paddingValues) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Cor da Tarefa
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Cor da Tarefa:", modifier = Modifier.weight(1f))
+                items(listOf(
+                    "Cor da Tarefa" to taskColorHex,
+                    "Cor do Lembrete" to reminderColorHex,
+                    "Cor da Prioridade Alta" to priorityHighColorHex,
+                    "Cor da Prioridade Média" to priorityMediumColorHex,
+                    "Cor da Prioridade Baixa" to priorityLowColorHex
+                )) { (texto, cor) ->
+                    Card(
+                        modifier = Modifier
+                            .background(Color.Transparent)
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFF372080))
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .background(Color.Transparent)
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = texto,
+                                color = Color.White,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            ColorDisplayCard(
+                                colorHex = cor,
+                                size = 64.dp,
+                                onClick = {
+                                    when (texto) {
+                                        "Cor da Tarefa" -> showTaskColorDialog = true
+                                        "Cor do Lembrete" -> showReminderColorDialog = true
+                                        "Cor da Prioridade Alta" -> showPriorityHighColorDialog = true
+                                        "Cor da Prioridade Média" -> showPriorityMediumColorDialog = true
+                                        "Cor da Prioridade Baixa" -> showPriorityLowColorDialog = true
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                ColorDisplayCard(
-                    colorHex = taskColorHex,
-                    size = 80.dp,
-                    onClick = { showTaskColorDialog = true }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Cor do Lembrete
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Cor do Lembrete:", modifier = Modifier.weight(1f))
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                ColorDisplayCard(
-                    colorHex = reminderColorHex,
-                    size = 80.dp,
-                    onClick = { showReminderColorDialog = true }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Cor da Prioridade Alta
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Cor da Prioridade Alta:", modifier = Modifier.weight(1f))
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                ColorDisplayCard(
-                    colorHex = priorityHighColorHex,
-                    size = 80.dp,
-                    onClick = { showPriorityHighColorDialog = true }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Cor da Prioridade Média
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Cor da Prioridade Média:", modifier = Modifier.weight(1f))
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                ColorDisplayCard(
-                    colorHex = priorityMediumColorHex,
-                    size = 80.dp,
-                    onClick = { showPriorityMediumColorDialog = true }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Cor da Prioridade Baixa
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Cor da Prioridade Baixa:", modifier = Modifier.weight(1f))
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                ColorDisplayCard(
-                    colorHex = priorityLowColorHex,
-                    size = 80.dp,
-                    onClick = { showPriorityLowColorDialog = true }
-                )
             }
-
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .height(128.dp)
+                    .fillMaxWidth()
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
-
                 Button(
                     onClick = {
                         isSaving = true
@@ -207,15 +176,27 @@ fun AppsColorsConfigurationScreen(
                                     snackbarHostState.showSnackbar(
                                         message = "Erro ao Salvar as Cores!",
                                         duration = androidx.compose.material3.SnackbarDuration.Short
-                                    )}
+                                    )
+                                }
                             }
                         }
                     },
-                    enabled = !isSaving
+                    enabled = !isSaving,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF372080),
+                        contentColor = Color(0xFF372080)
+                    )
                 ) {
-                    if (isSaving) { CircularProgressIndicator(color = Color.White)
+                    if (isSaving) {
+                        CircularProgressIndicator(color = Color.White)
                     } else {
-                        Text(text = "Salvar Cores")
+                        Text(
+                            text = "Salvar Cores",
+                            color = Color.White
+                        )
                     }
                 }
             }
