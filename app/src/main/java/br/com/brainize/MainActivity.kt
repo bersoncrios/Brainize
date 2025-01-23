@@ -1,6 +1,7 @@
 package br.com.brainize
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -12,7 +13,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import br.com.brainize.database.AppDatabase
 import br.com.brainize.navigation.AppNavigation
 import br.com.brainize.ui.theme.BrainizeTheme
 import br.com.brainize.viewmodel.CarViewModel
@@ -33,6 +33,10 @@ import br.com.brainize.viewmodel.factories.NotesViewModelFactory
 import br.com.brainize.viewmodel.factories.ProfileViewModelFactory
 import br.com.brainize.viewmodel.factories.RemoteConfigViewModelFactory
 import br.com.brainize.viewmodel.factories.ScheduleViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : ComponentActivity() {
 
@@ -65,6 +69,30 @@ class MainActivity : ComponentActivity() {
         }
         val remoteConfigViewModel: RemoteConfigViewModel by viewModels {
             RemoteConfigViewModelFactory()
+        }
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                // Lidar com o erro
+                return@addOnCompleteListener
+            }
+
+            val token = task.result
+
+            val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
+            // Salvar o token no Firestore
+            val db = FirebaseFirestore.getInstance()
+            val tokensCollection = db.collection("tokens")
+            val tokenDocument = tokensCollection.document(userId)
+            val tokenData = hashMapOf("token" to token)
+            tokenDocument.set(tokenData)
+                .addOnSuccessListener {
+                    Log.i("Push Notificaion", "Token salvo com sucesso")
+                }
+                .addOnFailureListener { e ->
+                    Log.d("Push Notificaion", "falha ao salvar token: ${e}")
+                }
         }
 
         setContent {

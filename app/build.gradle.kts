@@ -74,6 +74,8 @@ dependencies {
     implementation(libs.compose.colorpicker)
     implementation("com.github.skydoves:colorpickerview:2.3.0")
     implementation(libs.firebase.config)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.database.ktx)
     kapt ("androidx.room:room-compiler:2.6.1")
     implementation ("androidx.room:room-ktx:2.6.1")
     implementation("androidx.compose.material:material:1.7.6")
@@ -84,6 +86,10 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
 
     implementation("androidx.compose.ui:ui:1.5.1")
+
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
 
     testImplementation(libs.junit)
 
