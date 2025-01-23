@@ -38,11 +38,11 @@ fun BrainizerOutlinedTextField(
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = Color.White,
+            textColor = Color(0xFF372B4B),
             focusedBorderColor = Color(0xFFbc60c4),
-            unfocusedBorderColor = Color.White,
-            focusedLabelColor = Color.White,
-            unfocusedLabelColor = Color.White,
+            unfocusedBorderColor = Color(0xFF372080),
+            focusedLabelColor = Color(0xFF372080),
+            unfocusedLabelColor = Color(0xFF372080),
             cursorColor = Color(0xFFbc60c4)
         ),
         leadingIcon = {
@@ -50,14 +50,14 @@ fun BrainizerOutlinedTextField(
                 Icon(
                     imageVector = icon,
                     contentDescription = iconDescription,
-                    tint = Color.White
+                    tint = Color(0xFF372B4B)
                 )
             }
         },
         placeholder = {
             Text(
                 text = placeholder,
-                color = Color.White
+                color = Color(0xFF372B4B)
             )
         },
         shape = RoundedCornerShape(8.dp)

@@ -94,7 +94,7 @@ fun RegisterScreen(
                             .padding(top = 12.dp),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White,
+                        color = Color(0xFF372080),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -175,12 +175,12 @@ fun RegisterScreen(
                             .height(55.dp)
                             .padding(top = 8.dp, start = 16.dp, end = 16.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = Color.White,
+                            contentColor = Color(0xFF372B4B),
                             containerColor = Color.Transparent,
                             disabledContentColor = Color.Gray,
                             disabledContainerColor = Color.Transparent,
                         ),
-                        border = BorderStroke(1.dp, Color.White)
+                        border = BorderStroke(1.dp, Color(0xFF372080))
                     ) {
                         Text(stringResource(R.string.have_account))
                     }
@@ -203,15 +203,17 @@ fun RegisterScreen(
                             .fillMaxWidth()
                             .padding(start = 16.dp, end = 16.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFbc60c4)
+                            containerColor = Color(0xFF372080),
+                            contentColor = Color(0xFF372080)
                         ),
                         enabled = !usernameError
                     ) {
                         Text(
                             text = stringResource(R.string.enter_label),
+                            color = Color.White,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(Color(0xFFbc60c4))
+                                .background(Color(0xFF372080))
                                 .clip(RoundedCornerShape(16.dp))
                                 .padding(8.dp)
                                 .wrapContentSize(Alignment.Center)
