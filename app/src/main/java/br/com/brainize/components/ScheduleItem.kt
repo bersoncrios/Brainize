@@ -65,7 +65,7 @@ fun ScheduleItem(
                     text = schedule.name.uppercase(),
                     fontSize = 20.sp,
                     fontWeight= FontWeight.Bold,
-                    color = Color.Black,
+                    color = Color(0xFF372080),
                     modifier = Modifier.weight(1f),
                 )
                 Checkbox(
@@ -74,8 +74,8 @@ fun ScheduleItem(
                         showConfirmDialog = true
                     },
                     colors = CheckboxDefaults.colors(
-                        checkedColor = Color.White,
-                        uncheckedColor = Color.White,
+                        checkedColor = Color(0xFF372080),
+                        uncheckedColor = Color(0xFF372080),
                         checkmarkColor = Color(0xFF372080)
                     )
                 )
@@ -83,21 +83,21 @@ fun ScheduleItem(
             Text(
                 text = "Data: ${schedule.date}",
                 fontSize = 16.sp,
-                color = Color.DarkGray
+                color = Color(0xFF372B4B)
             )
             Text(
                 text = "Horário: ${schedule.time}",
                 fontSize = 16.sp,
-                color = Color.DarkGray
+                color =  Color(0xFF372B4B)
             )
             Text(
-                text = "Prioridade:$currentPriority",
+                text = "Prioridade: $currentPriority",
                 fontSize = 16.sp,
-                color = Color.DarkGray
+                color = Color(0xFF372B4B)
             )
             Text(
                 text = "TAG: ${schedule.tag}",fontSize = 16.sp,
-                color = Color.Black,
+                color = Color(0xFF372080),
                 fontWeight = FontWeight.Bold
             )
         }

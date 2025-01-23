@@ -34,8 +34,8 @@ import br.com.brainize.viewmodel.factories.ProfileViewModelFactory
 import br.com.brainize.viewmodel.factories.RemoteConfigViewModelFactory
 import br.com.brainize.viewmodel.factories.ScheduleViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : ComponentActivity() {
@@ -77,22 +77,32 @@ class MainActivity : ComponentActivity() {
                 return@addOnCompleteListener
             }
 
-            val token = task.result
+              val token = task.result
 
-            val userId = FirebaseAuth.getInstance().currentUser!!.uid
-
-            // Salvar o token no Firestore
-            val db = FirebaseFirestore.getInstance()
-            val tokensCollection = db.collection("tokens")
-            val tokenDocument = tokensCollection.document(userId)
-            val tokenData = hashMapOf("token" to token)
-            tokenDocument.set(tokenData)
-                .addOnSuccessListener {
-                    Log.i("Push Notificaion", "Token salvo com sucesso")
-                }
-                .addOnFailureListener { e ->
-                    Log.d("Push Notificaion", "falha ao salvar token: ${e}")
-                }
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            if (currentUser != null) {
+                // Usuário logado, salvar o token no Firestore
+                val userId = currentUser.uid
+                val db = FirebaseFirestore.getInstance()
+                val tokensCollection = db.collection("tokens")
+                val tokenDocument = tokensCollection.document(userId)
+                val tokenData = hashMapOf("token" to token)
+                tokenDocument.set(tokenData)
+                    .addOnSuccessListener {
+                        Log.i("Push Notification", "Token salvo com sucesso")
+                    }
+                    .addOnFailureListener { e ->
+                        // Lidar com o erro de autenticação (opcional)
+                        if (e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.PERMISSION_DENIED) { Log.w("Push Notification", "Usuário não autenticado, token não salvo.")
+                        } else {
+                            Log.e("Push Notification", "Falha ao salvar token: $e")
+                        }
+                    }
+            } else {
+                // Usuário não logado, não salvar o token
+                Log.w("Push Notification", "Usuário não logado, token não salvo.")
+                // Exibir uma mensagem ou tomar outra ação apropriada
+            }
         }
 
         setContent {

@@ -74,12 +74,12 @@ fun NoteItem(
                     ).uppercase(),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = Color(0xFF372080)
                 )
                 Text(
                     text = note.content.take(12) + if (note.content.length > 12) "..." else "",
                     fontSize = 16.sp,
-                    color = Color.DarkGray
+                    color = Color(0xFF372B4B)
                 )
                 if (note.type == "Tarefa") {
                     if (!note.dueDate.isNullOrEmpty() && !note.dueTime.isNullOrEmpty()) {
@@ -113,7 +113,7 @@ fun NoteItem(
                 Icon(
                     imageVector = Icons.Filled.Delete,
                     contentDescription = stringResource(R.string.drop_note_label),
-                    tint = Color.White
+                    tint = Color(0xFF372080)
                 )
             }
         }

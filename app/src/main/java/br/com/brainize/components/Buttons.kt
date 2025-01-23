@@ -29,7 +29,7 @@ fun BrainizerSelectButton(icon: Int, onClick: () -> Unit) {
             .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() }
             .background(
-                Color(0xFFbc60c4)
+                Color(0xFF372080)
             )
             .padding(30.dp)
     ) {

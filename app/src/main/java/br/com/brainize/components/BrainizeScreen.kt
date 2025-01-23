@@ -24,15 +24,15 @@ fun BrainizeScreen(
         modifier = modifier
             .fillMaxSize()
             .background(
-                Color(0xFF372080)
+                Color(0xFFF2D2FF)
             ).padding(paddingValues)
     ) {
-        Image(painter = painterResource(id = R.drawable.bg4),
-            contentDescription = null,
-            modifier = modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
-            alpha = 1f
-        )
+//        Image(painter = painterResource(id = R.drawable.bg8),
+//            contentDescription = null,
+//            modifier = modifier.fillMaxSize(),
+//            contentScale = ContentScale.Crop,
+//            alpha = 1f
+//        )
         Surface(
             modifier = modifier.fillMaxSize(),
             color = Color.Transparent

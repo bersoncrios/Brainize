@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -126,7 +127,7 @@ fun NotesDetailsScreen(
                                 text = noteState.title,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White,
+                                color = Color(0xFF372080),
                                 modifier = Modifier
                                     .padding(bottom = 16.dp)
                                     .clickable {
@@ -139,6 +140,7 @@ fun NotesDetailsScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .fillMaxHeight()
                                 .padding(vertical = 8.dp)
                                 .verticalScroll(scrollState)
                                 .clickable {
