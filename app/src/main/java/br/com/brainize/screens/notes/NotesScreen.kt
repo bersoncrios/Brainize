@@ -18,7 +18,6 @@ import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
 
-// Constantes para data e hora
 const val DATE_FORMAT = "%02d/%02d/%d"
 const val HOUR_FORMAT = "%02d:%02d"
 const val TASK_LABEL = "Tarefa"
@@ -61,7 +60,8 @@ fun NotesScreen(
         topBar = {
             BrainizerTopAppBar(
                 title = stringResource(R.string.my_notes_label),
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onShareClick = {}
             )
         },
         floatingActionButton = {

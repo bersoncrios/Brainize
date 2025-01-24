@@ -68,7 +68,8 @@ fun ScheduleScreen(
         topBar = {
             BrainizerTopAppBar(
                 title = stringResource(R.string.my_schedule_label),
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onShareClick = {}
             )
         },
         floatingActionButton = {

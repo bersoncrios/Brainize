@@ -1,5 +1,6 @@
 package br.com.brainize.screens.notes
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -102,6 +103,22 @@ fun NotesDetailsScreen(
                 ),
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onShareClick = {
+                    val sendIntent: Intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            "Compartilhando uma nota do Brainize \uD83E\uDDE0:" +
+                                    "\n\n" +
+                                    noteState.title +
+                                    "\n\n\n" +
+                                    noteState.content
+                        )
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    context.startActivity(shareIntent)
                 }
             )
         }

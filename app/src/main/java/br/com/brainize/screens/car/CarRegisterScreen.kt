@@ -50,7 +50,8 @@ fun CarRegisterScreen(
                 title = stringResource(R.string.register_car_label),
                 onBackClick = {
                     navController.navigate(DestinationScreen.HomeScreen.route)
-                }
+                },
+                onShareClick = {}
             )
         }
     ) { paddingValues ->

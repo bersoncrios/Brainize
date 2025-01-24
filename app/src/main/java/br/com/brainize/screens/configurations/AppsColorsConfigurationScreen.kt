@@ -89,7 +89,8 @@ fun AppsColorsConfigurationScreen(
         topBar = {
             BrainizerTopAppBar(
                 title = stringResource(R.string.configurations_label),
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onShareClick = {}
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
