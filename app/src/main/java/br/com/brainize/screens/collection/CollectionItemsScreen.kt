@@ -85,7 +85,6 @@ fun CollectionItemsScreen(
     ) { paddingValues ->
         BrainizeScreen(paddingValues = paddingValues) {
             if (isLoading) {
-                // Show a loading indicator
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
                     Text("Carregando...")
                 }

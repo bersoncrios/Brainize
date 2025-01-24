@@ -38,11 +38,11 @@ fun CollectionItem(collection: Collection, onItemClick: (Collection) -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = collection.name.uppercase(),
+                text = collection.name,
                 modifier = Modifier.padding(16.dp),
                 style = TextStyle(
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Bold,
                     color = Color.White,
                     textAlign = TextAlign.Center
                 )
