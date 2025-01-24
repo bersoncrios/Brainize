@@ -12,5 +12,6 @@ data class User (
     val userIsPremium: Boolean = false,
     val score: Int = 0,
     val gender: String = "",
-    val birthday: String = ""
+    val birthday: String = "",
+    val friends: List<String> = emptyList(),
 )
