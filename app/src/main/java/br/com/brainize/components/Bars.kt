@@ -21,7 +21,8 @@ import androidx.compose.material.icons.filled.Share
 fun BrainizerTopAppBar(
     title: String,
     onBackClick: () -> Unit,
-    onShareClick: () -> Unit
+    onShareClick: () -> Unit,
+    hasShare: Boolean = false
 ) {
     TopAppBar(
         title = {
@@ -41,12 +42,14 @@ fun BrainizerTopAppBar(
             }
         },
         actions = {
-            IconButton(onClick = onShareClick) {
-                Icon(
-                    imageVector = Icons.Default.Share,
-                    contentDescription = "Compartilhar",
-                    tint = Color.White
-                )
+            if (hasShare) {
+                IconButton(onClick = onShareClick) {
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Compartilhar",
+                        tint = Color.White
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

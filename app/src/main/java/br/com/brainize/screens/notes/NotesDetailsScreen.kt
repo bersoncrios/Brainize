@@ -119,7 +119,8 @@ fun NotesDetailsScreen(
                     }
                     val shareIntent = Intent.createChooser(sendIntent, null)
                     context.startActivity(shareIntent)
-                }
+                },
+                hasShare = true
             )
         }
     ) { paddingValues ->
