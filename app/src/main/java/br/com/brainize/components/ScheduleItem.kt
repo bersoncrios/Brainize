@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.brainize.R
 import br.com.brainize.model.Schedule
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun ScheduleItem(
@@ -43,6 +45,8 @@ fun ScheduleItem(
     val hightPriority = "Alta"
     val mediumPriority = "Média"
     val lowPriority = "Baixa"
+
+    val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     val priorityColor = when (currentPriority) {
         hightPriority -> priorityHighColor
@@ -81,7 +85,7 @@ fun ScheduleItem(
                 )
             }
             Text(
-                text = "Data: ${schedule.date}",
+                text = "Data: ${dateFormatter.format(schedule.date)}",
                 fontSize = 16.sp,
                 color = Color(0xFF372B4B)
             )

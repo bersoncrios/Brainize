@@ -16,6 +16,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ScheduleViewModel : ViewModel() {
     private val auth: FirebaseAuth = Firebase.auth
@@ -29,13 +32,14 @@ class ScheduleViewModel : ViewModel() {
 
     fun createNewSchedule(
         time: String,
-        date: String,
+        date: Date,
         name: String,
         priority: String,
         tag: String,
         isDone: Boolean
     ) {
         viewModelScope.launch {
+            val dateString = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date)
             val schedule = Schedule(
                 time = time,
                 date = date,
@@ -65,11 +69,16 @@ class ScheduleViewModel : ViewModel() {
                     .collection(USER_COLLECTIONS)
                     .document(userId)
                     .collection(SCHEDULE_COLLECTIONS)
+                    .orderBy("date")
                     .get()
                     .await()
-                val schedulesList = snapshot.documents.mapNotNull { document ->
-                    document.toObject(Schedule::class.java)?.copy(
+                val schedulesList = snapshot.documents.mapNotNull { document ->val schedule = document.toObject(Schedule::class.java)
+                    val timestamp = document.getTimestamp("date")
+                    val date = timestamp?.toDate()
+
+                    schedule?.copy(
                         id = document.id,
+                        date = date ?: Date(),
                         done = document.getBoolean(IS_DONE_LABEL) ?: false
                     )
                 }

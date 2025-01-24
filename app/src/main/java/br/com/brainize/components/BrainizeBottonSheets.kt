@@ -50,10 +50,14 @@ import br.com.brainize.R
 import br.com.brainize.components.BrainizeBottonSheets.Companion.TASK_LABEL
 import br.com.brainize.model.Note
 import br.com.brainize.utils.showDatePicker
+import br.com.brainize.utils.showDatePickerForDate
 import br.com.brainize.utils.showTimePicker
 import br.com.brainize.viewmodel.NotesViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -313,7 +317,7 @@ fun NewScheduleBottomSheet(
     val coroutineScope = rememberCoroutineScope()
     val newScheduleName = remember { mutableStateOf("") }
     val newScheduleTag = remember { mutableStateOf("") }
-    val newScheduleDate = remember { mutableStateOf("") }
+    val newScheduleDate = remember { mutableStateOf<Date>(Date()) }
     val newScheduleTime = remember { mutableStateOf("") }
     var newSchedulePriority by remember { mutableStateOf("") }
     var expandedPriority by remember { mutableStateOf(false) }
@@ -324,6 +328,8 @@ fun NewScheduleBottomSheet(
                 scaffoldState.bottomSheetState.expand()
             }
         }
+
+        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
@@ -366,10 +372,10 @@ fun NewScheduleBottomSheet(
                         textStyle = TextStyle(color = Color.White)
                     )
                     OutlinedTextField(
-                        value = newScheduleDate.value,
+                        value = if (newScheduleDate.value != null) dateFormatter.format(newScheduleDate.value) else "",
                         onValueChange = { },
                         modifier = Modifier
-                            .clickable { showDatePicker(context, newScheduleDate) }
+                            .clickable { showDatePickerForDate(context, newScheduleDate) }
                             .fillMaxWidth(),
                         label = { Text("Data", color = Color.White) },
                         readOnly = true,
@@ -378,7 +384,7 @@ fun NewScheduleBottomSheet(
                                 painter = painterResource(id = R.drawable.baseline_calendar_month_24),
                                 contentDescription = "Selecionar Data",
                                 tint = Color.White,
-                                modifier = Modifier.clickable { showDatePicker(context, newScheduleDate) }
+                                modifier = Modifier.clickable { showDatePickerForDate(context, newScheduleDate) }
                             )
                         },
                         colors = OutlinedTextFieldDefaults.colors(
@@ -469,7 +475,7 @@ fun NewScheduleBottomSheet(
                                     false
                                 )
                                 newScheduleTime.value = ""
-                                newScheduleDate.value = ""
+                                newScheduleDate.value = Date()
                                 newScheduleName.value = ""
                                 newSchedulePriority = ""
                                 newScheduleTag.value = ""

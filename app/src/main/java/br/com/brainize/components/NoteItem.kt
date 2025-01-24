@@ -77,7 +77,7 @@ fun NoteItem(
                     color = Color(0xFF372080)
                 )
                 Text(
-                    text = note.content.take(12) + if (note.content.length > 12) "..." else "",
+                    text = note.content.take(65) + if (note.content.length > 65) "..." else "",
                     fontSize = 16.sp,
                     color = Color(0xFF372B4B)
                 )
