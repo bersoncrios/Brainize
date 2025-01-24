@@ -148,12 +148,12 @@ fun ProfileScreen(
                             style = TextStyle(
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = Color(0xFF372080)
                             )
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -169,7 +169,7 @@ fun ProfileScreen(
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color.White
+                                color =  Color(0xFF372080)
                             )
                         )
                     }
@@ -192,7 +192,7 @@ fun ProfileScreen(
                                 style = TextStyle(
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                                    color =  Color(0xFF372080)
                                 )
                             )
                             Spacer(modifier = Modifier.height(8.dp))
@@ -201,7 +201,7 @@ fun ProfileScreen(
                                 style = TextStyle(
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                                    color = Color(0xFFbc60c4)
                                 )
                             )
                         }
@@ -218,7 +218,7 @@ fun ProfileScreen(
                                 style = TextStyle(
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                                    color =  Color(0xFF372080)
                                 )
                             )
                             Spacer(modifier = Modifier.height(8.dp))
@@ -227,7 +227,7 @@ fun ProfileScreen(
                                 style = TextStyle(
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                                    color = Color(0xFFbc60c4)
                                 )
                             )
                         }
@@ -303,7 +303,7 @@ fun ProfileScreen(
                                 loginViewModel.logout(navController)
                             },
                             modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
+                            colors = ButtonDefaults.buttonColors(containerColor =  Color(0xFF372080))
                         ) {
                             Text(
                                 text = "Sair",

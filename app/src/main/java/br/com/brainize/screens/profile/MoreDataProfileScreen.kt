@@ -2,7 +2,10 @@ package br.com.brainize.screens.profile
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,14 +13,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -59,6 +71,9 @@ fun MoreDataProfileScreen(
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
+    val interactionGenderSource = remember { MutableInteractionSource() }
+    val interactionBirthdaySource = remember { MutableInteractionSource() }
+
     val userData by viewModel.userData.collectAsState()
     var openGenderDialog by remember { mutableStateOf(false) }
     var openBirthdayDialog by remember { mutableStateOf(false) }
@@ -85,7 +100,24 @@ fun MoreDataProfileScreen(
         }, year, month, day
     )
 
-    LaunchedEffect(Unit) {viewModel.loadUserData()
+    LaunchedEffect(interactionGenderSource) {
+        interactionGenderSource.interactions.collect { interaction ->
+            if (interaction is PressInteraction.Press) {
+                openGenderDialog = true
+            }
+        }
+    }
+
+    LaunchedEffect(interactionBirthdaySource) {
+        interactionBirthdaySource.interactions.collect { interaction ->
+            if (interaction is PressInteraction.Press) {
+                openBirthdayDialog = true
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadUserData()
     }
 
     LaunchedEffect(userData) {
@@ -103,63 +135,149 @@ fun MoreDataProfileScreen(
         }
     ) { paddingValues ->
         BrainizeScreen(paddingValues = paddingValues) {
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(16.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                Column(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    Text(
+//                        text =  if (userData.gender.isEmpty()) "Gênero" else userData.gender,
+//                        modifier = Modifier
+//                            .clickable {
+//                                openGenderDialog = true
+//                            },
+//                        style = TextStyle(
+//                            fontSize = 20.sp,
+//                            fontWeight = FontWeight.Bold,
+//                            color = Color.White
+//                        )
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(16.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.Center
+//                    ) {
+//                        Text(
+//                            text =  if (userData.birthday .isEmpty()) "Data de nascimento" else userData.birthday,
+//                            modifier = Modifier
+//                                .clickable {
+//                                    openBirthdayDialog = true
+//                                },
+//                            style = TextStyle(
+//                                fontSize = 16.sp,
+//                                fontWeight = FontWeight.Medium,
+//                                color = Color.White
+//                            )
+//                        )
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(16.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.Center
+//                    ) {
+//                        Text(
+//                            text =  userData.email,
+//                            style = TextStyle(
+//                                fontSize = 16.sp,
+//                                fontWeight = FontWeight.Medium,
+//                                color = Color.White
+//                            )
+//                        )
+//                    }
+//                }
+//            }
+
+
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
+                OutlinedTextField(
+                    interactionSource = interactionGenderSource,
+                    value = if (userData.gender.isEmpty()) "Gênero" else userData.gender,
+                    onValueChange = {},
+                    readOnly = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color(0xFF372080),
+                        unfocusedTextColor = Color(0xFF372080),
+                        focusedBorderColor = Color(0xFFbc60c4),
+                        unfocusedBorderColor = Color(0xFF372080),
+                    ),
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text =  if (userData.gender.isEmpty()) "Gênero" else userData.gender,
-                        modifier = Modifier
-                            .clickable {
-                                openGenderDialog = true
-                            },
-                        style = TextStyle(
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text =  if (userData.birthday .isEmpty()) "Data de nascimento" else userData.birthday,
-                            modifier = Modifier
-                                .clickable {
-                                    openBirthdayDialog = true
-                                },
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = Color.White
-                            )
+                    label = { Text(text = "Gênero", color = Color(0xFF372080)) },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Filled.ArrowDropDown,
+                            contentDescription = null,
+                            tint = Color(0xFF372080)
                         )
                     }
+                )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
+                OutlinedTextField(
+                    interactionSource = interactionBirthdaySource,
+                    value = if (userData.birthday.isEmpty()) "Data de nascimento" else userData.birthday,
+                    onValueChange = {},
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color(0xFF372080),
+                        unfocusedTextColor = Color(0xFF372080),
+                        focusedBorderColor = Color(0xFFbc60c4),
+                        unfocusedBorderColor = Color(0xFF372080),
+                    ),
+                    readOnly = false,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { openBirthdayDialog = true },
+                    label = { Text("Data de nascimento", color = Color(0xFF372080)) },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Filled.DateRange,
+                            contentDescription = null,
+                            tint = Color(0xFF372080)
+                        )
+                    }
+                )
+
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+                    border = CardDefaults.outlinedCardBorder(),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
+                        Icon(Icons.Filled.Email, contentDescription = null, tint = Color.Gray)
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text =  userData.email,
+                            text = userData.email,
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color.White
+                                color = Color.Gray
                             )
                         )
                     }
