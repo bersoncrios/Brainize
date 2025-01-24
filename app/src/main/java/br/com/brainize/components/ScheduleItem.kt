@@ -26,12 +26,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.brainize.R
 import br.com.brainize.model.Schedule
+import br.com.brainize.viewmodel.ScheduleViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun ScheduleItem(
     schedule: Schedule,
+    scheduleViewModel: ScheduleViewModel,
     onIsDoneChange: (String, Boolean) -> Unit,
     priorityHighColor: Color = Color(0XFF873D48),
     priorityMediumColor: Color = Color(0xFFA6CFD5),
@@ -41,6 +43,8 @@ fun ScheduleItem(
     var currentPriority by remember { mutableStateOf(schedule.priority) }
     var showConfirmDialog by remember { mutableStateOf(false) }
     var isChecked by remember { mutableStateOf(schedule.done) }
+
+    val daysUntilSchedule = scheduleViewModel.getDaysUntilSchedule(schedule.date)
 
     val hightPriority = "Alta"
     val mediumPriority = "Média"
@@ -93,6 +97,11 @@ fun ScheduleItem(
                 text = "Horário: ${schedule.time}",
                 fontSize = 16.sp,
                 color =  Color(0xFF372B4B)
+            )
+            Text(
+                text = "Compromisso em $daysUntilSchedule dias",
+                fontSize = 16.sp,
+                color = Color(0xFF372B4B)
             )
             Text(
                 text = "Prioridade: $currentPriority",

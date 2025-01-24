@@ -102,7 +102,8 @@ fun ScheduleScreen(
                             onIsDoneChange = { scheduleId, isDone -> viewModel.updateScheduleIsDone(scheduleId, isDone) },
                             priorityHighColor = priorityHighColor,
                             priorityMediumColor = priorityMediumColor,
-                            priorityLowColor = priorityLowColor
+                            priorityLowColor = priorityLowColor,
+                            scheduleViewModel = viewModel
                         )
                     }
                 }

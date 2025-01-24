@@ -1,5 +1,6 @@
 package br.com.brainize.viewmodel
 
+import android.icu.util.Calendar
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,7 @@ import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class ScheduleViewModel : ViewModel() {
     private val auth: FirebaseAuth = Firebase.auth
@@ -39,7 +41,6 @@ class ScheduleViewModel : ViewModel() {
         isDone: Boolean
     ) {
         viewModelScope.launch {
-            val dateString = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date)
             val schedule = Schedule(
                 time = time,
                 date = date,
@@ -85,6 +86,18 @@ class ScheduleViewModel : ViewModel() {
                 _schedules.value = schedulesList
             }
         }
+    }
+
+    fun getDaysUntilSchedule(scheduleDate: Date): Int {
+        val currentDate = Calendar.getInstance()
+        val scheduleCalendar = Calendar.getInstance().apply {
+            time = scheduleDate
+        }
+
+        val diff = scheduleCalendar.timeInMillis - currentDate.timeInMillis
+        val daysDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
+
+        return daysDiff.toInt()
     }
 
     fun updateScheduleIsDone(
