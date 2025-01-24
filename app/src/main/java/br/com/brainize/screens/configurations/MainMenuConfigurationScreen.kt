@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -112,7 +113,16 @@ fun MainMenuConfigurationScreen(
                     isChecked = collectionEnabled,
                     onCheckedChange = { collectionEnabled = it }
                 )
-                Spacer(modifier = Modifier.height(24.dp))
+            }
+
+            Column(
+                modifier = Modifier
+                    .height(128.dp)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Button(
                     onClick = {
                         isSaving = true
@@ -138,12 +148,22 @@ fun MainMenuConfigurationScreen(
                             }
                         }
                     },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF372080),
+                        contentColor = Color(0xFF372080)
+                    ),
                     enabled = !isSaving
                 ) {
                     if (isSaving) {
                         CircularProgressIndicator(color = Color.White)
                     } else {
-                        Text(text = "Salvar Configurações")
+                        Text(
+                            text = "Salvar Configurações",
+                            color = Color.White
+                        )
                     }
                 }
             }
