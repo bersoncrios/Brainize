@@ -172,7 +172,7 @@ fun HomeScreen(
                         if (configurationsViewModel.collectionEnabled && remoteConfigViewModel._collectionEnable) {
                             BrainizerSelectButton(
                                 onClick = {
-                                    navController.navigate(DestinationScreen.SearchPeopleScreen.route)
+                                    navController.navigate(DestinationScreen.ListFriendsScreen.route)
 //                                    scope.launch {
 //                                        snackbarHostState.showSnackbar(
 //                                            message = "Em breve !",
@@ -202,7 +202,7 @@ fun HomeScreen(
                         if (configurationsViewModel.notesEnabled && remoteConfigViewModel._notesEnable) {
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.NotesScreen.route) },
-                                icon = R.drawable.lembretes,
+                                icon = R.drawable.lembrete,
                             )
                         }
 

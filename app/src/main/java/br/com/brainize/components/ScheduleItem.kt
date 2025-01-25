@@ -99,7 +99,11 @@ fun ScheduleItem(
                 color =  Color(0xFF372B4B)
             )
             Text(
-                text = "Compromisso em $daysUntilSchedule dias",
+                text = if (daysUntilSchedule == 0) {
+                    "Compromisso acontecerá amanhã"
+                } else {
+                    "Compromisso em $daysUntilSchedule dias"
+                },
                 fontSize = 16.sp,
                 color = Color(0xFF372B4B)
             )

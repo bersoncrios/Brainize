@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
 class SocialViewModel : ViewModel() {
+
+    data class FriendListItem(val id: String, val completeName: String, val username: String, val email: String)
+
     private val auth: FirebaseAuth = Firebase.auth
     private val firestore: FirebaseFirestore = Firebase.firestore
 
@@ -69,6 +72,26 @@ class SocialViewModel : ViewModel() {
         val updatedFriends = currentFriends + friendId
 
         userRef.update("friends", updatedFriends).await()
+    }
+
+    fun getFriendsList(currentUser: FirebaseUser): Flow<List<FriendListItem>> = flow {
+        val userRef = firestore.collection(USERS_COLLECTION).document(currentUser.uid)
+        val userSnapshot = userRef.get().await()
+        val friendIds = userSnapshot.get("friends") as? List<String> ?: emptyList()
+
+        val friendsList = mutableListOf<FriendListItem>()
+        for (friendId in friendIds) {
+            val friendSnapshot = firestore.collection(USERS_COLLECTION).document(friendId).get().await()
+            val completeName = friendSnapshot.getString("completeName")
+            val username = friendSnapshot.getString("username")
+            val email = friendSnapshot.getString("email")
+
+            if (completeName != null && username != null && email != null) {
+                friendsList.add(FriendListItem(friendId, completeName, username, email))
+            }
+        }
+
+        emit(friendsList)
     }
 
     companion object {
