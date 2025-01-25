@@ -24,6 +24,7 @@ import br.com.brainize.viewmodel.NotesViewModel
 import br.com.brainize.viewmodel.ProfileViewModel
 import br.com.brainize.viewmodel.RemoteConfigViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
+import br.com.brainize.viewmodel.SocialViewModel
 import br.com.brainize.viewmodel.factories.CarViewModelFactory
 import br.com.brainize.viewmodel.factories.CollectionViewModelFactory
 import br.com.brainize.viewmodel.factories.ConfigurationViewModelFactory
@@ -33,6 +34,7 @@ import br.com.brainize.viewmodel.factories.NotesViewModelFactory
 import br.com.brainize.viewmodel.factories.ProfileViewModelFactory
 import br.com.brainize.viewmodel.factories.RemoteConfigViewModelFactory
 import br.com.brainize.viewmodel.factories.ScheduleViewModelFactory
+import br.com.brainize.viewmodel.factories.SocialViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -69,6 +71,9 @@ class MainActivity : ComponentActivity() {
         }
         val remoteConfigViewModel: RemoteConfigViewModel by viewModels {
             RemoteConfigViewModelFactory()
+        }
+        val socialViewModel: SocialViewModel by viewModels {
+            SocialViewModelFactory()
         }
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
@@ -121,7 +126,8 @@ class MainActivity : ComponentActivity() {
                         configurationViewModel = configurationViewModel,
                         profileViewModel = profileViewModel,
                         collectionViewModel = collectionViewModel,
-                        remoteConfigViewModel = remoteConfigViewModel
+                        remoteConfigViewModel = remoteConfigViewModel,
+                        socialViewModel = socialViewModel
                     )
                 }
             }
@@ -139,7 +145,8 @@ fun BrainizeApp(
     configurationViewModel: ConfigurationsViewModel,
     profileViewModel: ProfileViewModel,
     collectionViewModel: CollectionViewModel,
-    remoteConfigViewModel: RemoteConfigViewModel
+    remoteConfigViewModel: RemoteConfigViewModel,
+    socialViewModel: SocialViewModel
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -158,7 +165,8 @@ fun BrainizeApp(
                 configurationViewModel = configurationViewModel,
                 profileViewModel = profileViewModel,
                 collectionViewModel = collectionViewModel,
-                remoteConfigViewModel = remoteConfigViewModel
+                remoteConfigViewModel = remoteConfigViewModel,
+                socialViewModel = socialViewModel
             )
         }
     }

@@ -32,6 +32,7 @@ import br.com.brainize.viewmodel.NotesViewModel
 import br.com.brainize.viewmodel.ProfileViewModel
 import br.com.brainize.viewmodel.RemoteConfigViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
+import br.com.brainize.viewmodel.SocialViewModel
 
 @Composable
 fun AppNavigation(
@@ -43,7 +44,8 @@ fun AppNavigation(
     configurationViewModel: ConfigurationsViewModel,
     profileViewModel: ProfileViewModel,
     collectionViewModel: CollectionViewModel,
-    remoteConfigViewModel: RemoteConfigViewModel
+    remoteConfigViewModel: RemoteConfigViewModel,
+    socialViewModel: SocialViewModel
 ) {
     val navController = rememberNavController()
     AppNavigation(
@@ -56,7 +58,8 @@ fun AppNavigation(
         configurationViewModel,
         profileViewModel,
         collectionViewModel,
-        remoteConfigViewModel
+        remoteConfigViewModel,
+        socialViewModel
     )
 }
 
@@ -71,7 +74,8 @@ fun AppNavigation(
     configurationsViewModel: ConfigurationsViewModel,
     profileViewModel: ProfileViewModel,
     collectionViewModel: CollectionViewModel,
-    remoteConfigViewModel: RemoteConfigViewModel
+    remoteConfigViewModel: RemoteConfigViewModel,
+    socialViewModel: SocialViewModel
 ) {
     NavHost(navController = navController, startDestination = DestinationScreen.SplashScreen.route) {
         composable(DestinationScreen.SplashScreen.route) {
