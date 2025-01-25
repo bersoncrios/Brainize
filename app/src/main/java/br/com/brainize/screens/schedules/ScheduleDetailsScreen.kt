@@ -55,6 +55,8 @@ import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun ScheduleDetailsScreen(
@@ -97,10 +99,7 @@ fun ScheduleDetailsScreen(
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = stringResource(
-                    R.string.schedule_detail_title,
-                    scheduleState.name
-                ),
+                title = "Detalhes da agenda",
                 onBackClick = {
                     navController.popBackStack()
                 },
@@ -109,12 +108,12 @@ fun ScheduleDetailsScreen(
                         action = Intent.ACTION_SEND
                         putExtra(
                             Intent.EXTRA_TEXT,
-                            "Compartilhando um compromisso do Brainize \uD83E\uDDE0:" +
+                            "Compartilhando uma agenda do Brainize \uD83E\uDDE0:" +
                                     "\n\n" +
                                     scheduleState.name +
                                     "\n\n\n" +
-                                    scheduleState.date +
-                                    "\n\n\n" +
+                                    SimpleDateFormat("dd 'de' MMMM 'de' yyyy", Locale("pt", "BR")).format(scheduleState.date) +
+                                    " às " +
                                     scheduleState.time
                         )
                         type = "text/plain"
@@ -138,6 +137,8 @@ fun ScheduleDetailsScreen(
                     CircularProgressIndicator(color = Color.White)
                 } else {
                     scheduleState.let { schedule ->
+                        val formattedDate = SimpleDateFormat("dd 'de' MMMM 'de' yyyy", Locale("pt", "BR")).format(schedule.date)
+
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -191,14 +192,14 @@ fun ScheduleDetailsScreen(
 
 
                                         Text(
-                                            text = schedule.date.toString(),
+                                            text = "Agenda marcada para o dia $formattedDate",
                                             color = Color.Black,
-                                            fontWeight = FontWeight.Normal,
-                                            fontSize = 16.sp
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 21.sp
                                         )
 
                                         Text(
-                                            text = schedule.time,
+                                            text = "Às ${schedule.time}",
                                             style = MaterialTheme.typography.bodyLarge,
                                             color = Color.Black,
                                             fontWeight = FontWeight.Normal,
