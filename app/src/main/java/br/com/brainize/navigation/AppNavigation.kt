@@ -22,6 +22,7 @@ import br.com.brainize.screens.notes.NotesScreen
 import br.com.brainize.screens.profile.MoreDataProfileScreen
 import br.com.brainize.screens.profile.ProfileScreen
 import br.com.brainize.screens.schedules.ScheduleScreen
+import br.com.brainize.screens.social.SearchPeoplesScreen
 import br.com.brainize.screens.splash.SplashScreen
 import br.com.brainize.viewmodel.CarViewModel
 import br.com.brainize.viewmodel.CollectionViewModel
@@ -121,6 +122,14 @@ fun AppNavigation(
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             HouseScreen(navController = navController, viewModel = houseViewModel, loginViewModel = loginViewmodel, token = token)
+        }
+
+        composable(
+            route = DestinationScreen.SearchPeopleScreen.route,
+            arguments = DestinationScreen.SearchPeopleScreen.arguments
+        ) { backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token")
+            SearchPeoplesScreen(navController = navController, loginViewModel = loginViewmodel, socialViewModel = socialViewModel,  token = token)
         }
 
         composable(

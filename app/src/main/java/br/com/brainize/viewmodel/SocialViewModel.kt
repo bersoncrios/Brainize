@@ -1,14 +1,15 @@
 package br.com.brainize.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
 class SocialViewModel : ViewModel() {
@@ -18,38 +19,41 @@ class SocialViewModel : ViewModel() {
     private fun getCurrentUser() = auth.currentUser
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
 
-    fun searchUserAndAddFriend(query: String) {
-        viewModelScope.launch {
-            val currentUser = getCurrentUser() ?: return@launch
-            val usersRef = firestore.collection(USERS_COLLECTION)
+    data class UserListItem(val id: String, val completeName: String, val username: String)
 
-            val querySnapshot = usersRef
-                .whereEqualTo("username", query)
+    fun searchUserAndAddFriend(query: String): Flow<List<UserListItem>> = flow {
+        val usersRef = firestore.collection(USERS_COLLECTION)
+
+        val querySnapshot = usersRef
+            .whereEqualTo("username", query)
+            .get()
+            .await()
+
+        if (querySnapshot.isEmpty) {
+            val nameSnapshot = usersRef
+                .whereEqualTo("completeName", query)
                 .get()
                 .await()
 
-            if (querySnapshot.isEmpty) {
-                val nameSnapshot = usersRef
-                    .whereEqualTo("name", query)
-                    .get()
-                    .await()
-
-                if (nameSnapshot.isEmpty) {
-                    // Nenhum usuário encontrado
-                    // Trateo caso de usuário não encontrado (ex: exibir mensagem de erro)
-                    return@launch
-                } else {
-                    // Usuário encontrado por nome
-                    addUserToFriendsList(currentUser, nameSnapshot.documents[0].id)
-                }
-            } else {
-                // Usuário encontrado por username
-                addUserToFriendsList(currentUser, querySnapshot.documents[0].id)
+            if (!nameSnapshot.isEmpty) {
+                emit(nameSnapshot.toUserListItemList())
             }
+        } else {
+            emit(querySnapshot.toUserListItemList())
         }
     }
 
-    private suspend fun addUserToFriendsList(currentUser: FirebaseUser, friendId: String) {
+    private fun QuerySnapshot.toUserListItemList(): List<UserListItem> =
+        documents.mapNotNull { document ->
+            val completeName = document.getString("completeName")?.lowercase()
+            val username = document.getString("username")?.lowercase()
+            if (completeName != null && username != null) {
+                UserListItem(document.id, completeName, username)
+            } else {
+                null
+            }
+        }
+    suspend fun addUserToFriendsList(currentUser: FirebaseUser, friendId: String) {
         val userRef = firestore.collection(USERS_COLLECTION).document(currentUser.uid)
 
         // Obtém a lista de amigos atual
