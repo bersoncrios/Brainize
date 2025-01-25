@@ -61,7 +61,7 @@ fun NotesScreen(
             BrainizerTopAppBar(
                 title = stringResource(R.string.my_notes_label),
                 onBackClick = { navController.popBackStack() },
-                onShareClick = {}
+                onIconRightClick = {}
             )
         },
         floatingActionButton = {

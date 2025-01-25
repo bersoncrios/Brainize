@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,7 +33,7 @@ import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
 
 @Composable
-fun ScheduleScreen(
+fun ScheduleDoneScreen(
     navController: NavController,
     viewModel: ScheduleViewModel,
     loginViewModel: LoginViewModel,
@@ -71,17 +69,7 @@ fun ScheduleScreen(
             BrainizerTopAppBar(
                 title = stringResource(R.string.my_schedule_label),
                 onBackClick = { navController.popBackStack() },
-                rightIcon = Icons.Default.Check,
-                hasRightIcon = true,
-                onIconRightClick = {
-                    navController.navigate(DestinationScreen.ScheduleDoneScreen.createRoute(token))
-                }
-            )
-        },
-        floatingActionButton = {
-            BrainizeFloatingActionButton(
-                openDialog = openDialog,
-                title = stringResource(R.string.new_schedule_lavel)
+                onIconRightClick = {}
             )
         }
     ) { paddingValues ->
@@ -93,7 +81,7 @@ fun ScheduleScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val filteredSchedules = schedules.filter { !it.done }
+                val filteredSchedules = schedules.filter { it.done }
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(1),
                     modifier = Modifier.fillMaxSize()

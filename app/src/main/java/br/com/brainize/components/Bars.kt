@@ -15,14 +15,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import br.com.brainize.R
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.ui.graphics.vector.ImageVector
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrainizerTopAppBar(
     title: String,
     onBackClick: () -> Unit,
-    onShareClick: () -> Unit,
-    hasShare: Boolean = false
+    onIconRightClick: () -> Unit,
+    rightIcon: ImageVector = Icons.Default.Share,
+    hasRightIcon: Boolean = false
 ) {
     TopAppBar(
         title = {
@@ -42,10 +44,10 @@ fun BrainizerTopAppBar(
             }
         },
         actions = {
-            if (hasShare) {
-                IconButton(onClick = onShareClick) {
+            if (hasRightIcon) {
+                IconButton(onClick = onIconRightClick) {
                     Icon(
-                        imageVector = Icons.Default.Share,
+                        imageVector = rightIcon,
                         contentDescription = "Compartilhar",
                         tint = Color.White
                     )

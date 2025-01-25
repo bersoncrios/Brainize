@@ -52,7 +52,7 @@ fun HouseScreen (
             BrainizerTopAppBar(
                 title = stringResource(R.string.my_house_label),
                 onBackClick = { navController.popBackStack() },
-                onShareClick = {}
+                onIconRightClick = {}
             )
         }
     ) { paddingValues ->

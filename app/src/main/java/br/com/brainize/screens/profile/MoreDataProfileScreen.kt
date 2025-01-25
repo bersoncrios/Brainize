@@ -131,76 +131,11 @@ fun MoreDataProfileScreen(
             BrainizerTopAppBar(
                 title = stringResource(R.string.my_profile_label),
                 onBackClick = { navController.popBackStack() },
-                onShareClick = {}
+                onIconRightClick = {}
             )
         }
     ) { paddingValues ->
         BrainizeScreen(paddingValues = paddingValues) {
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .padding(16.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Column(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    Text(
-//                        text =  if (userData.gender.isEmpty()) "Gênero" else userData.gender,
-//                        modifier = Modifier
-//                            .clickable {
-//                                openGenderDialog = true
-//                            },
-//                        style = TextStyle(
-//                            fontSize = 20.sp,
-//                            fontWeight = FontWeight.Bold,
-//                            color = Color.White
-//                        )
-//                    )
-//
-//                    Spacer(modifier = Modifier.height(16.dp))
-//
-//                    Row(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        horizontalArrangement = Arrangement.Center
-//                    ) {
-//                        Text(
-//                            text =  if (userData.birthday .isEmpty()) "Data de nascimento" else userData.birthday,
-//                            modifier = Modifier
-//                                .clickable {
-//                                    openBirthdayDialog = true
-//                                },
-//                            style = TextStyle(
-//                                fontSize = 16.sp,
-//                                fontWeight = FontWeight.Medium,
-//                                color = Color.White
-//                            )
-//                        )
-//                    }
-//
-//                    Spacer(modifier = Modifier.height(16.dp))
-//
-//                    Row(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        horizontalArrangement = Arrangement.Center
-//                    ) {
-//                        Text(
-//                            text =  userData.email,
-//                            style = TextStyle(
-//                                fontSize = 16.sp,
-//                                fontWeight = FontWeight.Medium,
-//                                color = Color.White
-//                            )
-//                        )
-//                    }
-//                }
-//            }
-
-
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()

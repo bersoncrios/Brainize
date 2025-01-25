@@ -43,7 +43,7 @@ fun ListFriendsScreen (
             BrainizerTopAppBar(
                 title = "Lista de amigos",
                 onBackClick = { navController.popBackStack() },
-                onShareClick = {}
+                onIconRightClick = {}
             )
         },
         floatingActionButton = {

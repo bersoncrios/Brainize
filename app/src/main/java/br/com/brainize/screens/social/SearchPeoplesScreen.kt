@@ -83,7 +83,7 @@ fun SearchPeoplesScreen (
             BrainizerTopAppBar(
                 title = "Buscar Pessoas",
                 onBackClick = { navController.popBackStack() },
-                onShareClick = {}
+                onIconRightClick = {}
             )
         }
     ) { paddingValues ->

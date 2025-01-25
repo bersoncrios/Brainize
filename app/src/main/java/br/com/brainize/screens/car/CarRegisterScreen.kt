@@ -51,7 +51,7 @@ fun CarRegisterScreen(
                 onBackClick = {
                     navController.navigate(DestinationScreen.HomeScreen.route)
                 },
-                onShareClick = {}
+                onIconRightClick = {}
             )
         }
     ) { paddingValues ->

@@ -73,7 +73,7 @@ fun CarScreen(
                 BrainizerTopAppBar(
                     title = stringResource(R.string.my_car_label),
                     onBackClick = { navController.navigate(DestinationScreen.HomeScreen.route) },
-                    onShareClick = {}
+                    onIconRightClick = {}
                 )
             }
         ) { paddingValues ->

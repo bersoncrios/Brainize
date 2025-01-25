@@ -103,7 +103,7 @@ fun ProfileScreen(
             BrainizerTopAppBar(
                 title = stringResource(R.string.my_profile_label),
                 onBackClick = { navController.popBackStack() },
-                onShareClick = {}
+                onIconRightClick = {}
             )
         }
     ) { paddingValues ->

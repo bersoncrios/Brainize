@@ -77,7 +77,7 @@ fun CollectionItemsScreen(
             BrainizerTopAppBar(
                 title = collectionState.name,
                 onBackClick = { navController.popBackStack() },
-                onShareClick = {}
+                onIconRightClick = {}
             )
         },
         floatingActionButton = {

@@ -46,6 +46,12 @@ fun ScheduleItem(
 
     val daysUntilSchedule = scheduleViewModel.getDaysUntilSchedule(schedule.date)
 
+    val dayUntil = when (daysUntilSchedule) {
+        0 -> "Compromisso acontecerá em breve"
+        in Int.MIN_VALUE..-1 -> "Compromisso foi há ${-daysUntilSchedule} dias"
+        else -> "Compromisso em $daysUntilSchedule dias"
+    }
+
     val hightPriority = "Alta"
     val mediumPriority = "Média"
     val lowPriority = "Baixa"
@@ -99,11 +105,7 @@ fun ScheduleItem(
                 color =  Color(0xFF372B4B)
             )
             Text(
-                text = if (daysUntilSchedule == 0) {
-                    "Compromisso acontecerá amanhã"
-                } else {
-                    "Compromisso em $daysUntilSchedule dias"
-                },
+                text = dayUntil,
                 fontSize = 16.sp,
                 color = Color(0xFF372B4B)
             )

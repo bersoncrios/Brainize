@@ -76,7 +76,7 @@ fun MainMenuConfigurationScreen(
             BrainizerTopAppBar(
                 title = stringResource(R.string.configurations_label),
                 onBackClick = { navController.popBackStack() },
-                onShareClick = {}
+                onIconRightClick = {}
             )
         },snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->

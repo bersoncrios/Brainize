@@ -104,7 +104,7 @@ fun NotesDetailsScreen(
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onShareClick = {
+                onIconRightClick = {
                     val sendIntent: Intent = Intent().apply {
                         action = Intent.ACTION_SEND
                         putExtra(
@@ -120,7 +120,7 @@ fun NotesDetailsScreen(
                     val shareIntent = Intent.createChooser(sendIntent, null)
                     context.startActivity(shareIntent)
                 },
-                hasShare = true
+                hasRightIcon = true
             )
         }
     ) { paddingValues ->

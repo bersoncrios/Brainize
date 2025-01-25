@@ -68,6 +68,13 @@ sealed class DestinationScreen(val route: String) {
         )
     }
 
+    object ScheduleDoneScreen : DestinationScreen("schedule_done_screen/{token}") {
+        fun createRoute(token: String?): String = "schedule_done_screen/$token"
+        val arguments = listOf(
+            navArgument("token") { type = NavType.StringType }
+        )
+    }
+
     object ConfigurationScreen : DestinationScreen("configuration_screen/{token}") {
         fun createRoute(token: String?): String = "configuration_screen/$token"
         val arguments = listOf(

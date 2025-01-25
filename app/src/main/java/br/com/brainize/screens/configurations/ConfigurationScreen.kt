@@ -69,7 +69,7 @@ fun ConfigurationScreen (
             BrainizerTopAppBar(
                 title = stringResource(R.string.configurations_label),
                 onBackClick = { navController.popBackStack() },
-                onShareClick = {}
+                onIconRightClick = {}
             )
         }
     ) { paddingValues ->
