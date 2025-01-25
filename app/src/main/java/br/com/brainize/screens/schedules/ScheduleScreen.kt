@@ -109,7 +109,13 @@ fun ScheduleScreen(
                             priorityHighColor = priorityHighColor,
                             priorityMediumColor = priorityMediumColor,
                             priorityLowColor = priorityLowColor,
-                            scheduleViewModel = viewModel
+                            scheduleViewModel = viewModel,
+                            onClick = {
+                                navController.navigate(DestinationScreen.ScheduleDetailsScreen.createRoute(
+                                    token,
+                                    schedule.id
+                                ))
+                            }
                         )
                     }
                 }

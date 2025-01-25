@@ -15,6 +15,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
@@ -28,6 +31,13 @@ class ScheduleViewModel : ViewModel() {
 
     private val _schedules = mutableStateOf<List<Schedule>>(emptyList())
     val schedules: State<List<Schedule>> = _schedules
+
+    private val _scheduleState = MutableStateFlow<Schedule>(Schedule())
+    val scheduleState: StateFlow<Schedule> = _scheduleState.stateIn(
+        scope = viewModelScope,
+        started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
+        initialValue = Schedule()
+    )
 
     private fun getCurrentUser() = auth.currentUser
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
@@ -116,6 +126,36 @@ class ScheduleViewModel : ViewModel() {
                     .await()
                 incrementUserScore(INCREMENT_POINT_DONE_SCHEDULE, auth, firestore)
                 loadSchedules()
+            }
+        }
+    }
+
+    fun getScheduleById(scheduleId: String) {
+        viewModelScope.launch {
+            val user = auth.currentUser
+            if (user != null) {
+                try {
+                    Log.d("ShedueViewmodel", "Fetching schedule with id: $scheduleId")
+                    val document = firestore
+                        .collection(USER_COLLECTIONS)
+                        .document(user.uid)
+                        .collection(SCHEDULE_COLLECTIONS)
+                        .document(scheduleId)
+                        .get()
+                        .await()
+
+                    if (document.exists()) {
+                        val schedule = document.toObject(Schedule::class.java)
+                        Log.d("ShedueViewmodel", "Note found: $schedule")
+                        _scheduleState.value = schedule ?: Schedule()
+                    } else {
+                        Log.w("ShedueViewmodel", "Document with id $scheduleId not found")
+                        _scheduleState.value = Schedule()
+                    }
+                } catch (e: Exception) {
+                    Log.e("ShedueViewmodel", "Error fetching schedule with id $scheduleId", e)
+                    _scheduleState.value = Schedule()
+                }
             }
         }
     }

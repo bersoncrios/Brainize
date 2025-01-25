@@ -1,5 +1,6 @@
 package br.com.brainize.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.brainize.R
+import br.com.brainize.model.Note
 import br.com.brainize.model.Schedule
 import br.com.brainize.viewmodel.ScheduleViewModel
 import java.text.SimpleDateFormat
@@ -37,7 +39,8 @@ fun ScheduleItem(
     onIsDoneChange: (String, Boolean) -> Unit,
     priorityHighColor: Color = Color(0XFF873D48),
     priorityMediumColor: Color = Color(0xFFA6CFD5),
-    priorityLowColor: Color =  Color(0xFF90EE90)
+    priorityLowColor: Color =  Color(0xFF90EE90),
+    onClick: (Schedule) -> Unit
 
 ) {
     var currentPriority by remember { mutableStateOf(schedule.priority) }
@@ -66,7 +69,11 @@ fun ScheduleItem(
     }
 
     Card(
-        modifier = Modifier.padding(8.dp),
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable {
+                onClick(schedule)
+            },
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = priorityColor)
     ) {

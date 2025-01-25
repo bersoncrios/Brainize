@@ -21,6 +21,7 @@ import br.com.brainize.screens.notes.NotesDetailsScreen
 import br.com.brainize.screens.notes.NotesScreen
 import br.com.brainize.screens.profile.MoreDataProfileScreen
 import br.com.brainize.screens.profile.ProfileScreen
+import br.com.brainize.screens.schedules.ScheduleDetailsScreen
 import br.com.brainize.screens.schedules.ScheduleDoneScreen
 import br.com.brainize.screens.schedules.ScheduleScreen
 import br.com.brainize.screens.social.ListFriendsScreen
@@ -156,6 +157,15 @@ fun AppNavigation(
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             ScheduleScreen(navController = navController, viewModel = scheduleViewModel, loginViewModel = loginViewmodel, configurationsViewModel = configurationsViewModel, token = token)
+        }
+
+        composable(
+            route = DestinationScreen.ScheduleDetailsScreen.route,
+            arguments = DestinationScreen.ScheduleDetailsScreen.arguments
+        ) { backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token")
+            val scheduleId = backStackEntry.arguments?.getString("scheduleId")
+            ScheduleDetailsScreen(navController = navController, viewModel = scheduleViewModel, loginViewModel = loginViewmodel, configurationsViewModel = configurationsViewModel, token = token, scheduleId = scheduleId)
         }
 
         composable(
