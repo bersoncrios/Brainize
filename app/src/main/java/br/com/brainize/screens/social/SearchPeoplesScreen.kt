@@ -54,6 +54,7 @@ import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.SocialViewModel
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
 @Composable
@@ -115,6 +116,7 @@ fun SearchPeoplesScreen (
                     contentPadding = PaddingValues(16.dp)
                 ) {
                     items(users) { user ->
+                        val isUserFriend = isFriend(currentUser, user.id, socialViewModel)
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -151,35 +153,37 @@ fun SearchPeoplesScreen (
                                     )
                                 }
 
-                                Spacer(modifier = Modifier.width(16.dp))
+                                if (!isUserFriend) {
+                                    Spacer(modifier = Modifier.width(16.dp))
 
-                                Column {
-                                    Button(
-                                        onClick = {
-                                            scope.launch {
-                                                if (currentUser != null) {
-                                                    socialViewModel
-                                                        .addUserToFriendsList(currentUser, user.id)
+                                    Column {
+                                        Button(
+                                            onClick = {
+                                                scope.launch {
+                                                    if (currentUser != null) {
+                                                        socialViewModel
+                                                            .addUserToFriendsList(currentUser, user.id)
+                                                    }
                                                 }
-                                            }
-                                        },
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(50.dp),
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor =  Color(0xFF372080)
-                                        )
-                                    ) {
-                                        Text(
-                                            text = "Adicionar",
-                                            color = Color.White,
+                                            },
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .background(Color(0xFF372080))
-                                                .clip(RoundedCornerShape(16.dp))
-                                                .padding(8.dp)
-                                                .wrapContentSize(Alignment.Center)
-                                        )
+                                                .height(50.dp),
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor =  Color(0xFF372080)
+                                            )
+                                        ) {
+                                            Text(
+                                                text = "Adicionar",
+                                                color = Color.White,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .background(Color(0xFF372080))
+                                                    .clip(RoundedCornerShape(16.dp))
+                                                    .padding(8.dp)
+                                                    .wrapContentSize(Alignment.Center)
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -189,4 +193,19 @@ fun SearchPeoplesScreen (
             }
         }
     }
+}
+
+@Composable
+fun isFriend(currentUser: FirebaseUser?, userId: String, socialViewModel: SocialViewModel): Boolean {
+    var isFriend by remember {mutableStateOf(false) }
+
+    LaunchedEffect(currentUser, userId) {
+        if (currentUser != null) {
+            val userSnapshot = socialViewModel.getUserDocument(currentUser.uid)
+            val friends = userSnapshot?.get("friends") as? List<String> ?: emptyList()
+            isFriend = friends.contains(userId)
+        }
+    }
+
+    return isFriend
 }

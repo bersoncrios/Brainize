@@ -21,6 +21,9 @@ class SocialViewModel : ViewModel() {
 
     data class UserListItem(val id: String, val completeName: String, val username: String)
 
+    suspend fun getUserDocument(userId: String) =
+        firestore.collection(USERS_COLLECTION).document(userId).get().await()
+
     fun searchUserAndAddFriend(query: String): Flow<List<UserListItem>> = flow {
         val usersRef = firestore.collection(USERS_COLLECTION)
 
@@ -56,14 +59,15 @@ class SocialViewModel : ViewModel() {
     suspend fun addUserToFriendsList(currentUser: FirebaseUser, friendId: String) {
         val userRef = firestore.collection(USERS_COLLECTION).document(currentUser.uid)
 
-        // Obtém a lista de amigos atual
         val userSnapshot = userRef.get().await()
         val currentFriends = userSnapshot.get("friends") as? List<String> ?: emptyList()
 
-        // Adiciona o novo amigo à lista
+        if (currentFriends.contains(friendId)) {
+            return
+        }
+
         val updatedFriends = currentFriends + friendId
 
-        // Atualiza a lista de amigos no Firestore
         userRef.update("friends", updatedFriends).await()
     }
 
