@@ -169,16 +169,10 @@ fun HomeScreen(
                             .padding(8.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        if (configurationsViewModel.collectionEnabled && remoteConfigViewModel._collectionEnable) {
+                        if (remoteConfigViewModel._socialEnable) {
                             BrainizerSelectButton(
                                 onClick = {
                                     navController.navigate(DestinationScreen.ListFriendsScreen.route)
-//                                    scope.launch {
-//                                        snackbarHostState.showSnackbar(
-//                                            message = "Em breve !",
-//                                            duration = SnackbarDuration.Short
-//                                        )
-//                                    }
                                 },
                                 icon = R.drawable.brainizelogo,
                             )

@@ -19,6 +19,7 @@ class RemoteConfigViewModel : ViewModel() {
     var _collectionEnable by mutableStateOf(false)
     var _configurationtioEnable by mutableStateOf(false)
     var _profileEnable by mutableStateOf(false)
+    var _socialEnable by mutableStateOf(false)
 
     init {
         viewModelScope.launch {
@@ -40,6 +41,7 @@ class RemoteConfigViewModel : ViewModel() {
                         _collectionEnable = firebaseRemoteConfig.getBoolean("collectionEnable")
                         _configurationtioEnable = firebaseRemoteConfig.getBoolean("configurationEnable")
                         _profileEnable = firebaseRemoteConfig.getBoolean("profileEnable")
+                        _socialEnable = firebaseRemoteConfig.getBoolean("socialEnable")
                     }
                 }
         }

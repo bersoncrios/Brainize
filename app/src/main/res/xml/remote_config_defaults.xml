@@ -28,4 +28,8 @@
     <key>profileEnable</key>
     <value>true</value>
   </entry>
+  <entry>
+    <key>socialEnable</key>
+    <value>true</value>
+  </entry>
 </defaults>
