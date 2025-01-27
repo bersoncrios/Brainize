@@ -6,6 +6,15 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file("/Users/bersons/Desktop/Brainize/keys/key-android")
+            storePassword = "keynize010203"
+            keyAlias = "keynize"
+            keyPassword = "keynize010203"
+        }
+    }
+
     namespace = "br.com.brainize"
     compileSdk = 35
 
@@ -23,14 +32,23 @@ android {
     }
 
     buildTypes {
+        debug {
+            resValue ("string", "google_services_json",
+                file("app/src/debug/google-services.json").absolutePath)
+        }
+
         release {
+            resValue ("string", "google_services_json",
+                file("app/src/release/google-services.json").absolutePath)
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
