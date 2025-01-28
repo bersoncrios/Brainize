@@ -1,7 +1,11 @@
 package br.com.brainize.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import br.com.brainize.model.FriendListItem
+import br.com.brainize.model.User
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -10,7 +14,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class SocialViewModel : ViewModel() {
@@ -23,6 +30,9 @@ class SocialViewModel : ViewModel() {
 
     suspend fun getUserDocument(userId: String) =
         firestore.collection(USERS_COLLECTION).document(userId).get().await()
+
+    private val _friendData = MutableStateFlow(br.com.brainize.model.User())
+    val friendData: StateFlow<br.com.brainize.model.User> = _friendData
 
     fun searchUserAndAddFriend(query: String): Flow<List<FriendListItem>> = flow {
         val usersRef = firestore.collection(USERS_COLLECTION)
@@ -91,6 +101,37 @@ class SocialViewModel : ViewModel() {
         emit(friendsList)
     }
 
+
+
+    fun getFriendById(friendId: String) {
+        viewModelScope.launch {
+            try {
+                val friendSnapshot = firestore
+                    .collection(USERS_COLLECTION)
+                    .document(friendId)
+                    .get()
+                    .await()
+                if (friendSnapshot.exists()) {
+                    val friend = friendSnapshot.toObject(User::class.java)
+                    if (friend != null) {
+                        val friendListItem = User(
+                            uid =  friend.uid,
+                            completeName = friend.completeName,
+                            username = friend.username,
+                            email = friend.email
+                        )
+                        _friendData.value = friendListItem
+                    } else {
+                        _friendData.value = User()
+                    }
+                } else {
+                    _friendData.value = User()
+                }
+            } catch (e: Exception) {
+                _friendData.value = User()
+            }
+        }
+    }
     companion object {
         private const val USERS_COLLECTION = "users"
     }

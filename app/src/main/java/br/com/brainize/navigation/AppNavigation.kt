@@ -205,13 +205,16 @@ fun AppNavigation(
             arguments = DestinationScreen.ProfileScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
+            val friendId = backStackEntry.arguments?.getString("friendId")
             ProfileScreen(
                 navController = navController,
                 loginViewModel = loginViewmodel,
                 viewModel = profileViewModel,
                 notesViewModel = notesViewModel,
                 scheduleViewModel = scheduleViewModel,
-                token = token
+                socialViewModel = socialViewModel,
+                token = token,
+                friendId = friendId
             )
         }
 

@@ -64,7 +64,9 @@ fun ListFriendsScreen (
                 modifier = Modifier.padding(vertical = 64.dp, horizontal = 16.dp)
             ) {
                 items(friendsList) { friend ->
-                    FriendItem(friend = friend)
+                    FriendItem(friend = friend){
+                        navController.navigate(DestinationScreen.ProfileScreen.createRoute(token, friend.id))
+                    }
                 }
             }
         }

@@ -54,6 +54,7 @@ import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
 import br.com.brainize.viewmodel.ProfileViewModel
 import br.com.brainize.viewmodel.ScheduleViewModel
+import br.com.brainize.viewmodel.SocialViewModel
 
 @Composable
 fun ProfileScreen(
@@ -62,23 +63,35 @@ fun ProfileScreen(
     loginViewModel: LoginViewModel,
     notesViewModel: NotesViewModel,
     scheduleViewModel: ScheduleViewModel,
-    token: String?
+    socialViewModel: SocialViewModel,
+    token: String?,
+    friendId: String?
 ) {
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
 
+    val friendData by socialViewModel.friendData.collectAsState()
     val userData by viewModel.userData.collectAsState()
     var openNameDialog by remember { mutableStateOf(false) }
     var openUsernameDialog by remember { mutableStateOf(false) }
     var name by remember { mutableStateOf(userData.completeName) }
     var username by remember { mutableStateOf(userData.username) }
+    var friendName by remember { mutableStateOf(friendData.completeName) }
+    var friendUsername by remember { mutableStateOf(friendData.username) }
     var usernameError by remember { mutableStateOf(false) }
     val usernameExists by viewModel.usernameExists.collectAsState()
     val isUserChecked by loginViewModel.isEmailVerified.collectAsState()
     var userEmailChecked by remember { mutableStateOf(false) }
     var notesCount by remember { mutableStateOf(0) }
     var schedulesCount by remember { mutableStateOf(0) }
+
+
+    LaunchedEffect(friendId) {
+        if (friendId != null) {
+            socialViewModel.getFriendById(friendId)
+        }
+    }
 
     LaunchedEffect(isUserChecked) {
         userEmailChecked = isUserChecked
@@ -98,10 +111,15 @@ fun ProfileScreen(
         username = userData.username
     }
 
+    LaunchedEffect(friendData) {
+        friendName = friendData.completeName
+        friendUsername = friendData.username
+    }
+
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = stringResource(R.string.my_profile_label),
+                title = if (friendUsername.isEmpty()) "Meu perfil" else "@${friendUsername}",
                 onBackClick = { navController.popBackStack() },
                 onIconRightClick = {}
             )
@@ -141,7 +159,7 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "@${userData.username}",
+                            text = if (friendUsername.isEmpty()) "@${username}" else "@${friendUsername}",
                             modifier = Modifier
                                 .clickable {
                                     openUsernameDialog = true
@@ -162,7 +180,7 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = userData.completeName,
+                            text = if (friendName.isEmpty()) name else friendName,
                             modifier = Modifier
                                 .clickable {
                                     openNameDialog = true
@@ -170,252 +188,259 @@ fun ProfileScreen(
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
-                                color =  Color(0xFF372080)
+                                color = Color(0xFF372080)
                             )
                         )
                     }
 
                     // Card de Contagem de Notas e Schedules
 
-                    Spacer(modifier = Modifier.height(16.dp))
 
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .clickable { navController.navigate(DestinationScreen.NotesScreen.route) }
+                    if (friendUsername.isEmpty()) {
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceAround
                         ) {
-                            Text(
-                                text = "Notas",
-                                style = TextStyle(
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color =  Color(0xFF372080)
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .clickable { navController.navigate(DestinationScreen.NotesScreen.route) }
+                            ) {
+                                Text(
+                                    text = "Notas",
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF372080)
+                                    )
                                 )
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "$notesCount",
-                                style = TextStyle(
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFbc60c4)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "$notesCount",
+                                    style = TextStyle(
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFFbc60c4)
+                                    )
                                 )
-                            )
+                            }
+
+                            Spacer(modifier = Modifier.width(32.dp))
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .clickable { navController.navigate(DestinationScreen.ScheduleScreen.route) }
+                            ) {
+                                Text(
+                                    text = "Agendas",
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF372080)
+                                    )
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "$schedulesCount",
+                                    style = TextStyle(
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFFbc60c4)
+                                    )
+                                )
+                            }
+
                         }
 
-                        Spacer(modifier = Modifier.width(32.dp))
-
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .clickable { navController.navigate(DestinationScreen.ScheduleScreen.route) }
-                        ) {
-                            Text(
-                                text = "Agendas",
-                                style = TextStyle(
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color =  Color(0xFF372080)
+                        if (!userEmailChecked) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "VERIFIQUE SEU ENDEREÇO DE EMAIL".lowercase(),
+                                    color = Color.Red,
+                                    style = TextStyle(
+                                        fontSize = 21.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 )
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "$schedulesCount",
-                                style = TextStyle(
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFbc60c4)
+                                Text(
+                                    text = "Após verificação, logue novamente no app".lowercase(),
+                                    color = Color.LightGray,
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Normal
+                                    )
                                 )
-                            )
+                            }
                         }
+                        Spacer(modifier = Modifier.height(32.dp))
 
-                    }
+                        // Menu Options as a List
 
-                    if (!userEmailChecked) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            Text(
-                                text = "VERIFIQUE SEU ENDEREÇO DE EMAIL".lowercase(),
-                                color =Color.Red,
-                                style = TextStyle(
-                                    fontSize = 21.sp,
-                                    fontWeight = FontWeight.Bold
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        navController.navigate(DestinationScreen.MoreDataProfileScreen.route)
+                                    }
+                                    .padding(vertical = 8.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                color = Color(0xFF442c8a)
+                            ) {
+                                Text(
+                                    text = "Dados Pessoais",
+                                    modifier = Modifier.padding(16.dp),
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.White
+                                    )
                                 )
-                            )
-                            Text(
-                                text = "Após verificação, logue novamente no app".lowercase(),
-                                color = Color.LightGray,
-                                style = TextStyle(
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Normal
-                                )
-                            )
+                            }
                         }
-                    }
-                    Spacer(modifier = Modifier.height(32.dp))
 
-                    // Menu Options as a List
-
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Surface(
+                        Spacer(modifier = Modifier.padding(8.dp))
+// Logout Button
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navController.navigate(DestinationScreen.MoreDataProfileScreen.route)
-                                }
-                                .padding(vertical = 8.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            color = Color(0xFF442c8a)
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.Bottom,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = "Dados Pessoais",
-                                modifier = Modifier.padding(16.dp),
-                                style = TextStyle(
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium,
+                            Button(
+                                onClick = {
+                                    loginViewModel.logout(navController)
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(
+                                        0xFF372080
+                                    )
+                                )
+                            ) {
+                                Text(
+                                    text = "Sair",
                                     color = Color.White
                                 )
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.padding(8.dp))
-// Logout Button
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.Bottom,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Button(
-                            onClick = {
-                                loginViewModel.logout(navController)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(containerColor =  Color(0xFF372080))
-                        ) {
-                            Text(
-                                text = "Sair",
-                                color = Color.White
-                            )
+                            }
                         }
                     }
                 }
             }
-        }
-        if (openNameDialog) {
-            AlertDialog(
-                onDismissRequest = { openNameDialog = false },
-                title = {
-                    Text(
-                        text = "Editar Nome",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = Color.White
-                    )
-                },
-                text = {
-                    OutlinedTextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        label = {
-                            Text(
-                                text = "Nome",
-                                color = Color.White
-                            )
-                        }
-                    )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            viewModel.updateUserName(name)
-                            openNameDialog = false
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
-                    ) {
-                        Text("Salvar", color = Color.White)
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { openNameDialog = false }) {
-                        Text(text = "Cancelar", color = Color.White)
-                    }
-                },
-                containerColor = Color(0xFF372080)
-            )
-        }
-
-        if (openUsernameDialog) {
-            AlertDialog(
-                onDismissRequest = {
-                    openUsernameDialog = false
-                    usernameError = false
-                },
-                title = {
-                    Text(
-                        text = "Editar Username",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = Color.White
-                    )
-                },
-                text = {
-                    Column {
+            if (openNameDialog && friendUsername.isEmpty()) {
+                AlertDialog(
+                    onDismissRequest = { openNameDialog = false },
+                    title = {
+                        Text(
+                            text = "Editar Nome",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = Color.White
+                        )
+                    },
+                    text = {
                         OutlinedTextField(
-                            value = username.lowercase(),
-                            onValueChange = {
-                                username = it
-                                usernameError = false
-                                viewModel.checkUsernameExists(it)
-                            },
+                            value = name,
+                            onValueChange = { name = it },
                             label = {
                                 Text(
-                                    text = "Username",
+                                    text = "Nome",
                                     color = Color.White
                                 )
-                            },isError = usernameError
-                        )
-                        if (usernameError) {
-                            Text("Este username já está em uso.", color = Color.Red)
-                        }
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            if (!usernameExists) {
-                                viewModel.updateUserUsername(username)
-                                openUsernameDialog = false
-                            } else {
-                                usernameError = true
                             }
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
-                    ) {
-                        Text("Salvar", color = Color.White)
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = {
+                        )
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                viewModel.updateUserName(name)
+                                openNameDialog = false
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
+                        ) {
+                            Text("Salvar", color = Color.White)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { openNameDialog = false }) {
+                            Text(text = "Cancelar", color = Color.White)
+                        }
+                    },
+                    containerColor = Color(0xFF372080)
+                )
+            }
+
+            if (openUsernameDialog && friendUsername.isEmpty()) {
+                AlertDialog(
+                    onDismissRequest = {
                         openUsernameDialog = false
                         usernameError = false
-                    }) {
-                        Text("Cancelar", color = Color.White)
-                    }
-                },
-                containerColor = Color(0xFF372080)
-            )
+                    },
+                    title = {
+                        Text(
+                            text = "Editar Username",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = Color.White
+                        )
+                    },
+                    text = {
+                        Column {
+                            OutlinedTextField(
+                                value = username.lowercase(),
+                                onValueChange = {
+                                    username = it
+                                    usernameError = false
+                                    viewModel.checkUsernameExists(it)
+                                },
+                                label = {
+                                    Text(
+                                        text = "Username",
+                                        color = Color.White
+                                    )
+                                }, isError = usernameError
+                            )
+                            if (usernameError) {
+                                Text("Este username já está em uso.", color = Color.Red)
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                if (!usernameExists) {
+                                    viewModel.updateUserUsername(username)
+                                    openUsernameDialog = false
+                                } else {
+                                    usernameError = true
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFbc60c4))
+                        ) {
+                            Text("Salvar", color = Color.White)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            openUsernameDialog = false
+                            usernameError = false
+                        }) {
+                            Text("Cancelar", color = Color.White)
+                        }
+                    },
+                    containerColor = Color(0xFF372080)
+                )
+            }
         }
     }
 }
