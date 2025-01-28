@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.brainize.components.BrainizeScreen
 import br.com.brainize.components.BrainizerTopAppBar
+import br.com.brainize.components.FriendItem
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.SocialViewModel
@@ -64,13 +64,7 @@ fun ListFriendsScreen (
                 modifier = Modifier.padding(vertical = 64.dp, horizontal = 16.dp)
             ) {
                 items(friendsList) { friend ->
-                    Text(
-                        text = "${friend.completeName} (@${friend.username})",
-                        color = Color(0xFF372B4B),
-                        modifier = Modifier
-                            .padding(bottom = 16.dp)
-
-                    )
+                    FriendItem(friend = friend)
                 }
             }
         }

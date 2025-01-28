@@ -1,6 +1,7 @@
 package br.com.brainize.viewmodel
 
 import androidx.lifecycle.ViewModel
+import br.com.brainize.model.FriendListItem
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -14,20 +15,16 @@ import kotlinx.coroutines.tasks.await
 
 class SocialViewModel : ViewModel() {
 
-    data class FriendListItem(val id: String, val completeName: String, val username: String, val email: String)
-
     private val auth: FirebaseAuth = Firebase.auth
     private val firestore: FirebaseFirestore = Firebase.firestore
 
     private fun getCurrentUser() = auth.currentUser
     fun hasLoggedUser(): Boolean = getCurrentUser() != null
 
-    data class UserListItem(val id: String, val completeName: String, val username: String)
-
     suspend fun getUserDocument(userId: String) =
         firestore.collection(USERS_COLLECTION).document(userId).get().await()
 
-    fun searchUserAndAddFriend(query: String): Flow<List<UserListItem>> = flow {
+    fun searchUserAndAddFriend(query: String): Flow<List<FriendListItem>> = flow {
         val usersRef = firestore.collection(USERS_COLLECTION)
 
         val querySnapshot = usersRef
@@ -49,12 +46,12 @@ class SocialViewModel : ViewModel() {
         }
     }
 
-    private fun QuerySnapshot.toUserListItemList(): List<UserListItem> =
+    private fun QuerySnapshot.toUserListItemList(): List<FriendListItem> =
         documents.mapNotNull { document ->
             val completeName = document.getString("completeName")?.lowercase()
             val username = document.getString("username")?.lowercase()
             if (completeName != null && username != null) {
-                UserListItem(document.id, completeName, username)
+                FriendListItem(document.id, completeName, username, "")
             } else {
                 null
             }
