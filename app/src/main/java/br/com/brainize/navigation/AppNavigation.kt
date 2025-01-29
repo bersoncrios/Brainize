@@ -99,7 +99,9 @@ fun AppNavigation(
                 loginViewModel = loginViewmodel,
                 configurationsViewModel = configurationsViewModel,
                 token = token,
-                remoteConfigViewModel = remoteConfigViewModel
+                remoteConfigViewModel = remoteConfigViewModel,
+                notesViewModel = notesViewModel,
+                scheduleViewModel = scheduleViewModel
             )
         }
 
