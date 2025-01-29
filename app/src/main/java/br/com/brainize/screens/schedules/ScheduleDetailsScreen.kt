@@ -79,6 +79,14 @@ fun ScheduleDetailsScreen(
     var openDueDateDialog = remember { mutableStateOf(false) }
     var openDueTimeDialog = remember { mutableStateOf(false) }
 
+    val daysUntilSchedule = viewModel.getDaysUntilSchedule(scheduleState.date)
+
+    val dayUntil = when (daysUntilSchedule) {
+        0 -> "Compromisso acontecerá em breve"
+        in Int.MIN_VALUE..-1 -> "Compromisso foi há ${-daysUntilSchedule} dias"
+        else -> "Compromisso em $daysUntilSchedule dias"
+    }
+
     val context = LocalContext.current
 
     if (!loginViewModel.hasLoggedUser() && token.isNullOrEmpty()) {
@@ -180,32 +188,33 @@ fun ScheduleDetailsScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Text(
-                                        text = schedule.tag,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = Color.Black,
+                                        text = "TAG: ${schedule.tag}",
+                                        color = Color(0xFF372B4B),
                                         modifier = Modifier.weight(2f),
-                                        fontWeight = FontWeight.Normal,
-                                        fontSize = 16.sp
+                                        fontWeight = FontWeight.ExtraLight,
+                                        fontSize = 12.sp
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
 
 
-                                        Text(
-                                            text = "Agenda marcada para o dia $formattedDate",
-                                            color = Color.Black,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 21.sp
-                                        )
+                                Text(
+                                    text = "Agenda marcada para o dia $formattedDate às ${schedule.time}",
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 21.sp
+                                )
 
-                                        Text(
-                                            text = "Às ${schedule.time}",
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            color = Color.Black,
-                                            fontWeight = FontWeight.Normal,
-                                            fontSize = 16.sp
-                                        )
-                                    }
+                                Spacer(modifier = Modifier.height(32.dp))
+
+                                Text(
+                                    text = "$dayUntil",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 16.sp
+                                )
+                            }
 
                         }
                     }
