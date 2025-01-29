@@ -67,6 +67,7 @@ fun HomeScreen(
 ) {
 
     val notes by notesViewModel.notes.collectAsState()
+    val scheduleToHome by scheduleViewModel.scheduleToHome.collectAsState()
     val userScore by loginViewModel.userScore.collectAsState()
     var completeName by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(true) }
@@ -316,7 +317,10 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             // Exibe as agendas filtradas
-                            filteredSchedules.value.forEach { schedule ->
+                            scheduleToHome.takeLast(3)
+                                .filter { !it.done }
+                                .reversed()
+                                .forEach { schedule ->
                                 LastScheduleItem(
                                     note = schedule,
                                     navController = navController,

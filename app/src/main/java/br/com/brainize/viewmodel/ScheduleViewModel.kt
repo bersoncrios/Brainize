@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.brainize.model.Note
 import br.com.brainize.model.Schedule
 import br.com.brainize.utils.UserUtils.Companion.INCREMENT_POINT_DONE_SCHEDULE
 import br.com.brainize.utils.UserUtils.Companion.INCREMENT_POINT_NEW_ELEMENT_SIMPLE
@@ -31,6 +32,9 @@ class ScheduleViewModel : ViewModel() {
 
     private val _schedules = mutableStateOf<List<Schedule>>(emptyList())
     val schedules: State<List<Schedule>> = _schedules
+
+    private val _scheduleToHome = MutableStateFlow<List<Schedule>>(emptyList())
+    val scheduleToHome: StateFlow<List<Schedule>> = _scheduleToHome
 
     private val _scheduleState = MutableStateFlow<Schedule>(Schedule())
     val scheduleState: StateFlow<Schedule> = _scheduleState.stateIn(
@@ -93,6 +97,7 @@ class ScheduleViewModel : ViewModel() {
                         done = document.getBoolean(IS_DONE_LABEL) ?: false
                     )
                 }
+                _scheduleToHome.value = schedulesList
                 _schedules.value = schedulesList
             }
         }
