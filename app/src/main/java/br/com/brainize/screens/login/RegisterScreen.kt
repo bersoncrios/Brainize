@@ -195,7 +195,8 @@ fun RegisterScreen(
                                     password,
                                     name,
                                     username,
-                                    context
+                                    context,
+                                    navController
                                 )
                             }
                         },
@@ -209,7 +210,7 @@ fun RegisterScreen(
                         enabled = !usernameError
                     ) {
                         Text(
-                            text = stringResource(R.string.enter_label),
+                            text = "Cadastrar",
                             color = Color.White,
                             modifier = Modifier
                                 .fillMaxWidth()

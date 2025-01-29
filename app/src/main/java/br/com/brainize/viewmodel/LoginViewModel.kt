@@ -217,7 +217,8 @@ class LoginViewModel : ViewModel() {
         password: String,
         name: String,
         username: String,
-        context: Context
+        context: Context,
+        navController: NavController
     ) {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
@@ -227,10 +228,15 @@ class LoginViewModel : ViewModel() {
                     _loginState.value = LoginState.Error("Este username já está em uso")
                     return@launch
                 }
+
+                // Cria o usuário
                 val authResult = auth.createUserWithEmailAndPassword(email, password).await()
                 val user = authResult.user
-                val token = user?.getIdToken(false)?.await()?.token
 
+                // Envia o email de verificação
+                user?.sendEmailVerification()?.await()
+
+                // Cria o objeto de dados do usuário
                 val userData = br.com.brainize.model.User(
                     uid = auth.currentUser?.uid ?: context.getString(R.string.dont_possible_recovery_uid),
                     email = email,
@@ -241,15 +247,25 @@ class LoginViewModel : ViewModel() {
                     userIsPremium = false,
                     score = 0
                 )
+
+                // Salva os dados do usuário no Firestore
                 user?.let {
                     firestore
                         .collection(USERS_COLLECTION)
                         .document(it.uid)
                         .set(userData)
                         .await()
-                    it.sendEmailVerification().await()
                 }
+
+                // Loga o usuário automaticamente
+                val signInResult = auth.signInWithEmailAndPassword(email, password).await()
+                val signedInUser = signInResult.user
+                val token = signedInUser?.getIdToken(false)?.await()?.token
+
+                // Define o estado de sucesso com o token
                 _loginState.value = LoginState.Success(token)
+                navController.navigate(DestinationScreen.LoginScreen.route)
+
             } catch (e: Exception) {
                 _loginState.value = LoginState.Error(
                     e.message ?: context.getString(R.string.unknow_error)

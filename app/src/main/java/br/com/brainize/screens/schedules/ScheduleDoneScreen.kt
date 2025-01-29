@@ -67,7 +67,7 @@ fun ScheduleDoneScreen(
     Scaffold(
         topBar = {
             BrainizerTopAppBar(
-                title = stringResource(R.string.my_schedule_label),
+                title = "Minhas agendas concluídas",
                 onBackClick = { navController.popBackStack() },
                 onIconRightClick = {}
             )
