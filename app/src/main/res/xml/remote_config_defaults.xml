@@ -18,7 +18,7 @@
   </entry>
   <entry>
     <key>collectionEnable</key>
-    <value>false</value>
+    <value>true</value>
   </entry>
   <entry>
     <key>configurationEnable</key>
@@ -31,5 +31,17 @@
   <entry>
     <key>socialEnable</key>
     <value>true</value>
+  </entry>
+  <entry>
+    <key>hasAds</key>
+    <value>false</value>
+  </entry>
+  <entry>
+    <key>adsTitle</key>
+    <value>Titulo do ads no app</value>
+  </entry>
+  <entry>
+    <key>adsDescription</key>
+    <value>Conteúdo do anúncio</value>
   </entry>
 </defaults>

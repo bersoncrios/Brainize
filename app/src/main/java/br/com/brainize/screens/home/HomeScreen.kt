@@ -1,7 +1,5 @@
 package br.com.brainize.screens.home
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +21,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -37,13 +34,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -98,10 +92,9 @@ fun HomeScreen(
                     .padding(top = 28.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
                 ) {
                     Box(
                         modifier = Modifier
@@ -170,13 +163,13 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         if (remoteConfigViewModel._socialEnable) {
-                            BrainizerSelectButton(
-                                onClick = {
-                                    navController.navigate(DestinationScreen.ListFriendsScreen.route)
-                                },
-                                icon = R.drawable.brainizelogo,
-                            )
-                        }
+                        BrainizerSelectButton(
+                            onClick = {
+                                navController.navigate(DestinationScreen.ListFriendsScreen.route)
+                            },
+                            icon = R.drawable.brainizelogo,
+                        )
+                    }
 
                         if (configurationsViewModel.collectionEnabled && remoteConfigViewModel._collectionEnable) {
                             BrainizerSelectButton(
@@ -238,17 +231,55 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.SpaceEvenly) {
                         if (remoteConfigViewModel._configurationtioEnable) {
                             BrainizerSelectButton(
-                                onClick = { navController.navigate(DestinationScreen.ConfigurationScreen.route) },
-                                icon = R.drawable.config,
-                            )
+                            onClick = { navController.navigate(DestinationScreen.ConfigurationScreen.route) },
+                            icon = R.drawable.config)
                         }
 
                         if (remoteConfigViewModel._profileEnable) {
                             BrainizerSelectButton(
-                                onClick = { navController.navigate(DestinationScreen.ProfileScreen.route) },
+                                onClick = {navController.navigate(DestinationScreen.ProfileScreen.route) },
                                 icon = R.drawable.profile,
                             )
                         }
+                    }
+
+
+                    if (remoteConfigViewModel._hasAds) {
+
+                        // Banner de Anúncios
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                                .shadow(elevation = 4.dp, shape = RoundedCornerShape(12.dp)),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.LightGray)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = remoteConfigViewModel._adsTitle,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp,
+                                    color = Color.Black,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = remoteConfigViewModel._adsDescription,
+                                    fontSize = 14.sp,
+                                    color = Color.Black,
+                                    textAlign = TextAlign.Center
+                                )
+                                // Você pode adicionar mais conteúdo aqui, como uma imagem ou um botão.
+                            }
+                        }
+
                     }
                 }
             }
