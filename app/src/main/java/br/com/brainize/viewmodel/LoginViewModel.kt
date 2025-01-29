@@ -223,11 +223,16 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             try {
+                // Verifica se o username contém espaços
+                if (username.contains(" ")) {
+                    _loginState.value = LoginState.Error("O username não pode conter espaços")
+                    return@launch
+                }
+
                 checkUsernameExists(username.lowercase())
                 if (_usernameExists.value) {
                     _loginState.value = LoginState.Error("Este username já está em uso")
-                    return@launch
-                }
+                    return@launch}
 
                 // Cria o usuário
                 val authResult = auth.createUserWithEmailAndPassword(email, password).await()

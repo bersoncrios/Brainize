@@ -37,5 +37,6 @@ fun translateFirebaseError(firebaseMessage: String, context: Context): String {
             context.getString(R.string.este_email_j_est_cadastrado)
         context.getString(R.string.password_should_be_at_least_6_characters) ->
             context.getString(R.string.a_senha_deve_ter_pelo_menos_6_caracteres)
+        "O username não pode conter espaços" -> "O username não pode conter espaços"
         else -> context.getString(R.string.ocorreu_um_erro_inesperado_tente_novamente)
     }}
