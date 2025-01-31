@@ -27,12 +27,35 @@ fun BrainizeScreen(
                 Color(0xFFF2D2FF)
             ).padding(paddingValues)
     ) {
-//        Image(painter = painterResource(id = R.drawable.bg8),
-//            contentDescription = null,
-//            modifier = modifier.fillMaxSize(),
-//            contentScale = ContentScale.Crop,
-//            alpha = 1f
-//        )
+        Surface(
+            modifier = modifier.fillMaxSize(),
+            color = Color.Transparent
+        ) {
+            content()
+        }
+    }
+}
+
+
+@Composable
+fun WithImageBrainizeScreen(
+    paddingValues: PaddingValues,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                Color(0xFFF2D2FF)
+            ).padding(paddingValues)
+    ) {
+        Image(painter = painterResource(id = R.drawable.bg3),
+            contentDescription = null,
+            modifier = modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            alpha = 1f
+        )
         Surface(
             modifier = modifier.fillMaxSize(),
             color = Color.Transparent
