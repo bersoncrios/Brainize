@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -23,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -120,7 +123,11 @@ fun BottomSheetNoteType(
                             ),
                             textStyle = TextStyle(color = Color.White)
                         )
-                        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            containerColor = Color(0xFFbc60c4)
+                        ) {
                             options.forEach { option ->
                                 DropdownMenuItem(
                                     text = { Text(text = option, color = Color.White) },
@@ -430,20 +437,45 @@ fun NewScheduleBottomSheet(
                             )
                             DropdownMenu(
                                 expanded = expandedPriority,
-                                onDismissRequest = { expandedPriority = false }
+                                onDismissRequest = { expandedPriority = false },
+                                containerColor = Color(0xFFbc60c4),
+                                modifier = Modifier
+                                    .fillMaxWidth(.92f)
+                                    .padding(horizontal = 16.dp)
                             ) {
-                                DropdownMenuItem(text = { Text("Alta") }, onClick = {
-                                    newSchedulePriority = "Alta"
-                                    expandedPriority = false
-                                })
-                                DropdownMenuItem(text = { Text("Média") }, onClick = {
-                                    newSchedulePriority = "Média"
-                                    expandedPriority = false
-                                })
-                                DropdownMenuItem(text = { Text("Baixa") }, onClick = {
-                                    newSchedulePriority = "Baixa"
-                                    expandedPriority = false
-                                })
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = "Alta",
+                                            color = Color.White
+                                        )
+                                    },
+                                    onClick = {
+                                        newSchedulePriority = "Alta"
+                                        expandedPriority = false
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = "Média",
+                                            color = Color.White)
+                                    },
+                                    onClick = {
+                                        newSchedulePriority = "Média"
+                                        expandedPriority = false
+                                    })
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = "Baixa",
+                                            color = Color.White
+                                        )
+                                    },
+                                    onClick = {
+                                        newSchedulePriority = "Baixa"
+                                        expandedPriority = false
+                                    })
                             }
                         },
                         colors = OutlinedTextFieldDefaults.colors(

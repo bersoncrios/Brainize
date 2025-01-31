@@ -21,6 +21,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -344,7 +345,7 @@ fun ProfileScreen(
                     onDismissRequest = { openNameDialog = false },
                     title = {
                         Text(
-                            text = "Editar Nome",
+                            text = "Editar nome",
                             style = MaterialTheme.typography.headlineSmall,
                             color = Color.White
                         )
@@ -358,7 +359,8 @@ fun ProfileScreen(
                                     text = "Nome",
                                     color = Color.White
                                 )
-                            }
+                            },
+                            textStyle = TextStyle(color = Color.White)
                         )
                     },
                     confirmButton = {
@@ -389,7 +391,7 @@ fun ProfileScreen(
                     },
                     title = {
                         Text(
-                            text = "Editar Username",
+                            text = "Editar nome de usuário",
                             style = MaterialTheme.typography.headlineSmall,
                             color = Color.White
                         )
@@ -405,10 +407,16 @@ fun ProfileScreen(
                                 },
                                 label = {
                                     Text(
-                                        text = "Username",
+                                        text = "nome de usuário",
                                         color = Color.White
                                     )
-                                }, isError = usernameError
+                                },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = Color.White,
+                                    unfocusedBorderColor = Color.White
+                                ),
+                                isError = usernameError,
+                                textStyle = TextStyle(color = Color.White)
                             )
                             if (usernameError) {
                                 Text("Este username já está em uso.", color = Color.Red)

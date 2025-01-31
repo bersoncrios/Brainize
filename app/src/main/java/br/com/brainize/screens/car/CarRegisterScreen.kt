@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.brainize.R
@@ -66,22 +67,40 @@ fun CarRegisterScreen(
                 OutlinedTextField(
                     value = carBrand,
                     onValueChange = { carBrand = it },
-                    label = { Text(text = stringResource(R.string.car_brand_label), color = Color.White) },
-                    modifier = Modifier.fillMaxWidth()
+                    label = {
+                        Text(
+                            text = stringResource(R.string.car_brand_label),
+                            color = Color(0xFF372B4B)
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = TextStyle(color = Color(0xFF372B4B))
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
                 OutlinedTextField(
                     value = carModel,
                     onValueChange = { carModel = it },
-                    label = { Text(text = stringResource(R.string.car_model_label), color = Color.White) },
-                    modifier = Modifier.fillMaxWidth()
+                    label = {
+                        Text(
+                            text = stringResource(R.string.car_model_label),
+                            color = Color(0xFF372B4B)
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = TextStyle(color = Color(0xFF372B4B))
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
                 OutlinedTextField(
                     value = carPlate,
                     onValueChange = { carPlate = it },
-                    label = { Text(text = stringResource(R.string.car_plate_label), color = Color.White) },
-                    modifier = Modifier.fillMaxWidth()
+                    label = {
+                        Text(
+                            text = stringResource(R.string.car_plate_label),
+                            color = Color(0xFF372B4B)
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = TextStyle(color = Color(0xFF372B4B))
                 )
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(

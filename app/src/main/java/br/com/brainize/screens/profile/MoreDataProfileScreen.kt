@@ -243,6 +243,7 @@ fun MoreDataProfileScreen(
                                 )
                             },
                             readOnly = true,
+                            textStyle = TextStyle(color = Color.White),
                             trailingIcon = {
                                 Icon(
                                     painter = painterResource(id =R.drawable.baseline_arrow_drop_down_24),
@@ -252,20 +253,45 @@ fun MoreDataProfileScreen(
                                 )
                                 DropdownMenu(
                                     expanded = expandedGenderMenu,
-                                    onDismissRequest = { expandedGenderMenu = false }
+                                    onDismissRequest = { expandedGenderMenu = false },
+                                    containerColor = Color(0xFFbc60c4),
+                                    modifier = Modifier
+                                        .fillMaxWidth(.7f)
+                                        .padding(horizontal = 16.dp)
                                 ) {
-                                    DropdownMenuItem(text = { Text("Masculino") }, onClick = {
-                                        gender = "Masculino"
-                                        expandedGenderMenu = false
-                                    })
-                                    DropdownMenuItem(text = { Text("Feminino") }, onClick = {
-                                        gender = "Feminino"
-                                        expandedGenderMenu = false
-                                    })
-                                    DropdownMenuItem(text = { Text("Outros") }, onClick = {
-                                        gender = "Outros"
-                                        expandedGenderMenu = false
-                                    })
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                text = "Masculino",
+                                                color = Color.White
+                                            )
+                                        },
+                                        onClick = {
+                                            gender = "Masculino"
+                                            expandedGenderMenu = false
+                                        })
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                text = "Feminino",
+                                                color = Color.White
+                                            )
+                                        },
+                                        onClick = {
+                                            gender = "Feminino"
+                                            expandedGenderMenu = false
+                                        })
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                text = "Outros",
+                                                color = Color.White
+                                            )
+                                        },
+                                        onClick = {
+                                            gender = "Outros"
+                                            expandedGenderMenu = false
+                                        })
                                 }
                             }
                         )
@@ -321,7 +347,8 @@ fun MoreDataProfileScreen(
                                     tint = Color.White,
                                     modifier = Modifier.clickable { datePickerDialog.show() }
                                 )
-                            }
+                            },
+                            textStyle = TextStyle(color = Color.White)
                         )
                     }
                 },
