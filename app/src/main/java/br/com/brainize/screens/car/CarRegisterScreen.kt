@@ -20,7 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.brainize.R
 import br.com.brainize.components.BrainizeScreen
@@ -61,57 +63,71 @@ fun CarRegisterScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                OutlinedTextField(
-                    value = carBrand,
-                    onValueChange = { carBrand = it },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.car_brand_label),
-                            color = Color(0xFF372B4B)
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = TextStyle(color = Color(0xFF372B4B))
+                // Título adicionado aqui
+                Text(
+                    text = "Cadastro de carro a ser gerenciado",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF372B4B),
+                    modifier = Modifier.padding(bottom = 24.dp)
                 )
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    value = carModel,
-                    onValueChange = { carModel = it },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.car_model_label),
-                            color = Color(0xFF372B4B)
-                        )
-                    },
+
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    textStyle = TextStyle(color = Color(0xFF372B4B))
-                )
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    value = carPlate,
-                    onValueChange = { carPlate = it },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.car_plate_label),
-                            color = Color(0xFF372B4B)
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = TextStyle(color = Color(0xFF372B4B))
-                )
-                Spacer(modifier = Modifier.padding(16.dp))
-                Button(
-                    onClick = {
-                        viewModel.registerCar(carBrand, carModel, carPlate) {
-                            navController.navigate(DestinationScreen.CarScreen.route)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = stringResource(R.string.register_label), color = Color.White)
+                    OutlinedTextField(
+                        value = carBrand,
+                        onValueChange = { carBrand = it },
+                        label = {
+                            Text(
+                                text = stringResource(R.string.car_brand_label),
+                                color = Color(0xFF372B4B)
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = TextStyle(color = Color(0xFF372B4B))
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    OutlinedTextField(
+                        value = carModel,
+                        onValueChange = { carModel = it },
+                        label = {
+                            Text(
+                                text = stringResource(R.string.car_model_label),
+                                color = Color(0xFF372B4B)
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = TextStyle(color = Color(0xFF372B4B))
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    OutlinedTextField(
+                        value = carPlate,
+                        onValueChange = { carPlate = it },
+                        label = {
+                            Text(
+                                text = stringResource(R.string.car_plate_label),
+                                color = Color(0xFF372B4B)
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = TextStyle(color = Color(0xFF372B4B))
+                    )
+                    Spacer(modifier = Modifier.padding(16.dp))
+                    Button(
+                        onClick = {
+                            viewModel.registerCar(carBrand, carModel, carPlate) {
+                                navController.navigate(DestinationScreen.CarScreen.route)
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = stringResource(R.string.register_label), color = Color.White)
+                    }
                 }
             }
         }

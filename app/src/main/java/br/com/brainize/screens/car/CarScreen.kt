@@ -79,12 +79,12 @@ fun CarScreen(
         ) { paddingValues ->
             BrainizeScreen(paddingValues = paddingValues) {
                 Text(
-                    text = "Status do seu $carBrand $carModel",
+                    text = "Status do seu $carBrand $carModel".uppercase(),
                     modifier = Modifier
-                        .padding(top = 32.dp),
-                    fontSize = 18.sp,
+                        .padding(top = 128.dp, end = 32.dp, start = 32.dp),
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = Color(0xFF372B4B),
                     textAlign = TextAlign.Center
                 )
 
