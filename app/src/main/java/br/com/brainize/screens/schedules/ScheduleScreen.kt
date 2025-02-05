@@ -9,9 +9,13 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +36,8 @@ import br.com.brainize.components.getColorFromTaskColor
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
+import br.com.brainize.viewmodel.NoteSaveResult
+import br.com.brainize.viewmodel.ScheduleSaveResult
 import br.com.brainize.viewmodel.ScheduleViewModel
 
 @Composable
@@ -46,6 +52,13 @@ fun ScheduleScreen(
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
+
+    // Estado para controlar a exibição do diálogo de erro
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogMessage by remember { mutableStateOf("") }
+
+    // Coletando o estado do resultado do salvamento
+    val scheduleSaveResult by viewModel.scheduleSaveResult.collectAsState()
 
     val schedules = viewModel.schedules.value
     val openDialog = remember { mutableStateOf(false) }
@@ -63,6 +76,21 @@ fun ScheduleScreen(
                 priorityMediumColor = config.priorityMediumColor
                 priorityLowColor = config.priorityLowColor
             }
+        }
+    }
+
+    LaunchedEffect(key1 = scheduleSaveResult) {
+        when (scheduleSaveResult) {
+            is ScheduleSaveResult.Success -> {
+                viewModel.resetScheduleSaveResult()
+            }
+            is ScheduleSaveResult.Error -> {
+                val error = scheduleSaveResult as ScheduleSaveResult.Error
+                dialogMessage = error.message
+                showDialog = true
+                viewModel.resetScheduleSaveResult()
+            }
+            ScheduleSaveResult.Idle -> {} // Não faz nada
         }
     }
 
@@ -125,5 +153,18 @@ fun ScheduleScreen(
 
     if (openDialog.value) {
         NewScheduleBottomSheet(openBottomSheet = openDialog, context = context, viewModel = viewModel)
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Erro") },
+            text = { Text(dialogMessage) },
+            confirmButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("OK")
+                }
+            }
+        )
     }
 }

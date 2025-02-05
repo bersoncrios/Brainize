@@ -36,6 +36,9 @@ class ScheduleViewModel : ViewModel() {
     private val _scheduleToHome = MutableStateFlow<List<Schedule>>(emptyList())
     val scheduleToHome: StateFlow<List<Schedule>> = _scheduleToHome
 
+    private val _scheduleSaveResult = MutableStateFlow<ScheduleSaveResult>(ScheduleSaveResult.Idle)
+    val scheduleSaveResult: StateFlow<ScheduleSaveResult> = _scheduleSaveResult
+
     private val _scheduleState = MutableStateFlow<Schedule>(Schedule())
     val scheduleState: StateFlow<Schedule> = _scheduleState.stateIn(
         scope = viewModelScope,
@@ -55,6 +58,10 @@ class ScheduleViewModel : ViewModel() {
         isDone: Boolean
     ) {
         viewModelScope.launch {
+            if (name.isBlank() || priority.isBlank() || tag.isBlank() || time.isBlank() || date.toString().isBlank()) {
+                _scheduleSaveResult.value = ScheduleSaveResult.Error("Preencha todos os campos obrigatórios.")
+                return@launch
+            }
             val schedule = Schedule(
                 time = time,
                 date = date,
@@ -205,9 +212,20 @@ class ScheduleViewModel : ViewModel() {
         }
     }
 
+    fun resetScheduleSaveResult() {
+        _scheduleSaveResult.value = ScheduleSaveResult.Idle
+    }
+
     companion object {
         private const val USER_COLLECTIONS = "users"
         private const val SCHEDULE_COLLECTIONS = "schedules"
         private const val IS_DONE_LABEL = "done"
     }
+}
+
+
+sealed class ScheduleSaveResult {
+    object Idle : ScheduleSaveResult()
+    object Success : ScheduleSaveResult()
+    data class Error(val message: String) : ScheduleSaveResult()
 }

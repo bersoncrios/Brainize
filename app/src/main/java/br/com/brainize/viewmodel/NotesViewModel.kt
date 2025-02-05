@@ -31,6 +31,9 @@ class NotesViewModel : ViewModel() {
     private val _note = MutableStateFlow<Note?>(null)
     val note: StateFlow<Note?> = _note
 
+    private val _noteSaveResult = MutableStateFlow<NoteSaveResult>(NoteSaveResult.Idle)
+    val noteSaveResult: StateFlow<NoteSaveResult> = _noteSaveResult
+
     private val _noteState = MutableStateFlow<Note>(Note())
     val noteState: StateFlow<Note> = _noteState.stateIn(
         scope = viewModelScope,
@@ -75,6 +78,11 @@ class NotesViewModel : ViewModel() {
         dueTime: String? = null
     ) {
         viewModelScope.launch {
+            if (title.isBlank() || content.isBlank() || type.isBlank() || tag.isBlank()) {
+                _noteSaveResult.value = NoteSaveResult.Error("Preencha todos os campos obrigatórios.")
+                return@launch
+            }
+
             val user = auth.currentUser
             if (user != null) {
                 val nextId = getNextSequentialId()
@@ -217,9 +225,20 @@ class NotesViewModel : ViewModel() {
         }
     }
 
+    fun resetNoteSaveResult() {
+        _noteSaveResult.value = NoteSaveResult.Idle
+    }
+
     companion object {
         private const val NOTES_COLLECTION = "notes"
         private const val USERS_COLLECTION = "users"
         private const val SEQUENTIALID_LABEL = "sequentialId"
     }
+}
+
+// Classe para representar o resultado do salvamento danota
+sealed class NoteSaveResult {
+    object Idle : NoteSaveResult()
+    object Success : NoteSaveResult()
+    data class Error(val message: String) : NoteSaveResult()
 }

@@ -1,6 +1,7 @@
 package br.com.brainize.screens.notes
 
-import androidx.compose.foundation.layout.*import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
@@ -16,6 +17,7 @@ import br.com.brainize.components.*
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
+import br.com.brainize.viewmodel.NoteSaveResult
 import br.com.brainize.viewmodel.NotesViewModel
 
 const val DATE_FORMAT = "%02d/%02d/%d"
@@ -45,6 +47,13 @@ fun NotesScreen(
 
     var isLoading by remember { mutableStateOf(true) }
 
+    // Estado para controlar a exibição do diálogo de erro
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogMessage by remember { mutableStateOf("") }
+
+    // Coletando o estado do resultado do salvamento
+    val noteSaveResult by viewModel.noteSaveResult.collectAsState()
+
     if (!loginViewModel.hasLoggedUser() && token.isNullOrEmpty()) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
@@ -53,6 +62,23 @@ fun NotesScreen(
         viewModel.loadNotes()
         configurationsViewModel.loadConfigurations {
             isLoading = false
+        }
+    }
+
+    // Observando o resultado do salvamento
+    LaunchedEffect(key1 = noteSaveResult) {
+        when (noteSaveResult) {
+            is NoteSaveResult.Success -> {
+
+                viewModel.resetNoteSaveResult()
+            }
+            is NoteSaveResult.Error -> {
+                val error = noteSaveResult as NoteSaveResult.Error
+                dialogMessage = error.message
+                showDialog = true
+                viewModel.resetNoteSaveResult()
+            }
+            NoteSaveResult.Idle -> {}
         }
     }
 
@@ -66,7 +92,7 @@ fun NotesScreen(
         },
         floatingActionButton = {
             BrainizeFloatingActionButton(
-                openDialog = openBottomSheetNoteType ,
+                openDialog = openBottomSheetNoteType,
                 title = stringResource(R.string.new_note_label)
             )
         }
@@ -101,10 +127,12 @@ fun NotesScreen(
                             reminderColor = reminderColor,
                             onDelete = { noteId -> viewModel.deleteNote(noteId) },
                             onClick = {
-                                navController.navigate(DestinationScreen.NotesDetailsScreen.createRoute(
-                                    token,
-                                    note.id
-                                ))
+                                navController.navigate(
+                                    DestinationScreen.NotesDetailsScreen.createRoute(
+                                        token,
+                                        note.id
+                                    )
+                                )
                             }
                         )
                     }
@@ -134,11 +162,25 @@ fun NotesScreen(
             newNoteType = newNoteType,
             newNoteDueDate = newNoteDueDate,
             newNoteDueTime = newNoteDueTime,
-            newNoteTag = newNoteTag,
+            newNoteTag= newNoteTag,
             viewModel = viewModel,
             context = context,
             onConfirm = {
                 openBottomSheetNewNote.value = false
+            }
+        )
+    }
+
+    // Exibindo o diálogo de erro
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Erro") },
+            text = { Text(dialogMessage) },
+            confirmButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("OK")
+                }
             }
         )
     }
