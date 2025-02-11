@@ -1,7 +1,5 @@
 package br.com.brainize.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.brainize.model.FriendListItem
@@ -31,29 +29,35 @@ class SocialViewModel : ViewModel() {
     suspend fun getUserDocument(userId: String) =
         firestore.collection(USERS_COLLECTION).document(userId).get().await()
 
-    private val _friendData = MutableStateFlow(br.com.brainize.model.User())
-    val friendData: StateFlow<br.com.brainize.model.User> = _friendData
+    private val _friendData = MutableStateFlow(User())
+    val friendData: StateFlow<User> = _friendData
 
     fun searchUserAndAddFriend(query: String): Flow<List<FriendListItem>> = flow {
+        if (getCurrentUser() == null) {
+            emit(emptyList())
+            return@flow
+        }
+
         val usersRef = firestore.collection(USERS_COLLECTION)
 
-        val querySnapshot = usersRef
+        val usernameQuery = usersRef
             .whereEqualTo("username", query)
-            .get()
-            .await()
+            .whereNotEqualTo(com.google.firebase.firestore.FieldPath.documentId(), getCurrentUser()?.uid)
 
-        if (querySnapshot.isEmpty) {
-            val nameSnapshot = usersRef
-                .whereEqualTo("completeName", query)
-                .get()
-                .await()
+        val completeNameQuery = usersRef
+            .whereEqualTo("completeName", query)
+            .whereNotEqualTo(com.google.firebase.firestore.FieldPath.documentId(), getCurrentUser()?.uid)
 
-            if (!nameSnapshot.isEmpty) {
-                emit(nameSnapshot.toUserListItemList())
-            }
-        } else {
-            emit(querySnapshot.toUserListItemList())
-        }
+        val usernameSnapshot = usernameQuery.get().await()
+        val completeNameSnapshot = completeNameQuery.get().await()
+
+        val combinedResults = mutableListOf<FriendListItem>()
+        combinedResults.addAll(usernameSnapshot.toUserListItemList())
+        combinedResults.addAll(completeNameSnapshot.toUserListItemList())
+
+        val uniqueResults = combinedResults.distinctBy { it.id }
+
+        emit(uniqueResults)
     }
 
     private fun QuerySnapshot.toUserListItemList(): List<FriendListItem> =
