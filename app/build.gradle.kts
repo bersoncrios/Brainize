@@ -22,8 +22,8 @@ android {
         applicationId = "br.com.brainize"
         minSdk = 29
         targetSdk = 35
-        versionCode = 140
-        versionName = "1.4.0"
+        versionCode = 200
+        versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
