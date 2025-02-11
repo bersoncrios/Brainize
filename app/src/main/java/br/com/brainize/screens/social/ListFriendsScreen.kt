@@ -1,8 +1,11 @@
 package br.com.brainize.screens.social
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FloatingActionButton
@@ -23,7 +26,7 @@ import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.SocialViewModel
 
 @Composable
-fun ListFriendsScreen (
+fun ListFriendsScreen(
     navController: NavController,
     loginViewModel: LoginViewModel,
     socialViewModel: SocialViewModel,
@@ -36,7 +39,6 @@ fun ListFriendsScreen (
     if (!loginViewModel.hasLoggedUser() && token?.isEmpty() == true) {
         navController.navigate(DestinationScreen.LoginScreen.route)
     }
-
 
     Scaffold(
         topBar = {
@@ -60,11 +62,17 @@ fun ListFriendsScreen (
         }
     ) { paddingValues ->
         BrainizeScreen(paddingValues = paddingValues) {
-            LazyColumn(
-                modifier = Modifier.padding(vertical = 64.dp, horizontal = 16.dp)
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.padding(horizontal = 4.dp),
+                contentPadding = PaddingValues(
+                    vertical = 24.dp,
+                    horizontal = 16.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(friendsList) { friend ->
-                    FriendItem(friend = friend){
+                items(friendsList, key = { it.id }) { friend ->
+                    FriendItem(friend = friend) {
                         navController.navigate(DestinationScreen.ProfileScreen.createRoute(token, friend.id))
                     }
                 }
