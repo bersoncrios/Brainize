@@ -5,9 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,33 +37,28 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import br.com.brainize.R
 import br.com.brainize.components.BrainizeScreen
-import br.com.brainize.components.BrainizerAlternateSelectButton
 import br.com.brainize.components.BrainizerTopAppBar
 import br.com.brainize.navigation.DestinationScreen
-import br.com.brainize.viewmodel.HouseViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.SocialViewModel
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
 @Composable
-fun SearchPeoplesScreen (
+fun SearchPeoplesScreen(
     navController: NavController,
     loginViewModel: LoginViewModel,
     socialViewModel: SocialViewModel,
     token: String?
 ) {
     var searchQuery by rememberSaveable { mutableStateOf("") }
-    val users by socialViewModel.searchUserAndAddFriend(searchQuery).collectAsState(initial = emptyList())
+    val users by socialViewModel.searchUserAndAddFriend(searchQuery)
+        .collectAsState(initial = emptyList())
     val scope = rememberCoroutineScope()
     val currentUser = loginViewModel.getCurrentUser()
     val focusRequester = remember { FocusRequester() }
@@ -115,8 +108,17 @@ fun SearchPeoplesScreen (
                         .weight(1f),
                     contentPadding = PaddingValues(16.dp)
                 ) {
-                    items(users) { user ->
-                        val isUserFriend = isFriend(currentUser, user.id, socialViewModel)
+                    items(users, key = { it.id }) { user ->
+                        var isFriend by remember { mutableStateOf(false) }
+
+                        LaunchedEffect(currentUser, user.id) {
+                            if (currentUser != null) {
+                                val userSnapshot = socialViewModel.getUserDocument(currentUser.uid)
+                                val friends = userSnapshot.get("friends") as? List<String> ?: emptyList()
+                                isFriend = friends.contains(user.id)
+                            }
+                        }
+
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -127,7 +129,7 @@ fun SearchPeoplesScreen (
                         ) {
                             Column(
                                 verticalArrangement = Arrangement.SpaceEvenly,
-                                horizontalAlignment = Alignment.CenterHorizontally ,
+                                horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(
@@ -137,7 +139,7 @@ fun SearchPeoplesScreen (
                                         end = 32.dp
                                     )
                             ) {
-                                Column (
+                                Column(
                                     modifier = Modifier
                                         .padding(bottom = 16.dp)
                                 ) {
@@ -153,7 +155,7 @@ fun SearchPeoplesScreen (
                                     )
                                 }
 
-                                if (!isUserFriend) {
+                                if (!isFriend) {
                                     Spacer(modifier = Modifier.width(16.dp))
 
                                     Column {
@@ -161,8 +163,11 @@ fun SearchPeoplesScreen (
                                             onClick = {
                                                 scope.launch {
                                                     if (currentUser != null) {
-                                                        socialViewModel
-                                                            .addUserToFriendsList(currentUser, user.id)
+                                                        socialViewModel.addUserToFriendsList(
+                                                            currentUser,
+                                                            user.id
+                                                        )
+                                                        isFriend = true
                                                     }
                                                 }
                                             },
@@ -193,19 +198,4 @@ fun SearchPeoplesScreen (
             }
         }
     }
-}
-
-@Composable
-fun isFriend(currentUser: FirebaseUser?, userId: String, socialViewModel: SocialViewModel): Boolean {
-    var isFriend by remember {mutableStateOf(false) }
-
-    LaunchedEffect(currentUser, userId) {
-        if (currentUser != null) {
-            val userSnapshot = socialViewModel.getUserDocument(currentUser.uid)
-            val friends = userSnapshot?.get("friends") as? List<String> ?: emptyList()
-            isFriend = friends.contains(userId)
-        }
-    }
-
-    return isFriend
 }
