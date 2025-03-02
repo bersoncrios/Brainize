@@ -44,4 +44,12 @@
     <key>adsDescription</key>
     <value>Conteúdo do anúncio</value>
   </entry>
+  <entry>
+    <key>hasSwitchMenuCar</key>
+    <value>false</value>
+  </entry>
+  <entry>
+    <key>hasSwitchMenuHouse</key>
+    <value>false</value>
+  </entry>
 </defaults>

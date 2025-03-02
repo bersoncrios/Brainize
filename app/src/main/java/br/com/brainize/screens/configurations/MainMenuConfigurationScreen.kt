@@ -2,8 +2,6 @@ package br.com.brainize.screens.configurations
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,12 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,12 +33,14 @@ import br.com.brainize.components.ConfigSwitchRow
 import br.com.brainize.navigation.DestinationScreen
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
+import br.com.brainize.viewmodel.RemoteConfigViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun MainMenuConfigurationScreen(
     navController: NavController,
     loginViewModel: LoginViewModel,
+    remoteConfigViewModel: RemoteConfigViewModel,
     configurationsViewModel: ConfigurationsViewModel,
     token: String?
 ) {
@@ -89,16 +86,22 @@ fun MainMenuConfigurationScreen(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ConfigSwitchRow(
-                    text = "Carro",
-                    isChecked = carEnabled,
-                    onCheckedChange = { carEnabled = it }
-                )
-                ConfigSwitchRow(
-                    text = "Casa",
-                    isChecked = houseEnabled,
-                    onCheckedChange = { houseEnabled = it }
-                )
+                if (remoteConfigViewModel._hasSwitchMenuCar) {
+                    ConfigSwitchRow(
+                        text = "Carro",
+                        isChecked = carEnabled,
+                        onCheckedChange = { carEnabled = it }
+                    )
+                }
+
+                if (remoteConfigViewModel._hasSwitchMenuHouse) {
+                    ConfigSwitchRow(
+                        text = "Casa",
+                        isChecked = houseEnabled,
+                        onCheckedChange = { houseEnabled = it }
+                    )
+                }
+
                 ConfigSwitchRow(
                     text = "Notas",
                     isChecked = notesEnabled,

@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -49,6 +50,8 @@ import br.com.brainize.components.LastNoteItem
 import br.com.brainize.components.LastScheduleItem
 import br.com.brainize.model.Schedule
 import br.com.brainize.navigation.DestinationScreen
+import br.com.brainize.utils.kade
+import br.com.brainize.utils.oxanium
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
@@ -97,7 +100,6 @@ fun HomeScreen(
     }
 
     LaunchedEffect(key1 = key){
-        // Executa a lógica de filtragem sempre que a tela for recomposta
         filteredSchedules.value = scheduleViewModel.schedules.value.filter { !it.done }.takeLast(3).reversed()
     }
 
@@ -160,7 +162,8 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center)
                             .padding(top = 8.dp),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontFamily = kade
                     )
                 }
 
@@ -182,39 +185,40 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .padding(8.dp)
                     ) {
-                        // Primeira Row: Título "Últimas notas" e botão"Ver todas"
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically // Alinha verticalmente ao centro
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
                                 text = "Últimas notas",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF372080)
+                                color = Color(0xFF372080),
+                                fontFamily = oxanium
                             )
                             TextButton(onClick = {
                                 navController.navigate(DestinationScreen.NotesScreen.route)
-                            }) {Text(
-                                text = "Ver todas",
-                                color = Color(0xFF372080),
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp
-                            )
+                            }) {
+                                Text(
+                                    text = "Ver todas",
+                                    color = Color(0xFF372080),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp,
+                                    fontFamily = oxanium,
+                                    textDecoration = TextDecoration.Underline
+                                )
                             }
                         }
 
-                        // Spacer para adicionar espaço entre as Rows
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // Segunda Row: Lista horizontal de notas
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .horizontalScroll(rememberScrollState())
-                                .padding(start = 8.dp, end = 8.dp), // Remove padding top e bottom
+                                .padding(start = 8.dp, end = 8.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             notes.takeLast(3)
@@ -229,7 +233,6 @@ fun HomeScreen(
                         }
                     }
 
-                    // Third Row
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -242,6 +245,7 @@ fun HomeScreen(
                                     navController.navigate(DestinationScreen.ListFriendsScreen.route)
                                 },
                                 icon = R.drawable.brainizelogo,
+                                name = "Sócial"
                             )
                         }
 
@@ -249,11 +253,11 @@ fun HomeScreen(
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.CollectionScreen.route) },
                                 icon = R.drawable.collection,
+                                name = "Coleções"
                             )
                         }
                     }
 
-                    // Second Row
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -264,6 +268,7 @@ fun HomeScreen(
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.NotesScreen.route) },
                                 icon = R.drawable.lembrete,
+                                name = "Lembretes"
                             )
                         }
 
@@ -271,6 +276,7 @@ fun HomeScreen(
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.ScheduleScreen.route) },
                                 icon = R.drawable.agenda,
+                                name = "Agendas"
                             )
                         }
                     }
@@ -290,7 +296,8 @@ fun HomeScreen(
                                 text = "Últimas agendas",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF372080)
+                                color = Color(0xFF372080),
+                                fontFamily = oxanium
                             )
                             TextButton(onClick = {
                                 navController.navigate(DestinationScreen.ScheduleScreen.route)
@@ -299,16 +306,15 @@ fun HomeScreen(
                                     text = "Ver todas",
                                     color = Color(0xFF372080),
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 14.sp
+                                    fontSize = 14.sp,
+                                    fontFamily = oxanium,
+                                    textDecoration = TextDecoration.Underline
                                 )
                             }
                         }
 
-                        // Spacer para adicionar espaço entre as Rows
                         Spacer(modifier = Modifier.height(8.dp))
 
-
-                        // Segunda Row: Lista horizontal de agendas
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -316,21 +322,19 @@ fun HomeScreen(
                                 .padding(start = 8.dp, end = 8.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            // Exibe as agendas filtradas
                             scheduleToHome.takeLast(3)
                                 .filter { !it.done }
                                 .reversed()
                                 .forEach { schedule ->
-                                LastScheduleItem(
-                                    note = schedule,
-                                    navController = navController,
-                                    token = token
-                                )
-                            }
+                                    LastScheduleItem(
+                                        note = schedule,
+                                        navController = navController,
+                                        token = token
+                                    )
+                                }
                         }
                     }
 
-                    // First Row
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -341,6 +345,7 @@ fun HomeScreen(
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.CarScreen.route) },
                                 icon = R.drawable.car,
+                                name = "Carro"
                             )
                         }
 
@@ -348,6 +353,7 @@ fun HomeScreen(
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.HouseScreen.route) },
                                 icon = R.drawable.house,
+                                name = "Casa"
                             )
                         }
                     }
@@ -362,7 +368,8 @@ fun HomeScreen(
                         if (remoteConfigViewModel._configurationtioEnable) {
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.ConfigurationScreen.route) },
-                                icon = R.drawable.config
+                                icon = R.drawable.config,
+                                name = "Configurações"
                             )
                         }
 
@@ -370,6 +377,7 @@ fun HomeScreen(
                             BrainizerSelectButton(
                                 onClick = { navController.navigate(DestinationScreen.ProfileScreen.route) },
                                 icon = R.drawable.profile,
+                                name = "Perfil"
                             )
                         }
                     }
@@ -377,7 +385,6 @@ fun HomeScreen(
 
                     if (remoteConfigViewModel._hasAds) {
 
-                        // Banner de Anúncios
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -407,7 +414,6 @@ fun HomeScreen(
                                     color = Color.Black,
                                     textAlign = TextAlign.Center
                                 )
-                                // Você pode adicionar mais conteúdo aqui, como uma imagem ou um botão.
                             }
                         }
 

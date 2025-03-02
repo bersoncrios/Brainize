@@ -23,6 +23,8 @@ class RemoteConfigViewModel : ViewModel() {
     var _hasAds by mutableStateOf(false)
     var _adsTitle by mutableStateOf("")
     var _adsDescription by mutableStateOf("")
+    var _hasSwitchMenuCar by mutableStateOf(false)
+    var _hasSwitchMenuHouse by mutableStateOf(false)
 
     init {
         viewModelScope.launch {
@@ -46,6 +48,9 @@ class RemoteConfigViewModel : ViewModel() {
                         _profileEnable = firebaseRemoteConfig.getBoolean("profileEnable")
                         _socialEnable = firebaseRemoteConfig.getBoolean("socialEnable")
                         _hasAds = firebaseRemoteConfig.getBoolean("hasAds")
+
+                        _hasSwitchMenuCar = firebaseRemoteConfig.getBoolean("hasSwitchMenuCar")
+                        _hasSwitchMenuHouse = firebaseRemoteConfig.getBoolean("hasSwitchMenuHouse")
 
                         _adsTitle = firebaseRemoteConfig.getString("adsTitle")
                         _adsDescription = firebaseRemoteConfig.getString("adsDescription")

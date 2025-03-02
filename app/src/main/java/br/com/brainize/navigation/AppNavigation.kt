@@ -191,7 +191,7 @@ fun AppNavigation(
             arguments = DestinationScreen.MainMenuConfigurationScreen.arguments
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
-            MainMenuConfigurationScreen(navController = navController, loginViewModel = loginViewmodel, configurationsViewModel = configurationsViewModel, token = token)
+            MainMenuConfigurationScreen(navController = navController, loginViewModel = loginViewmodel, remoteConfigViewModel = remoteConfigViewModel, configurationsViewModel = configurationsViewModel, token = token)
         }
 
         composable(

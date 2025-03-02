@@ -99,6 +99,7 @@ fun ConfigurationScreen (
                         BrainizerSelectButton(
                             onClick = { navController.navigate(DestinationScreen.MainMenuConfigurationScreen.route) },
                             icon = R.drawable.menu,
+                            name = "Menu"
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
@@ -106,6 +107,7 @@ fun ConfigurationScreen (
                         BrainizerSelectButton(
                             onClick = { navController.navigate(DestinationScreen.AppsColorsConfigurationScreen.route) },
                             icon = R.drawable.painter,
+                            name = "Cores"
                         )
                     }
                 }
