@@ -13,21 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -52,6 +43,8 @@ import br.com.brainize.components.EditDueDateBottomSheet
 import br.com.brainize.components.EditDueTimeBottomSheet
 import br.com.brainize.components.getColorFromTaskColor
 import br.com.brainize.navigation.DestinationScreen
+import br.com.brainize.utils.kade
+import br.com.brainize.utils.oxanium
 import br.com.brainize.viewmodel.ConfigurationsViewModel
 import br.com.brainize.viewmodel.LoginViewModel
 import br.com.brainize.viewmodel.NotesViewModel
@@ -151,7 +144,8 @@ fun NotesDetailsScreen(
                                     .clickable {
                                         title = note.title
                                         openTitleDialog.value = true
-                                    }
+                                    },
+                                fontFamily = kade
                             )
                         }
 
@@ -193,7 +187,8 @@ fun NotesDetailsScreen(
                                         color = Color.Black,
                                         modifier = Modifier.weight(2f),
                                         fontWeight = FontWeight.Normal,
-                                        fontSize = 16.sp
+                                        fontSize = 16.sp,
+                                        fontFamily = oxanium
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))

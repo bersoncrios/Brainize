@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.brainize.R
 import br.com.brainize.model.Note
+import br.com.brainize.utils.kade
+import br.com.brainize.utils.oxanium
 
 @Composable
 fun NoteItem(
@@ -74,12 +76,14 @@ fun NoteItem(
                     ).uppercase(),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF372080)
+                    color = Color(0xFF372080),
+                    fontFamily = kade
                 )
                 Text(
                     text = note.content.take(65) + if (note.content.length > 65) "..." else "",
                     fontSize = 16.sp,
-                    color = Color(0xFF372B4B)
+                    color = Color(0xFF372B4B),
+                    fontFamily = oxanium
                 )
                 if (note.type == "Tarefa") {
                     if (!note.dueDate.isNullOrEmpty() && !note.dueTime.isNullOrEmpty()) {
@@ -99,16 +103,18 @@ fun NoteItem(
                     text = stringResource(R.string.note_type_label, note.type),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    color = Color(0xFF372080)
+                    color = Color(0xFF372080),
+                    fontFamily = oxanium
                 )
                 Text(
                     text = stringResource(R.string.note_tag_label, note.tag),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF372080)
+                    color = Color(0xFF372080),
+                    fontFamily = oxanium
                 )
             }
-            Spacer(modifier =Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             IconButton(onClick = { showConfirmDialog = true }) {
                 Icon(
                     imageVector = Icons.Filled.Delete,

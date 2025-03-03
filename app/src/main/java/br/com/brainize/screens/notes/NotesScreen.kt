@@ -65,7 +65,6 @@ fun NotesScreen(
         }
     }
 
-    // Observando o resultado do salvamento
     LaunchedEffect(key1 = noteSaveResult) {
         when (noteSaveResult) {
             is NoteSaveResult.Success -> {
@@ -141,7 +140,6 @@ fun NotesScreen(
         }
     }
 
-    // BottomSheet para selecionar o tipo de nota
     if (openBottomSheetNoteType.value) {
         BottomSheetNoteType(
             openBottomSheet = openBottomSheetNoteType,
@@ -153,7 +151,6 @@ fun NotesScreen(
         )
     }
 
-    // BottomSheet para criar uma nova nota
     if (openBottomSheetNewNote.value) {
         BottomSheetNewNote(
             openBottomSheet = openBottomSheetNewNote,

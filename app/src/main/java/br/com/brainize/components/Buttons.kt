@@ -103,7 +103,8 @@ fun BrainizerSelectButton(icon: Int, name: String = "", onClick: () -> Unit) {
                 }
             )
             .padding(30.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             painter = painterResource(id = icon),

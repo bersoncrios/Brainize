@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.sp
 import br.com.brainize.R
 import br.com.brainize.model.Note
 import br.com.brainize.model.Schedule
+import br.com.brainize.utils.kade
+import br.com.brainize.utils.oxanium
 import br.com.brainize.viewmodel.ScheduleViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -88,6 +90,7 @@ fun ScheduleItem(
                     fontWeight= FontWeight.Bold,
                     color = Color(0xFF372080),
                     modifier = Modifier.weight(1f),
+                    fontFamily = kade
                 )
                 Checkbox(
                     checked = isChecked,
@@ -104,27 +107,32 @@ fun ScheduleItem(
             Text(
                 text = "Data: ${dateFormatter.format(schedule.date)}",
                 fontSize = 16.sp,
-                color = Color(0xFF372B4B)
+                color = Color(0xFF372B4B),
+                fontFamily = oxanium
             )
             Text(
                 text = "Horário: ${schedule.time}",
                 fontSize = 16.sp,
-                color =  Color(0xFF372B4B)
+                color =  Color(0xFF372B4B),
+                fontFamily = oxanium
             )
             Text(
                 text = dayUntil,
                 fontSize = 16.sp,
-                color = Color(0xFF372B4B)
+                color = Color(0xFF372B4B),
+                fontFamily = oxanium
             )
             Text(
                 text = "Prioridade: $currentPriority",
                 fontSize = 16.sp,
-                color = Color(0xFF372B4B)
+                color = Color(0xFF372B4B),
+                fontFamily = oxanium
             )
             Text(
                 text = "TAG: ${schedule.tag}",fontSize = 16.sp,
                 color = Color(0xFF372080),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                fontFamily = oxanium
             )
         }
     }

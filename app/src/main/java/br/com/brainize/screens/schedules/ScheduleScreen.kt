@@ -90,7 +90,7 @@ fun ScheduleScreen(
                 showDialog = true
                 viewModel.resetScheduleSaveResult()
             }
-            ScheduleSaveResult.Idle -> {} // Não faz nada
+            ScheduleSaveResult.Idle -> {}
         }
     }
 
